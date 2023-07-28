@@ -1,0 +1,1 @@
+{"name":"ec-cube\/relatedproduct42","version":"4.2.2","description":"\u95a2\u9023\u5546\u54c1\u30d7\u30e9\u30b0\u30a4\u30f3","type":"eccube-plugin","require":{"ec-cube\/plugin-installer":"^2.0"},"extra":{"code":"RelatedProduct42","id":2398}}

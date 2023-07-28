@@ -1,0 +1,75 @@
+{#
+ This file is part of the Coupon plugin
+
+ Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+ http://www.ec-cube.co.jp/
+
+ For the full copyright and license information, please view the LICENSE
+ file that was distributed with this source code.
+#}
+{% extends 'default_frame.twig' %}
+
+{% set body_class = 'cart_page' %}
+{% block javascript %}
+    <script>
+        $(function() {
+            $('input[name~="front_plugin_coupon_shopping[coupon_use]"]').change(function () {
+                if($(this).val() == 0) {
+                    $('#front_plugin_coupon_shopping_coupon_cd').attr('readonly', '');
+                    $('#front_plugin_coupon_shopping_coupon_cd').css('background-color', '#eee');
+                } else {
+                    $('#front_plugin_coupon_shopping_coupon_cd').removeAttr('readonly');
+                    $('#front_plugin_coupon_shopping_coupon_cd').css('background-color', 'white');
+                }
+            });
+        });
+    </script>
+{% endblock javascript %}
+
+{% block main %}
+    <div class="ec-role">
+        <div class="ec-pageHeader">
+            <h1>{{ 'plugin_coupon.front.shopping_coupon.header'|trans }}</h1>
+        </div>
+    </div>
+
+    <div class="ec-registerRole">
+        <div class="ec-off1Grid">
+            <div class="ec-off1Grid__cell">
+                <div class="ec-addressRole">
+                    <div class="ec-addressRole__actions">
+                        {{ 'plugin_coupon.front.shopping_coupon.body'|trans }}
+                    </div>
+                </div>
+
+                <form method="post" action="{{ url('plugin_coupon_shopping') }}">
+                    {{ form_widget(form._token) }}
+                    <div class="ec-borderedDefs">
+                        <dl>
+                            <dt></dt>
+                            <dd class="lh-base">
+                                {{ form_widget(form.coupon_use) }}
+                                {{ form_errors(form.coupon_use) }}
+                            </dd>
+                        </dl>
+                        <dl id="coupon_box__cd">
+                            <dt><label for="coupon_use_coupon_cd">{{ form.coupon_cd.vars.label|trans }}</label></dt>
+                            <dd>
+                                {{ form_widget(form.coupon_cd) }}
+                                {{ form_errors(form.coupon_cd) }}
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="ec-RegisterRole__actions">
+                        <div class="ec-off4Grid">
+                            <div class="ec-off4Grid__cell">
+                                <button type="submit" class="ec-blockBtn--action">{{ 'common.registration'|trans }}</button>
+                                <a href="{{ url('shopping') }}" class="ec-blockBtn--cancel">{{ 'common.back'|trans }}</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,208 @@
+{#
+ This file is part of EC-CUBE
+
+ Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+ http://www.ec-cube.co.jp/
+
+ For the full copyright and license information, please view the LICENSE
+ file that was distributed with this source code.
+#}
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['mailmagazine', 'mailmagazine_history'] %}
+
+{% block title %}{{ 'mailmagazine.history.title'|trans }}{% endblock %}
+{% block sub_title %}{{ 'mailmagazine.title'|trans }}{% endblock %}
+
+{% block main %}
+    <div class="c-contentsArea__cols">
+        <div class="c-contentsArea__primaryCol">
+            <div class="c-primaryCol">
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <th class="w-25">{{ 'admin.customer.multi_search_label'|trans }}</th>
+                            <td>
+                                {% if search_data.multi is null %}
+                                    ({{ 'mailmagazine.history.condition.label_null'|trans }})
+                                {% else %}
+                                    {{ search_data.multi }}
+                                {% endif %}
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="w-25">{{ 'admin.customer.customer_status'|trans }}</th>
+                            <td>
+                                {% if search_data.customer_status is null %}
+                                    ({{ 'mailmagazine.history.condition.label_null'|trans }})
+                                {% else %}
+                                    {{ search_data.customer_status }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="w-25">{{ 'admin.common.gender'|trans }}</th>
+                            <td>
+                                {% if search_data.sex is null %}
+                                    ({{ 'mailmagazine.history.condition.label_null'|trans }})
+                                {% else %}
+                                    {{ search_data.sex }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="w-25">{{ 'admin.customer.birth_month'|trans }}</th>
+                            <td>
+                                {% if search_data.birth_month is null %}
+                                    ({{ 'mailmagazine.history.condition.label_null'|trans }})
+                                {% else %}
+                                    {{ search_data.birth_month }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="w-25">{{ 'admin.common.birth_day'|trans }}</th>
+                            <td>
+                                {% if search_data.birth_start is null %}
+                                    ({{ 'mailmagazine.history.condition.label_null'|trans }})
+                                {% else %}
+                                    {{ search_data.birth_start|date("Y/m/d") }}
+                                {% endif %}
+                                ～
+                                {% if search_data.birth_end is null %}
+                                    ({{ 'mailmagazine.history.condition.label_null'|trans }})
+                                {% else %}
+                                    {{ search_data.birth_end|date("Y/m/d") }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="w-25">{{ 'admin.common.pref'|trans }}</th>
+                            <td>
+                                {% if search_data.pref is null %}
+                                    ({{ 'mailmagazine.history.condition.label_null'|trans }})
+                                {% else %}
+                                    {{ search_data.pref }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="w-25">{{ 'admin.common.phone_number'|trans }}</th>
+                            <td>
+                                {% if search_data.phone_number is null %}
+                                    ({{ 'mailmagazine.history.condition.label_null'|trans }})
+                                {% else %}
+                                    {{ search_data.phone_number }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="w-25">{{ 'admin.common.create_date'|trans }}</th>
+                            <td>
+                                {% if search_data.create_date_start is null %}
+                                    ({{ 'mailmagazine.history.condition.label_null'|trans }})
+                                {% else %}
+                                    {{ search_data.create_date_start|date("Y/m/d") }}
+                                {% endif %}
+                                ～
+                                {% if search_data.create_date_end is null %}
+                                    ({{ 'mailmagazine.history.condition.label_null'|trans }})
+                                {% else %}
+                                    {{ search_data.create_date_end|date("Y/m/d") }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="w-25">{{ 'admin.common.update_date'|trans }}</th>
+                            <td>
+                                {% if search_data.update_date_start is null %}
+                                    ({{ 'mailmagazine.history.condition.label_null'|trans }})
+                                {% else %}
+                                    {{ search_data.update_date_start|date("Y/m/d") }}
+                                {% endif %}
+                                ～
+                                {% if search_data.update_date_end is null %}
+                                    ({{ 'mailmagazine.history.condition.label_null'|trans }})
+                                {% else %}
+                                    {{ search_data.update_date_end|date("Y/m/d") }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="w-25">{{ 'admin.order.purchase_price'|trans }}</th>
+                            <td>
+                                {% if search_data.buy_total_start is null %}
+                                    ({{ 'mailmagazine.history.condition.label_null'|trans }})
+                                {% else %}
+                                    {{ search_data.buy_total_start }}
+                                {% endif %}
+                                ～
+                                {% if search_data.buy_total_end is null %}
+                                    ({{ 'mailmagazine.history.condition.label_null'|trans }})
+                                {% else %}
+                                    {{ search_data.buy_total_end }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="w-25">{{ 'admin.order.purchase_count'|trans }}</th>
+                            <td>
+                                {% if search_data.buy_times_start is null %}
+                                    ({{ 'mailmagazine.history.condition.label_null'|trans }})
+                                {% else %}
+                                    {{ search_data.buy_times_start }}
+                                {% endif %}
+                                ～
+                                {% if search_data.buy_times_end is null %}
+                                    ({{ 'mailmagazine.history.condition.label_null'|trans }})
+                                {% else %}
+                                    {{ search_data.buy_times_end }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="w-25">{{ 'admin.order.purchase_product'|trans }}</th>
+                            <td>
+                                {% if search_data.buy_product_name is null %}
+                                    ({{ 'mailmagazine.history.condition.label_null'|trans }})
+                                {% else %}
+                                    {{ search_data.buy_product_name }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="w-25">{{ 'admin.order.last_buy_date'|trans }}</th>
+                            <td>
+                                {% if search_data.last_buy_start is null %}
+                                    ({{ 'mailmagazine.history.condition.label_null'|trans }})
+                                {% else %}
+                                    {{ search_data.last_buy_start|date("Y/m/d") }}
+                                {% endif %}
+                                ～
+                                {% if search_data.last_buy_end is null %}
+                                    ({{ 'mailmagazine.history.condition.label_null'|trans }})
+                                {% else %}
+                                    {{ search_data.last_buy_end|date("Y/m/d") }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="c-conversionArea">
+        <div class="c-conversionArea__container">
+            <div class="row justify-content-between align-items-center">
+                <div class="col-6">
+                    <div class="c-conversionArea__leftBlockItem">
+                        <a class="c-baseLink" href="{{ url('plugin_mail_magazine_history') }}">
+                            <i class="fa fa-backward" aria-hidden="true"></i><span>{{ 'mailmagazine.history.preview.btn_back'|trans }}</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

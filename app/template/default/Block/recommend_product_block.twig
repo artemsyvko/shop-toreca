@@ -1,0 +1,38 @@
+{#
+ * This file is part of the Recommend Product plugin
+ *
+ * Copyright (C) EC-CUBE CO.,LTD. All Rights Reserved.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+#}
+{% set recommend_products = repository('Plugin\\Recommend42\\Entity\\RecommendProduct').getRecommendProduct %}
+
+<!-- ▼item_list▼ -->
+<div class="ec-shelfRole">
+    <ul class="ec-shelfGrid">
+        {% for RecommendProduct in recommend_products %}
+            <li class="ec-shelfGrid__item">
+                <a href="{{ url('product_detail', {'id': RecommendProduct.Product.id}) }}">
+                    <img src="{{ asset(RecommendProduct.Product.mainFileName|no_image_product, "save_image") }}">
+                    <p>{{ RecommendProduct.comment|raw|purify|nl2br }}</p>
+                    <dl>
+                        <dt class="item_name">{{ RecommendProduct.Product.name }}</dt>
+                        <dd class="item_price">
+                            {% if RecommendProduct.Product.hasProductClass %}
+                                {% if RecommendProduct.Product.getPrice02Min == RecommendProduct.Product.getPrice02Max %}
+                                    {{ RecommendProduct.Product.getPrice02IncTaxMin|price }}
+                                {% else %}
+                                    {{ RecommendProduct.Product.getPrice02IncTaxMin|price }} ～ {{ RecommendProduct.Product.getPrice02IncTaxMax|price }}
+                                {% endif %}
+                            {% else %}
+                                {{ RecommendProduct.Product.getPrice02IncTaxMin|price }}
+                            {% endif %}
+                        </dd>
+                    </dl>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+<!-- ▲item_list▲ -->

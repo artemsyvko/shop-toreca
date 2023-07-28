@@ -1,0 +1,147 @@
+{#
+This file is part of EC-CUBE
+
+Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+
+http://www.ec-cube.co.jp/
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+#}
+{% extends 'default_frame.twig' %}
+
+{% block main %}
+    <div class="ec-role">
+        <div class="ec-pageHeader">
+            <h1>{{ 'ご利用ガイド'|trans }}</h1>
+        </div>
+
+<div class="guide_title">商品について</div>
+<div class="guide_text">くじ商品の内容についてのご説明は商品ページに記載されている内容が全てでございます。<br>
+大変申し訳ございませんが、くじ商品の内容に関する個別のご質問は受け付けておりませんので、何卒ご了承くださいませ。</div>
+
+
+<div class="guide_title">送料について</div>
+
+<div class="guide_text">送料 ネコポスサイズ 全国一律200円　(3,000円以上の購入で送料無料)</div>
+
+<div class="guide_title">配送について</div>
+
+<div class="guide_text">基本配送方法：【ヤマト運輸 ネコポス】<br>
+※目安：パック約30点程度まで。<br>
+※土日祝も配達があり、通常郵便とは異なります。<br>
+※ポスト投函のため日時指定はできません。追跡可能です。</div>
+
+<div class="guide_text">お会計の合計が3万円以上、またはネコポスに入りきらない大きさの場合は【ヤマト運輸 宅急便】で発送いたします。<br>
+※対面での受取で、追跡可能です。<br>
+※日時指定可能ですが最短お届け日より前の指定はできません。<br>
+※置き配はできません。</div>
+
+<div class="guide_text">到着までの期間は下記画像をご確認ください。</div>
+
+<img class="guide_icon" src="{{ asset('assets/img/guide/day.jpg') }}">
+
+
+
+<div class="guide_title">ご購入・お支払いについて</div>
+
+<div class="guide_text">
+<ul>
+<li><a href="#card">クレジットカード決済</a></li>
+<li><a href="#amazon">AmazonPay決済</a></li>
+<li><a href="#bank">銀行振込</a></li>
+</ul>
+</div>
+
+<div id="card" class="guide_text">・クレジットカード決済</div>
+
+<img class="guide_icon" src="{{ asset('assets/img/guide/card.jpg') }}">
+
+<div class="guide_text">カード決済処理には「ソニーペイメントサービス」を使用しています。
+当店のクレジット決済は3Dセキュア必須となっています。
+３Dセキュア未登録のカードに関しましては、現在ご利用頂けません。</div>
+
+<div id="amazon" class="guide_text">・AmazonPay決済</div>
+
+<img class="guide_icon" src="{{ asset('assets/img/guide/amazonpay2.jpg') }}">
+
+<div id="bank" class="guide_text">・銀行振込</div>
+
+<div class="guide_text">振込先口座を掲載したメールが届きますので、そちらにお振込みください。
+弊社にて振込確認後、商品の発送手続きを行わせて頂きます。
+※恐れ入りますが、振込手数料はお客様にてご負担をお願いいたします。</div>
+
+<div class="guide_title">カードの状態表記について</div>
+
+<div class="guide_text">キズありの表記がないものに関しましては中古良品でのお取り扱い品となります。
+ご購入の際は弊社の中古良品の基準をご理解いただいた上でご購入いただきます様お願い申し上げます。</div>
+
+<div class="guide_text">「中古良品」についてはオモテ面にひと目に目立つキズがない状態のものになりますので
+ウラ面に関しましては完璧な状態でない場合もございます。予めご理解下さい。</div>
+
+<div class="guide_text">※中古良品に関しましてはオモテ面の状態を注視しております。
+ウラ面含め完璧な状態をお求めの場合や、
+コレクションとしての完璧な状態をお求めのお客様はご満足いただけない可能性がございます。</div>
+
+<div class="guide_text">「キズあり品」についてはゲームに支障をきたすような大きな折れや大きなめくれ、
+ひどい日焼けやひどく広範囲な擦り傷などの著しく酷い状態の商品はお取り扱いしておりません。</div>
+
+<div class="guide_title">梱包について</div>
+
+<div class="guide_text">くじ商品はスリーブに入れたうえで、遮光性のアルミコーティングの袋に入っています。<br>
+厚紙で折れ防止の補強を行い、水濡れ防止のビニール製チャック袋に入れて梱包いたします。</div>
+
+<img class="guide_icon" src="{{ asset('assets/img/guide/packaging1.jpg') }}">
+
+<div class="guide_text">ご購入の数量に合わせて、封筒、または薄型BOXに緩衝材を充填して発送させて頂きます。</div>
+
+<img class="guide_icon" src="{{ asset('assets/img/guide/packaging2.jpg') }}">
+<div class="guide_text">※高額商品の場合はより厳重に梱包させて頂く場合がございます。</div>
+
+<div class="guide_title">ポイントについて</div>
+
+<div class="guide_text">
+ポイントは商品お買い上げ時に商品代金の1％が付与されます。<br>
+商品代金とは、お支払総額から「ポイント利用額」「送料」「消費税」を引いた金額です。<br>
+<br>
+ポイントは 1ポイント ＝ 1円 として当サイト内でのみお使いいただけます。<br>
+実店舗ではお使いいただけませんのでご注意ください。</div>
+
+<div class="guide_title">返品・交換について</div>
+
+<div class="guide_text">※当店ではお客様都合による交換、返金は受け付けておりません。</div>
+
+<div class="guide_text">以下の条件にあてはまる場合、商品等を交換いたします。</div>
+
+<div class="guide_text">対応条件 ： 注文商品とは異なる商品が届いた場合、対応期間内に電話もしくはメールにてご連絡いただいたもののみ原則対応いたします。</div>
+
+<div class="guide_text">対応可能期間 ： 商品到着後7日以内にご連絡をいただいた場合。</div>
+
+<div class="guide_text">返品送料 ： 店舗負担</div>
+
+<div class="guide_text">再送料 ： 店舗負担</div>
+
+<div class="guide_text">※備考　同一商品の手配が不可能など交換に応じることができない場合がございます。その際は返金にてご了承ください。</div>
+        
+<div class="guide_title">注文確認メールが届かないとき</div>
+        
+<div class="guide_text">王の洞窟ではお申し込み後、自動返信でご注文確認のメールを差し上げております。 
+メールアドレスにお間違いがないにも関わらずメールが届かない場合、 王の洞窟からのメールが迷惑メールとして認識されている場合がございます。
+お手数ですが、迷惑メールフォルダをご確認頂くか、下記お問い合わせ先までご連絡頂けますと幸いです。</div>
+
+<div class="guide_text">なお、迷惑メールに入っていた場合は、今後のご注文にかかわるメールも迷惑メールと判断されてしまう可能性がございますので、
+お使いのメールに応じて、弊社メールアドレスの迷惑メール設定の解除をお願いいたします。
+※ドメインで許可していただく場合は「ounodoukutsu.com」をご登録ください。</div>
+
+    
+<div class="guide_title">お問い合わせ先</div>
+
+<div class="guide_text">お電話でのお問い合わせ<br>
+TEL：058-277-9078<br>
+<br><br>
+受付時間<br>
+月～土曜日 10:00～18:00<br>
+日曜日 13:00～17:00</div>
+
+</div>
+{% endblock %}

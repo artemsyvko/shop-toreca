@@ -1,0 +1,217 @@
+{#
+ This file is part of the Sales Report plugin
+
+Copyright (C) EC-CUBE CO.,LTD. All Rights Reserved.
+
+ For the full copyright and license information, please view the LICENSE
+ file that was distributed with this source code.
+#}
+
+{% extends '@admin/default_frame.twig' %}
+
+{% block title %}{{ 'sales_report.admin.title'|trans }}{% endblock %}
+
+{% form_theme form '@admin/Form/bootstrap_4_horizontal_layout.html.twig' %}
+
+{% block javascript %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.js" integrity="sha384-flDTcmsJ2GUugPAgAMrEXML3nSGciiqQJkAcUPwL6l5lm8K5ydDoLV/Ad3vyFWOi" crossorigin="anonymous"></script>
+    {% block chart %}{% endblock %}
+    <script>
+        $(function () {
+            if ($('[type="date"]').prop('type') != 'date') {
+                // input type属性でdateが利用できるかどうか(カレンダー表示できないブラウザ対応)
+                $.when(
+                    $.getScript("{{ asset('assets/js/vendor/moment.min.js', 'admin') }}"),
+                    $.getScript("{{ asset('assets/js/vendor/moment-with-locales.min.js', 'admin') }}"),
+                    $.getScript("{{ asset('assets/js/vendor/tempusdominus-bootstrap-4.min.js', 'admin') }}")
+                ).done(function() {
+                    $('input[id$=_start]').datetimepicker({
+                        locale: '{{ eccube_config.locale }}',
+                        format: 'YYYY-MM-DD',
+                        useCurrent: false,
+                        buttons: {
+                            showToday: true,
+                            showClose: true
+                        }
+                    });
+
+                    $('input[id$=_end]').datetimepicker({
+                        locale: '{{ eccube_config.locale }}',
+                        format: 'YYYY-MM-DD',
+                        useCurrent: false,
+                        buttons: {
+                            showToday: true,
+                            showClose: true
+                        }
+                    });
+
+                });
+            }
+
+            $('#btn-monthly').on('click', function () {
+                $('#{{ form.term_type.vars.id }}').val('monthly');
+                document.form1.submit();
+            });
+
+            $('#btn-term').on('click', function () {
+                $('#{{ form.term_type.vars.id }}').val('term');
+                document.form1.submit();
+            });
+
+        });
+
+        function moneyFormat(money) {
+            return money.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        jQuery.fn.tableToCSV = function() {
+            var clean_text = function(text){
+                text = text.replace(/"/g, '""');
+                return '"' + text + '"';
+            };
+
+            $(this).each(function(){
+                var table = $(this);
+                var caption = $('.box-title').text();
+                var title = [];
+                var rows = [];
+
+                $(this).find('tr').each(function(){
+                    var data = [];
+                    $(this).find('th').each(function(){
+                        var text = $(this).text();
+                        title.push(text);
+                    });
+                    $(this).find('td').each(function(){
+                        var td = $(this);
+                        var text = td.text();
+                        if(td.hasClass('price-format')) {
+                            td.find('span').each(function() {
+                                text = $(this).text().trim();
+                                if (text != '-') {
+                                    text = Math.round(text);
+                                } else {
+                                    text = 0;
+                                }
+                                data.push(text);
+                            });
+                        } else {
+                            data.push(text);
+                        }
+                    });
+                    data = data.join(',');
+                    rows.push(data);
+                });
+                title = title.join(',');
+                rows = rows.join('\n');
+
+                var csv = title + rows;
+                var ts = new Date();
+                var fileName;
+                ts = ts.getFullYear().toString() + (ts.getMonth() + 1) + ts.getDate() + ts.getHours() + ts.getMinutes() + ts.getSeconds();
+
+                if(caption == ''){
+                    fileName = ts + '.csv';
+                } else {
+                    fileName = caption + '_' + ts + '.csv';
+                }
+
+                // if microsoft IE
+                if (navigator.msSaveBlob) {
+                    navigator.msSaveBlob(new Blob([csv], { type: 'text/csv;charset=utf-8;' }), fileName);
+                } else {
+                    var uri = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+                    var download_link = document.createElement('a');
+                    download_link.href = uri;
+                    download_link.download = fileName;
+                    document.body.appendChild(download_link);
+                    download_link.click();
+                    document.body.removeChild(download_link);
+                }
+
+            });
+        };
+
+    </script>
+{% endblock javascript %}
+
+{% block main %}
+    <form role="form" name="form1" id="form1" method="post" action="{{ action }}" novalidate>
+        {{ form_widget(form._token) }}
+        {{ form_widget(form.term_type) }}
+        <div class="c-contentsArea__cols">
+            <div class="c-contentsArea__primaryCol">
+                <div class="c-primaryCol">
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header">
+                            <span class="card-title">{{ report_title }}</span>
+                        </div>
+
+                        <div class="card-body">
+                            {% block option %}{% endblock %}
+
+                            <div class="row">
+                                <div class="col-3"><span>{{ 'sales_report.admin.index.001'|trans }}</span></div>
+                                <div class="col mb-2">
+                                    <div class="row justify-content-start">
+                                        <div class="w-auto">
+                                            <div class="align-items-center d-flex">
+                                                {{ form_widget(form.monthly_year, {'attr': {'class':'float-start'}}) }}
+                                                {{ 'sales_report.admin.label.monthly_year'|trans }}
+                                            </div>
+                                            {{ form_errors(form.monthly_year) }}
+                                        </div>
+                                        <div class="w-auto">
+                                            <div class="align-items-center d-flex">
+                                                {{ form_widget(form.monthly_month, {'attr': {'class':'float-start'}}) }}
+                                                {{ 'sales_report.admin.label.monthly_month'|trans }}
+                                            </div>
+                                            {{ form_errors(form.monthly_month) }}
+                                        </div>
+                                        <div class="w-auto">
+                                            <button id="btn-monthly" class="btn btn-ec-conversion px-5" data-style="expand-right" type="submit">{{ 'sales_report.admin.index.002'|trans }}</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3"><span>{{ 'sales_report.admin.index.003'|trans }}</span></div>
+                                <div class="col mb-2">
+                                    <div class="row justify-content-start">
+                                        <div class="w-auto">
+                                            {{ form_widget(form.term_start, {'attr': {'placeholder': 'sales_report.admin.placholder'|trans}}) }}
+                                            {{ form_errors(form.term_start) }}
+                                        </div>
+                                        <div class="w-auto text-center p-0">
+                                            <span class="align-middle">～</span>
+                                        </div>
+                                        <div class="w-auto">
+                                            {{ form_widget(form.term_end, {'attr': {'placeholder': 'sales_report.admin.placholder'|trans}}) }}
+                                            {{ form_errors(form.term_end) }}
+                                        </div>
+                                        <div class="w-auto">
+                                            <button id="btn-term" class="btn btn-ec-conversion px-5 text-nowrap" data-style="expand-right" type="submit">{{ 'sales_report.admin.index.004'|trans }}</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card rounded border-0 mb-4">
+                        {% if app.request.method == 'POST' and rawData is not null %}
+                            <div class="card-body container">
+                                <div class="col-12">
+                                    <canvas id="chart"></canvas>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% block table %}{% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+{% endblock main %}

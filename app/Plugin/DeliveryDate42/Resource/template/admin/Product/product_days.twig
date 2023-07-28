@@ -1,0 +1,28 @@
+{#
+* Plugin Name : DeliveryDate4
+*
+* Copyright (C) BraTech Co., Ltd. All Rights Reserved.
+* http://www.bratech.co.jp/
+*
+* For the full copyright and license information, please view the LICENSE
+* file that was distributed with this source code.
+#}
+
+{% if has_class == false %}
+    <div id="deliverydate_days" style="display:none;">
+        <div class="row">
+            <div class="col-3">
+                <div class="d-inline-block" data-toggle="tooltip" data-placement="top"
+                     title="Tooltip">
+                    <span>{{ form.class.children.delivery_date_days.vars.label }}</span>
+                </div>
+            </div>
+            <div class="col mb-2">
+                <div>
+                    {{ form_widget(form.class.delivery_date_days) }}
+                    {{ form_errors(form.class.delivery_date_days) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}

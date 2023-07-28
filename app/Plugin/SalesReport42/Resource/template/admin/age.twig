@@ -1,0 +1,148 @@
+{#
+ This file is part of the Sales Report plugin
+
+Copyright (C) EC-CUBE CO.,LTD. All Rights Reserved.
+
+ For the full copyright and license information, please view the LICENSE
+ file that was distributed with this source code.
+#}
+
+{% extends 'SalesReport42/Resource/template/admin/index.twig' %}
+{% block sub_title %}{{ 'sales_report.admin.sub.title.age'|trans }}{% endblock %}
+
+{% set report_title = 'sales_report.admin.report_title'|trans %}
+{% set action = url('sales_report_admin_age') %}
+{% set menus = ['SalesReport42', 'sales_report_admin_age'] %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{{ asset('assets/css/tempusdominus-bootstrap-4.min.css', 'admin') }}">
+    <style type="text/css">
+        .datepicker-days th.dow:first-child,
+        .datepicker-days td:first-child {
+            color: #f00;
+        }
+
+        .datepicker-days th.dow:last-child,
+        .datepicker-days td:last-child {
+            color: #00f;
+        }
+    </style>
+{% endblock stylesheet %}
+
+{% block chart %}
+    <script>
+        var graphData = {{ graphData|raw }};
+        window.onload = function () {
+            //create bar chart
+            if (graphData != null) {
+                var dataSet = graphData.datasets;
+                graphData.datasets = [dataSet];
+                var config = {
+                    type: 'bar',
+                    data: graphData,
+                    options: {
+                        responsive: true,
+                        tooltips: {
+                            callbacks: {
+                                label: function tooltipsRender(tooltipItem, graphData) {
+                                    var index = tooltipItem.index;
+                                    var tooltipData = graphData.datasets[0].data[index];
+                                    var tooltipLabel = graphData.labels[index];
+                                    return '{{ 'sales_report.admin.money'|trans }}' + moneyFormat(tooltipData);
+                                }
+                            }
+                        },
+                        legend: {
+                            display: false
+                        },
+                        scales: {
+                            xAxes: [{
+                                categoryPercentage: 0.3
+                            }],
+                            yAxes: [{
+                                ticks: {
+                                    callback: function (value) {
+                                        return Math.round(value).toString().replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+                                    }
+                                }
+                            }]
+                        }
+                    }
+                };
+                var ctx = document.getElementById("chart").getContext("2d");
+                new Chart(ctx, config);
+            }
+            //export csv
+            $('#export-csv').click(function () {
+                var form = document.createElement("form");
+                form.setAttribute("method", 'POST');
+                form.setAttribute("action", "{{ url('sales_report_admin_export', { type : 'age' }) }}");
+                document.body.appendChild(form);
+                form.submit();
+                document.body.removeChild(form);
+            });
+        };
+    </script>
+{% endblock %}
+
+{% block option %}{% endblock %}
+
+{% block table %}
+    {% if app.request.method == 'POST' %}
+        <div class="card-body">
+            <div class="row">
+                {% if rawData is not null %}
+                    <div class="col-12 text-end mb-2">
+                        <div class="d-inline-block">
+                            <div class="btn-group d-inline-block" role="group">
+                                <button type="button" class="btn btn-ec-regular" id="export-csv"><i
+                                            class="fa fa-cloud-download mr-1 text-secondary"></i> {{ 'sales_report.admin.csv.download'|trans }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="table table-striped" id="age-table">
+                        <thead>
+                        <tr>
+                            <th class="border-top-0 py-2 text-start">{{ 'sales_report.admin.age.field.001'|trans }}</th>
+                            <th class="border-top-0 py-2 text-center">{{ 'sales_report.admin.age.field.002'|trans }}</th>
+                            <th class="border-top-0 py-2 text-end">{{ 'sales_report.admin.age.field.003'|trans }}</th>
+                            <th class="border-top-0 py-2 text-end">{{ 'sales_report.admin.age.field.004'|trans }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for age, row in rawData %}
+                            <tr>
+                                <td class="align-middle ps-3">{{ age == 999 ? 'sales_report.admin.age.list.001'|trans : age~'sales_report.admin.age.list.002'|trans }}</td>
+                                <td class="align-middle text-center ps-3">{{ row.time|number_format }}</td>
+                                <td class="price-format text-end align-middle">
+                                    {{ row.total|price }}
+                                    <span class="d-none">{{ row.total }}</span>
+                                </td>
+                                <td class="price-format text-end align-middle">
+                                    {% if row.time > 0 %}
+                                        {{ (row.total / row.time)|round(2, 'floor')|price }}
+                                    {% else %}
+                                        {{ 0|price }}
+                                    {% endif %}
+                                    <span class="d-none">
+                                                    {% if row.time > 0 %}
+                                                        {{ (row.total / row.time)|round(2, 'floor') }}
+                                                    {% else %}
+                                                        0
+                                                    {% endif %}
+                                                </span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="col-12">
+                        <p class="mb-0">{{ 'sales_report.admin.list.nodata'|trans }}</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

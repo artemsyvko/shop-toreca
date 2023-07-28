@@ -1,0 +1,140 @@
+{% if Order.Customer.Status.id is defined %}
+    {% if Order.Customer.Status.id == 3 %}
+        <script>
+            $(function () {
+                second_card_title = $('#form1 > div.c-contentsArea__cols > div > div > div:eq(1) > div[class="card-header"] span[class="card-title"]:eq(0)');
+                second_card_title.after('<span style="color: red;">（退会済会員）</span>');
+            });
+        </script>
+    {% endif %}
+{% endif %}
+
+{% if payStatusId is defined %}
+
+<script>
+    $(function () {
+        $('#sln_payment_info').insertAfter($('#form1 > div.c-contentsArea__cols > div > div > div:eq(0)'));
+
+        $("button[data-alert=1]").click(function(event) {
+            if (!confirm($(this).text() + "します。データを変更した場合は先に保存を行ってください。")) {
+                return false;
+            }
+        });
+
+        pid = $("#order_Payment").val()
+        $("#order_Payment").change(function(event) {
+            $(this).val(pid);
+            alert("お支払い方法の変更は行わないでください。");
+            return false;
+        });
+
+        var select_status_id = $("#order_OrderStatus").val();
+        var sln_pay_status = {{ payStatusId }};
+        $("#order_OrderStatus").change(function() {
+            var change_status_id = $("#order_OrderStatus").val();
+            if ((change_status_id == 5) && (sln_pay_status != 2) && (sln_pay_status != 12) && (sln_pay_status != 13)) {
+                $("#order_OrderStatus").val(select_status_id);
+                alert("取引ステータスが実売上済み/即時売上済みでないと発送済みに変更できません");
+            }
+        });
+    });
+</script>
+<div id="sln_payment_info" class="card rounded border-0 mb-4">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-8">
+                <span class="card-title">ソニーペイメントサービス決済情報</span>
+            </div>
+            <div class="col-4 text-end">
+                <a data-bs-toggle="collapse" href="#orderSlnPayment" aria-expanded="true" aria-controls="orderSlnPayment" class=""><i class="fa fa-lg fa-angle-down fa-angle-up"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="ec-cardCollapse collapse show" id="orderSlnPayment">
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-2 col-form-label">操作</div>
+                <div class="col">
+                    <div class="btn_area">
+                        <ul id="product_info_list__search_menu">
+                            {% if isCard %}
+                                {% if payStatusId == 11 %}
+                                    <button data-alert="1" type="submit" class="btn btn-ec-regular" name="mode" value="sln_card_commit">売上確定処理実行</button>
+                                {% endif %}
+                                {% if payStatusId == 11 or payStatusId == 12 or payStatusId == 13 %}
+                                    <button data-alert="1" type="submit" class="btn btn-ec-regular" name="mode" value="sln_card_cancel">取消(返品)処理実行</button>
+                                    <button data-alert="1" type="submit" class="btn btn-ec-regular" name="mode" value="sln_card_change">決済金額変更処理実行</button>
+                                {% endif %}
+                                {% if payStatusId == 14 %}
+                                    <button data-alert="1" type="submit" class="btn btn-ec-regular" name="mode" value="sln_card_reauth">再オーソリ取得処理実行</button>
+                                {% endif %}
+                            {% else %}
+                                {% if payStatusId == 99 %}
+                                    <button data-alert="1" type="submit" class="btn btn-ec-regular" name="mode" value="sln_cvs_add">再決済処理</button>
+                                {% else %}
+                                    {% if payStatusId != 4 %}
+                                        <button data-alert="1" type="submit" class="btn btn-ec-regular" name="mode" value="sln_cvs_chg">決済金額変更処理実行</button>
+                                        <button data-alert="1" type="submit" class="btn btn-ec-regular" name="mode" value="sln_cvs_del">取消(返品)処理実行</button>
+                                    {% endif %}
+                                    <button data-alert="1" type="submit" class="btn btn-ec-regular" name="mode" value="sln_cvs_ref">決済状況照会</button>
+                                {% endif %}
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-2 col-form-label">支払方法</div>
+                <div class="col">
+                    <p>{{ Order.PaymentMethod }}</p>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-2 col-form-label">取引ステータス</div>
+                <div class="col">
+                    <p>{{ payStatus }}</p>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-2 col-form-label">支払い先</div>
+                <div class="col">
+                    <p>{% if payCvsName is defined %}{{ payCvsName }}{% endif %}</p>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-2 col-form-label">決済金額</div>
+                <div class="col">
+                    <p>{{ payAmount|price }}</p>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-2 col-form-label">決済リンク</div>
+                <div class="col">
+                    {% if payLink is defined %}{{ payLink }}{% endif %}
+                </div>
+            </div>
+            {% if isCard %}
+            <div class="row mb-3">
+                <div class="col-2 col-form-label">個人情報取得の同意</div>
+                <div class="col">
+                    <p>{{ agreement }}</p>
+                </div>
+            </div>
+            {% endif %}
+            <div class="row mb-3">
+                <div class="col-2 col-lg-2">接続ログ</div>
+                <div class="col">
+                    {% for payHistory in payHistorys %}
+                    <div class="row col-sm-12">
+                        <div class="col-lg-2">{{ payHistory.CreateDate | date("Y/m/d H:i:s") }}</div>
+                        <div class="col-lg-4" style="word-break:break-all">SendFlg:{{ payHistory.SendFlg }} RequestFlg:{{ payHistory.RequestFlg }}</div>
+                        <div class="col-lg-6" style="word-break:break-all">{{ payHistory.BodyView }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endif %}

@@ -1,0 +1,94 @@
+{#
+ This file is part of EC-CUBE
+
+ Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+ http://www.ec-cube.co.jp/
+
+ For the full copyright and license information, please view the LICENSE
+ file that was distributed with this source code.
+#}
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['mailmagazine', 'mailmagazine_template'] %}
+
+{% block title %}{{ 'mailmagazine.template.title'|trans }}{% endblock %}
+{% block sub_title %}{{ 'mailmagazine.title'|trans }}{% endblock %}
+
+{% block main %}
+    <div class="c-contentsArea__cols">
+        <div class="c-contentsArea__primaryCol">
+            <div class="c-primaryCol">
+                <div class="card rounded border-0 mb-4">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-8">
+                                <span class="card-title">
+                                    {{ 'mailmagazine.template.card_title'|trans }}
+                                </span>
+                            </div>
+                            <div class="col-4 text-end">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="border-top-0 pt-2 pb-2">{{ 'mailmagazine.template.th_created_date'|trans }}</th>
+                                    <th class="border-top-0 pt-2 pb-2">{{ 'mailmagazine.template.th_subject'|trans }}</th>
+                                    <th class="border-top-0 pt-2 pb-2">{{ 'mailmagazine.template.th_edit'|trans }}</th>
+                                    <th class="border-top-0 pt-2 pb-2">{{ 'mailmagazine.template.th_del'|trans }}</th>
+                                    <th class="border-top-0 pt-2 pb-2">{{ 'mailmagazine.template.btn_review'|trans }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for Template in TemplateList %}
+                                <tr>
+                                    <td>{{ Template.create_date|date_day }}</td>
+                                    <td>{{ Template.subject }}</td>
+                                    <td><a href="{{ url('plugin_mail_magazine_template_edit', { id: Template.id }) }}">{{ 'mailmagazine.template.btn_edit'|trans }}</a></td>
+                                    <td>
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal{{ Template.id }}">{{ 'mailmagazine.template.btn_del'|trans }}</a>
+                                        <div id="deleteModal{{ Template.id }}" class="modal" data-bs-keyboard="false" data-bs-backdrop="static">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title">{{ 'mailmagazine.template.modal_del_message'|trans }}</h4>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-ec-regular" data-bs-dismiss="modal">
+                                                            {{ 'common.cancel'|trans }}
+                                                        </button>
+                                                        <form action="{{ url('plugin_mail_magazine_template_delete', { id: Template.id }) }}" method="post" enctype="application/x-www-form-urlencoded">
+                                                            <input type="hidden" name="_token" value="{{ csrf_token(constant('Eccube\\Common\\Constant::TOKEN_NAME')) }}">
+                                                            <button type="submit" class="btn btn-ec-delete">
+                                                                {{ 'common.delete'|trans }}
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <a href="{{ url('plugin_mail_magazine_template_preview', { id: Template.id }) }}">
+                                            {{ 'mailmagazine.template.btn_review'|trans }}
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row justify-content-md-center mb-4 ">
+                    <div class="col-auto">
+                        <a class="btn btn-ec-regular ps-4 pe-4" href="{{ url('plugin_mail_magazine_template_regist') }}">
+                            {{ 'mailmagazine.template.btn_new'|trans }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

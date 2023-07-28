@@ -1,0 +1,57 @@
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['store', 'plugin', 'plugin_list'] %}
+
+{% block title %}EC-CUBEのアップデート（データ更新）{% endblock %}
+{% block sub_title %}{% endblock %}
+
+{% block stylesheet %}{% endblock stylesheet %}
+
+{% block javascript %}{% endblock javascript %}
+
+{% block main %}
+    <div class="c-contentsArea__cols">
+        <div class="c-contentsArea__primaryCol">
+            <div class="c-primaryCol">
+                <form id="form" method="post" action="{{ url('eccube_updater420to421_admin_update_data') }}">
+                    {{ form_widget(form._token) }}
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header">
+                            <span>データの更新を実行します。</span>
+                        </div>
+                    </div>
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-body">
+                            <div class="text-center">
+                                <button type="button" class="btn btn-ec-conversion" data-toggle="modal"
+                                        data-target="#update_data">データの更新を実行</button>
+                                <div class="modal fade" id="update_data" tabindex="-1" role="dialog"
+                                     aria-labelledby="discontinuance" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title font-weight-bold">データの更新を実行します</h5>
+                                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body text-left">
+                                                <p class="text-left">データの更新を実行します。この操作は数分かかる場合があります。ブラウザのリロード等は行わずお待ち下さい。</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button class="btn btn-ec-sub" type="button" data-dismiss="modal">キャンセル
+                                                </button>
+                                                <button class="btn btn-ec-conversion" type="button" data-dismiss="modal" onclick="$('form').submit();return false;">データの更新を実行
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

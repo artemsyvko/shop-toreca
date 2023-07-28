@@ -1,0 +1,571 @@
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['store', 'plugin', 'plugin_list'] %}
+
+{% block title %}オーナーズストア{% endblock %}
+{% block sub_title %}ソニーペイメントサービス決済プラグイン{% endblock %}
+
+{% block stylesheet %}
+<style type="text/css">
+	.col-sm-2 {
+		max-width: none;
+	}
+	label {
+		display: inline;
+	}
+	.sln-connection-destination-label {
+		margin-bottom: 0.25rem;
+	}
+	.text-danger {
+		width: 0%;
+	}
+</style>
+{% endblock stylesheet %}
+
+{% block javascript %}
+<script>
+
+	var creditConnectionDst = {};
+	var threedConnectionDst = {};
+	var cvsConnectionDst = {};
+
+	$(function() {
+		$("#config_save").click(
+			function() {
+				$("#form1").submit();
+				return false;
+			}
+		);
+
+		creditConnectionDst = {};
+		{% for dst in creditConnectionDestination %}
+			creditConnectionDst['{{ loop.index }}'] = {};
+			creditConnectionDst['{{ loop.index }}']['creditConnectionPlace1'] = '{{ attribute(dst, 'creditConnectionPlace1') }}';
+			creditConnectionDst['{{ loop.index }}']['creditConnectionPlace2'] = '{{ attribute(dst, 'creditConnectionPlace2') }}';
+			creditConnectionDst['{{ loop.index }}']['creditConnectionPlace6'] = '{{ attribute(dst, 'creditConnectionPlace6') }}';
+		{% endfor %}
+		threedConnectionDst = {};
+		{% for dst in threedConnectionDestination %}
+			threedConnectionDst['{{ loop.index }}'] = {};
+			threedConnectionDst['{{ loop.index }}']['creditConnectionPlace7'] = '{{ attribute(dst, 'creditConnectionPlace7') }}';
+		{% endfor %}
+		cvsConnectionDst = {};
+		{% for dst in cvsConnectionDestination %}
+			cvsConnectionDst['{{ loop.index }}'] = {};
+			cvsConnectionDst['{{ loop.index }}']['creditConnectionPlace3'] = '{{ attribute(dst, 'creditConnectionPlace3') }}';
+			cvsConnectionDst['{{ loop.index }}']['creditConnectionPlace5'] = '{{ attribute(dst, 'creditConnectionPlace5') }}';
+		{% endfor %}
+
+		
+		$('select[name="config[creditConnectionDestination]"]').change(function() {
+			updateCreditConnectionDestination();
+		});
+		$('select[name="config[threedConnectionDestination]"]').change(function() {
+			updateThreedConnectionDestination();
+		});
+		$('select[name="config[cvsConnectionDestination]"]').change(function() {
+			updateCvsConnectionDestination();
+		});
+
+		updateCreditConnectionDestination();
+		updateThreedConnectionDestination();
+		updateCvsConnectionDestination();
+	});
+
+	function updateCreditConnectionDestination() {
+		var dst = $('select[name="config[creditConnectionDestination]"]').val();
+		$('input[name="config[creditConnectionPlace1]"]').val(creditConnectionDst[dst]['creditConnectionPlace1']);
+		$('input[name="config[creditConnectionPlace2]"]').val(creditConnectionDst[dst]['creditConnectionPlace2']);
+		$('input[name="config[creditConnectionPlace6]"]').val(creditConnectionDst[dst]['creditConnectionPlace6']);
+	}
+
+	function updateThreedConnectionDestination() {
+		var dst = $('select[name="config[threedConnectionDestination]"]').val();
+		$('input[name="config[creditConnectionPlace7]"]').val(threedConnectionDst[dst]['creditConnectionPlace7']);
+	}
+
+	function updateCvsConnectionDestination() {
+		var dst = $('select[name="config[cvsConnectionDestination]"]').val();
+		$('input[name="config[creditConnectionPlace3]"]').val(cvsConnectionDst[dst]['creditConnectionPlace3']);
+		$('input[name="config[creditConnectionPlace5]"]').val(cvsConnectionDst[dst]['creditConnectionPlace5']);
+	}
+</script>
+{% endblock javascript %}
+
+{% form_theme form '@admin/Form/bootstrap_4_horizontal_layout.html.twig' %}
+
+{% block main %}
+<form role="form" name="form1" id="form1" method="post" action="?">
+    <div class="c-contentsArea__cols">
+        <div class="c-contentsArea__primaryCol">
+            <div class="card rounded border-0 mb-4">
+                <div class="card-body">
+					<div>
+                        <span>ソニーペイメントサービス決済モジュールをご利用頂く為にはソニーペイメントサービスとご契約を行っていただく必要があります。</span><br>
+						<span>
+							<a href="http://www.sonypaymentservices.jp/" target="_blank">
+								<button type="button" class="btn btn-ec-regular" style="margin-bottom:10px;">
+									ソニーペイメントサービスについて
+								</button>
+							</a>
+						</span>
+					</div>
+				</div>
+            </div><!-- /.box -->
+			
+			
+			{{ form_widget(form._token) }}
+			<div class="card rounded border-0 mb-4">
+				<div class="card-header">
+					<div class="row">
+						<div class="col-8">
+							<div class="d-inline-block" data-tooltip="false" data-placement="top" title="" data-original-title="Tooltip"><span class="card-title">ソニーペイメントサービス共通設定</span></div>
+						</div>
+						<div class="col-4 text-end"><a data-bs-toggle="collapse" href="#service_common" aria-expanded="false" aria-controls="service_common" class=""><i class="fa fa-lg fa-angle-down fa-angle-up"></i></a></div>
+					</div>
+				</div>
+				<!-- /.box-header -->
+				<div class="card-body show" id="service_common">
+					<div class="row mb-2">
+						{{ form_label(form.MerchantId) }}<span class="text-danger"> *</span>
+						<div class="col sm-9 {% if form.MerchantId.vars.errors is not empty %}has-error{% endif %}">
+                            {{ form_widget(form.MerchantId) }}
+                            {{ form_errors(form.MerchantId) }}
+                            <p class='small'>*ご契約後にソニーペイメントサービスより設定値をご連絡します。</p>
+                        </div>
+					</div>
+					
+					<div class="row mb-2">
+						{{ form_label(form.MerchantPass) }}<span class="text-danger"> *</span>
+						<div class="col-sm-9 {% if form.MerchantPass.vars.errors is not empty %}has-error{% endif %}">
+                            {{ form_widget(form.MerchantPass) }}
+                            {{ form_errors(form.MerchantPass) }}
+                            <p class='small'>*ご契約後にソニーペイメントサービスより設定値をご連絡します。</p>
+                        </div>
+					</div>
+					
+					<div class="row mb-2">
+						{{ form_label(form.TenantId) }}
+						<div class="col-sm-9 {% if form.TenantId.vars.errors is not empty %}has-error{% endif %}">
+                            {{ form_widget(form.TenantId) }}
+                            {{ form_errors(form.TenantId) }}
+                            <p class='small'>*未入力の場合は店舗コード「0001」となります(半角数字 4文字)</p>
+                        </div>
+					</div>
+
+					<div class="row mb-2">
+						{{ form_label(form.isSendMail) }}
+						<div class="col-sm-9 {% if form.isSendMail.vars.errors is not empty %}has-error{% endif %}">
+                            {{ form_widget(form.isSendMail) }}
+                            {{ form_errors(form.isSendMail) }}
+                        </div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="card rounded border-0 mb-4">
+				<div class="card-header">
+					<div class="row">
+						<div class="col-8">
+							<div class="d-inline-block" data-tooltip="false" data-placement="top" title="" data-original-title="Tooltip"><span class="card-title">クレジットカード決済</span></div>
+						</div>
+						<div class="col-4 text-end"><a data-bs-toggle="collapse" href="#settlement" aria-expanded="false" aria-controls="settlement" class=""><i class="fa fa-lg fa-angle-down fa-angle-up"></i></a></div>
+					</div>
+				</div>
+				<!-- /.box-header -->
+				<div class="card-body show" id="settlement">
+					<div class="row mb-2">
+						<div class="col-sm-2 form-control-label">
+							<div class="sln-connection-destination-label">接続先</div>
+							{{ form_widget(form.creditConnectionDestination) }}
+							{{ form_errors(form.creditConnectionDestination) }}
+						</div>
+						<div class="col-sm-9 {% if form.creditConnectionPlace6.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_label(form.creditConnectionPlace6) }}
+
+							{{ form_widget(form.creditConnectionPlace6) }}
+							{{ form_errors(form.creditConnectionPlace6) }}
+							<p class='small'>*決済方法毎の詳細設定は有効後に支払方法設定画面で行います。</p>
+						</div>
+					</div>
+					<div class="row mb-2">
+						<div class="col-sm-2 form-control-label">
+						</div>
+						<div class="col-sm-9 {% if form.creditConnectionPlace1.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_label(form.creditConnectionPlace1) }}
+
+							{{ form_widget(form.creditConnectionPlace1) }}
+							{{ form_errors(form.creditConnectionPlace1) }}
+						</div>
+					</div>
+					<div class="row mb-2">
+						<div class="col-sm-2 form-control-label">
+						</div>
+						<div class="col-sm-9 {% if form.creditConnectionPlace2.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_label(form.creditConnectionPlace2) }}
+
+							{{ form_widget(form.creditConnectionPlace2) }}
+							{{ form_errors(form.creditConnectionPlace2) }}
+						</div>
+					</div>
+					<div class="row mb-2">
+						{{ form_label(form.tokenNinsyoCode) }}
+						<div class="col-sm-9 {% if form.tokenNinsyoCode.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.tokenNinsyoCode) }}
+							{{ form_errors(form.tokenNinsyoCode) }}
+						</div>
+					</div>
+					{% if isGet3D %}
+						<div class="row mb-2">
+							<div class="col-sm-2 form-control-label">
+								<div class="sln-connection-destination-label">3Dセキュア認証</div>
+								{{ form_widget(form.threedConnectionDestination) }}
+								{{ form_errors(form.threedConnectionDestination) }}
+							</div>
+							<div class="col-sm-9 {% if form.creditConnectionPlace7.vars.errors is not empty %}has-error{% endif %}">
+								{{ form_label(form.creditConnectionPlace7) }}
+
+								{{ form_widget(form.creditConnectionPlace7) }}
+								{{ form_errors(form.creditConnectionPlace7) }}
+							</div>
+						</div>
+						<div class="row mb-2">
+							<div class="col-sm-2 form-control-label">
+							</div>
+							<div class="col-sm-9 {% if form.creditAesKey.vars.errors is not empty %}has-error{% endif %}">
+								{{ form_label(form.creditAesKey) }}
+
+								{{ form_widget(form.creditAesKey) }}
+								{{ form_errors(form.creditAesKey) }}
+							</div>
+						</div>
+						<div class="row mb-2">
+							<div class="col-sm-2 form-control-label">
+							</div>
+							<div class="col-sm-9 {% if form.creditAesIv.vars.errors is not empty %}has-error{% endif %}">
+								{{ form_label(form.creditAesIv) }}
+
+								{{ form_widget(form.creditAesIv) }}
+								{{ form_errors(form.creditAesIv) }}
+								<p class="small">*ご利用にはご契約が必要になります。</p>
+							</div>
+						</div>
+						<div class="row mb-2">
+							{{ form_label(form.threedPay) }}
+							<div class="col-sm-9 {% if form.threedPay.vars.errors is not empty %}has-error{% endif %}">
+								{{ form_widget(form.threedPay) }}
+								{{ form_errors(form.threedPay) }}
+								<p class="small">*ご利用にはご契約が必要になります。</p>
+								<p class="small">
+								※「無し」を選択された場合は、クレジットカードの不正利用等による支払いは加盟店様の責任となります。<br>
+								当社から加盟店様に売上代金相当額をお支払い済みであっても、カード会社からのチャージバック（売上代金の返還）請求により当社に返金いただくことになります。<br>
+								※「有り」を選択された場合であっても、チャージバックは発生する場合があります。あらかじめご了承ください。<br>
+								※EMV3Dセキュアサービスをお申込みいただいた場合は、必ず「有り」を選択ください。<br>
+								</p>
+								<p class="small">
+								■チャージバックに関する留意事項<br>
+								・売上承認を得ている場合（オーソリ結果が OK の場合）であっても、チャージバックは発生します。<br>
+								・チャージバックが発生した場合、当社やカード会社による補償、補填はありません。全て加盟店様の負担となります。<br>
+								・チャージバックは、加盟店様の故意・過失の有無を問わず発生します。<br>
+								</p>
+								<p class="small">
+								ご利用開始前に、下記URL を必ずご確認ください。<br>
+								<a target="_blank" href="https://www.sonypaymentservices.jp/consider/creditcard/chargeback.html">
+								https://www.sonypaymentservices.jp/consider/creditcard/chargeback.html<br>
+								</a>
+								</p>						
+							</div>
+						</div>
+					{% else %}
+						<div class="row mb-2">
+							<div class="col-sm-2 form-control-label">
+								3Dセキュア認証
+							</div>
+							<div class="col-sm-9 {% if form.creditConnectionPlace6.vars.errors is not empty %}has-error{% endif %}">
+								<p class='small'>*3D認証を有効にしたい場合はphp opensslモジュールをインストールください。</p>
+							</div>
+						</div>
+					{% endif %}
+					<div class="row mb-2">
+						{{ form_label(form.payKbnKaisu) }}
+						<div class="col-sm-9 {% if form.payKbnKaisu.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.payKbnKaisu) }}
+							{{ form_errors(form.payKbnKaisu) }}
+						</div>
+					</div>
+					<div class="row mb-2">
+						{{ form_label(form.SecCd) }}
+						<div class="col-sm-9 {% if form.SecCd.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.SecCd) }}
+							{{ form_errors(form.SecCd) }}
+						</div>
+					</div>
+					<div class="row mb-2">
+						{{ form_label(form.attestationAssistance) }}
+						<div class="col-sm-9 {% if form.attestationAssistance.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.attestationAssistance) }}
+							{{ form_errors(form.attestationAssistance) }}
+							<p class='small'>*ご利用にはご契約(有料)が必要になります。</p>
+						</div>
+					</div>
+					<div class="row mb-2">
+						{{ form_label(form.OperateId) }}
+						<div class="col-sm-9 {% if form.OperateId.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.OperateId) }}
+							{{ form_errors(form.OperateId) }}
+							<p class='small'>
+								*仮売上（1Auth） ・・・ 購入申込手続きの中でクレジットカードの与信枠を確保し、承認番号を取得します。
+								 <br /> 
+								 &nbsp;&nbsp;&nbsp;&nbsp;決済を完了させるためには、別途売上処理が必要となります。
+								 <br /> 
+								 &nbsp;&nbsp;&nbsp;&nbsp;購入申し込み後に在庫を確認して確定させる物品販売等はこの方法となります。
+								 <br /> 
+								*即時売上（1Gathering) ・・・ 購入申込手続きの中で与信と同時に売上確定を行います。
+								 <br /> 
+								 &nbsp;&nbsp;&nbsp;&nbsp;購入申込時に商品提供が確定するデジタルコンテンツ等は、この方法となります。
+							</p>
+						</div>
+					</div>
+					<div class="row mb-2">
+						{{ form_label(form.cardOrderPreEnd) }}
+						<div class="col-sm-9 {% if form.cardOrderPreEnd.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.cardOrderPreEnd) }}
+							{{ form_errors(form.cardOrderPreEnd) }}
+							<p class='small'>
+								「即時売上」にてカード処理いただいた場合
+								<br />
+								オーソリOK判定が出たあと受注の対応状況指定です。
+							</p>
+						</div>
+					</div>
+					<div class="row mb-2">
+						{{ form_label(form.memberRegist) }}
+						<div class="col-sm-9 {% if form.memberRegist.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.memberRegist) }}
+							{{ form_errors(form.memberRegist) }}
+						</div>
+					</div>
+					<div class="row mb-2">
+						{{ form_label(form.quickAccounts) }}
+						<div class="col-sm-9 {% if form.quickAccounts.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.quickAccounts) }}
+							{{ form_errors(form.quickAccounts) }}
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="card rounded border-0 mb-4">
+				<div class="card-header">
+					<div class="row">
+						<div class="col-8">
+							<div class="d-inline-block" data-tooltip="false" data-placement="top" title="" data-original-title="Tooltip"><span class="card-title">オンライン収納代行</span></div>
+						</div>
+						<div class="col-4 text-end"><a data-bs-toggle="collapse" href="#storage-agency" aria-expanded="false" aria-controls="storage-agency" class=""><i class="fa fa-lg fa-angle-down fa-angle-up"></i></a></div>
+					</div>
+				</div>
+				<!-- /.box-header -->
+				<div class="card-body show" id="storage-agency">
+					<div class="row mb-2">
+						<div class="col-sm-2 form-control-label">
+							<div class="sln-connection-destination-label">接続先</div>
+							{{ form_widget(form.cvsConnectionDestination) }}
+							{{ form_errors(form.cvsConnectionDestination) }}
+						</div>
+						<div class="col-sm-9 {% if form.creditConnectionPlace5.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_label(form.creditConnectionPlace5) }}
+							{{ form_widget(form.creditConnectionPlace5) }}
+							{{ form_errors(form.creditConnectionPlace5) }}
+						</div>
+					</div>
+					<div class="row mb-2">
+						<div class="col-sm-2 form-control-label"></div>
+						<div class="col-sm-9 {% if form.creditConnectionPlace3.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_label(form.creditConnectionPlace3) }}
+							{{ form_widget(form.creditConnectionPlace3) }}
+							{{ form_errors(form.creditConnectionPlace3) }}
+							<p class="small">*ご利用にはご契約(有料)が必要になります。</p>
+						</div>
+					</div>
+					<!-- 
+					<div class="row mb-2">
+						{{ form_label(form.OnlinePaymentMethod) }}
+						<div class="col-sm-9 {% if form.OnlinePaymentMethod.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.OnlinePaymentMethod) }}
+							{{ form_errors(form.OnlinePaymentMethod) }}
+						</div>
+					</div>
+					-->
+					<div class="row mb-2">
+						{{ form_label(form.Free1) }}
+						<div class="col-sm-9 {% if form.Free1.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.Free1) }}
+							{{ form_errors(form.Free1) }}
+						</div>
+					</div>
+					<div class="row mb-2">
+						{{ form_label(form.Free2) }}
+						<div class="col-sm-9 {% if form.Free2.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.Free2) }}
+							{{ form_errors(form.Free2) }}
+						</div>
+					</div>
+					<div class="row mb-2">
+						{{ form_label(form.Free3) }}
+						<div class="col-sm-9 {% if form.Free3.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.Free3) }}
+							{{ form_errors(form.Free3) }}
+						</div>
+					</div>
+					<div class="row mb-2">
+						{{ form_label(form.Free4) }}
+						<div class="col-sm-9 {% if form.Free4.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.Free4) }}
+							{{ form_errors(form.Free4) }}
+						</div>
+					</div>
+					<div class="row mb-2">
+						{{ form_label(form.Free5) }}
+						<div class="col-sm-9 {% if form.Free5.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.Free5) }}
+							{{ form_errors(form.Free5) }}
+						</div>
+					</div>
+					<div class="row mb-2">
+						{{ form_label(form.Free6) }}
+						<div class="col-sm-9 {% if form.Free6.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.Free6) }}
+							{{ form_errors(form.Free6) }}
+						</div>
+					</div>
+					<div class="row mb-2">
+						{{ form_label(form.Free7) }}
+						<div class="col-sm-9 {% if form.Free7.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.Free7) }}
+							{{ form_errors(form.Free7) }}
+						</div>
+					</div>
+					<div class="row mb-2">
+						{{ form_label(form.Comment) }}
+						<div class="col-sm-9 {% if form.Comment.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.Comment) }}
+							{{ form_errors(form.Comment) }}
+						</div>
+					</div>
+					<div class="row mb-2">
+						{{ form_label(form.Free8) }}
+						<div class="col-sm-9 {% if form.Free8.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.Free8) }}
+							{{ form_errors(form.Free8) }}
+						</div>
+					</div>
+					<div class="row mb-2">
+						{{ form_label(form.Free9) }}
+						<div class="col-sm-9 {% if form.Free9.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.Free9) }}
+							{{ form_errors(form.Free9) }}
+						</div>
+					</div>
+					<div class="row mb-2">
+						{{ form_label(form.Free10) }}
+						<div class="col-sm-9 {% if form.Free10.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.Free10) }}
+							{{ form_errors(form.Free10) }}
+						</div>
+					</div>
+					<div class="row mb-2">
+						{{ form_label(form.Free11) }}
+						<div class="col-sm-9 {% if form.Free11.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.Free11) }}
+							{{ form_errors(form.Free11) }}
+						</div>
+					</div>
+					<div class="row mb-2">
+						{{ form_label(form.Free12) }}
+						<div class="col-sm-9 {% if form.Free12.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.Free12) }}
+							{{ form_errors(form.Free12) }}
+						</div>
+					</div>
+					<div class="row mb-2">
+						{{ form_label(form.Free13) }}
+						<div class="col-sm-9 {% if form.Free13.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.Free13) }}
+							{{ form_errors(form.Free13) }}
+						</div>
+					</div>
+					<div class="row mb-2">
+						{{ form_label(form.Free14) }}
+						<div class="col-sm-9 {% if form.Free14.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.Free14) }}
+							{{ form_errors(form.Free14) }}
+						</div>
+					</div>
+					<div class="row mb-2">
+						{{ form_label(form.Free15) }}
+						<div class="col-sm-9 {% if form.Free15.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.Free15) }}
+							{{ form_errors(form.Free15) }}
+						</div>
+					</div>
+					<div class="row mb-2">
+						{{ form_label(form.Free16) }}
+						<div class="col-sm-9 {% if form.Free16.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.Free16) }}
+							{{ form_errors(form.Free16) }}
+						</div>
+					</div>
+					<div class="row mb-2">
+						{{ form_label(form.Free17) }}
+						<div class="col-sm-9 {% if form.Free17.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.Free17) }}
+							{{ form_errors(form.Free17) }}
+						</div>
+					</div>
+					<div class="row mb-2">
+						{{ form_label(form.Free18) }}
+						<div class="col-sm-9 {% if form.Free18.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.Free18) }}
+							{{ form_errors(form.Free18) }}
+						</div>
+					</div>
+					<div class="row mb-2">
+						{{ form_label(form.Free19) }}
+						<div class="col-sm-9 {% if form.Free19.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.Free19) }}
+							{{ form_errors(form.Free19) }}
+						</div>
+					</div>
+					<div class="row mb-2">
+						{{ form_label(form.Title) }}
+						<div class="col-sm-9 {% if form.Title.vars.errors is not empty %}has-error{% endif %}">
+							{{ form_widget(form.Title) }}
+							{{ form_errors(form.Title) }}
+						</div>
+					</div>
+				</div>
+			</div>
+        </div><!-- /.col -->
+    </div>
+	<div class="c-conversionArea">
+            <div class="c-conversionArea__container">
+                <div class="row justify-content-between align-items-center">
+					<div class="col-6">
+                        <div class="c-conversionArea__leftBlockItem">
+                            <a class="c-baseLink" href="{{ path('admin_store_plugin') }}">
+                                <i class="fa fa-backward" aria-hidden="true"></i><span>{{ 'admin.store.plugin.809'|trans }}</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row align-items-center justify-content-end">
+                            <div class="col-auto" id="config_save">
+                                <a href="{{ path('sln_payment42_admin_config')}}" class="btn btn-ec-conversion px-5 ladda-button">この内容で登録する</a><span class="ladda-spinner"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</form>
+{% endblock %}

@@ -1,0 +1,316 @@
+{#
+Amazon Pay V2 for EC-CUBE4
+Copyright(c) 2020 IPLOGIC CO.,LTD. All Rights Reserved.
+
+http://www.iplogic.co.jp/
+
+This program is not free software.
+It applies to terms of service.
+#}
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['order', 'amazon_pay4_admin_payment_status'] %}
+
+{% block title %}{{ 'amazon_pay4.admin.payment_status.title'|trans }}{% endblock %}
+{% block sub_title %}{{ 'amazon_pay4.admin.payment_status.sub_title'|trans }}{% endblock %}
+
+{% form_theme searchForm '@admin/Form/bootstrap_4_layout.html.twig' %}
+
+{% block stylesheet %}
+{% endblock stylesheet %}
+
+{% block javascript %}
+    <script>
+        $('#capture_all_check').click(function() {
+        var amazon_checkall = $('#capture_all_check').prop('checked');
+        if (amazon_checkall) {
+            $('input[id^=capture_check_]').prop('checked', true);
+        } else {
+            $('input[id^=capture_check_]').prop('checked', false);
+        }
+    });
+
+    $('#cancel_all_check').click(function() {
+        var amazon_checkall = $('#cancel_all_check').prop('checked');
+        if (amazon_checkall) {
+            $('input[id^=cancel_check_]').prop('checked', true);
+        } else {
+            $('input[id^=cancel_check_]').prop('checked', false);
+        }
+    });
+
+    $('[id^=capture_link_]').click(function(event) {
+        event.preventDefault();
+        var id = $(this).attr('id');
+        var order_id = id.slice(id.lastIndexOf('_') + 1);
+
+        if (confirm('売上処理を実行します。よろしいですか？')) {
+            $('#amazon_order_id').val(order_id);
+            $('#amazon_request').val('capture');
+            $('#form_bulk').submit();
+        }
+    });
+
+    $('[id^=cancel_link_]').click(function(event) {
+        event.preventDefault();
+        var id = $(this).attr('id');
+        var order_id = id.slice(id.lastIndexOf('_') + 1);
+
+        if (confirm('取消処理を実行します。よろしいですか？')) {
+            $('#amazon_order_id').val(order_id);
+            $('#amazon_request').val('cancel');
+            $('#form_bulk').submit();
+        }
+    });
+
+    $('#capture_button').click(function(event) {
+        event.preventDefault();
+        var isChecked = false;
+        $('input[id^=capture_check_]').each(function() {
+            var check = $(this).prop('checked');
+            if (check) {
+                isChecked = true;
+            }
+        });
+        if (!isChecked) {
+            alert("チェックボックスが選択されていません");
+            return false;
+        }
+        if (confirm('売上処理を実行します。よろしいですか？')) {
+            $('#amazon_request').val('capture');
+            $('#form_bulk').submit();
+        }
+    });
+
+    $('#cancel_button').click(function(event) {
+        event.preventDefault();
+        var isChecked = false;
+        $('input[id^=cancel_check_]').each(function() {
+            var check = $(this).prop('checked');
+            if (check) {
+                isChecked = true;
+            }
+        });
+        if (!isChecked) {
+            alert("チェックボックスが選択されていません");
+            return false;
+        }
+        if (confirm('取消処理を実行します。よろしいですか？')) {
+            $('#amazon_request').val('cancel');
+            $('#form_bulk').submit();
+        }
+    });
+    </script>
+{% endblock javascript %}
+
+{% block main %}
+    <!--検索条件設定テーブルここから-->
+    <div class="c-outsideBlock">
+        <form name="search_form" method="POST" action="{{ url('amazon_pay4_admin_payment_status') }}">
+            {{ form_widget(searchForm._token) }}
+            <div class="c-outsideBlock__contents">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-row">
+                            <div class="form-group col-12">
+                                <p class="col-form-label">{{ 'amazon_pay4.admin.payment_status.search_condition_order_status'|trans }}</p>
+                                {{ form_widget(searchForm.OrderStatuses, {'label_attr': {'class': 'checkbox-inline'}}) }}
+                                {{ form_errors(searchForm.OrderStatuses) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-row">
+                            <div class="form-group col-12">
+                                <p class="col-form-label">{{ 'amazon_pay4.admin.payment_status.search_condition_amazon_status'|trans }}</p>
+                                {{ form_widget(searchForm.AmazonStatuses, {'label_attr': {'class': 'checkbox-inline'}}) }}
+                                {{ form_errors(searchForm.AmazonStatuses) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="c-outsideBlock__contents">
+                <div class="row">
+                    <div class="mb-4">
+                        <div class="col-12">
+                            <button class="btn btn-ec-conversion px-5" type="submit">検索</button>
+                            {% if pagination %}
+                                <span class="font-weight-bold ml-2">{{ 'amazon_pay4.admin.payment_status.search_result_count'|trans({ '%count%': pagination.totalItemCount }) }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!--検索条件設定テーブルここまで-->
+
+    <div class="c-contentsArea__cols">
+        <div class="c-contentsArea__primaryCol">
+            <div class="c-primaryCol">
+                {% if pagination and pagination.totalItemCount %}
+                    <div class="modal fade" id="confirmBulkModal" tabindex="-1" role="dialog"
+                         aria-labelledby="confirmModal" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">{{ 'amazon_pay4.admin.payment_status.bulk_modal_title'|trans }}</h5>
+                                    <button class="close" type="button" data-dismiss="modal"
+                                            aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>{{ 'amazon_pay4.admin.payment_status.bulk_modal_body'|trans }}</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-ec-conversion" data-action="execute" type="button"
+                                            data-dismiss="modal">
+                                        {{ 'amazon_pay4.admin.payment_status.bulk_modal_action_exec'|trans }}
+                                    </button>
+                                    <button class="btn btn-ec-sub" data-action="cancel" type="button"
+                                            data-dismiss="modal">
+                                        {{ 'amazon_pay4.admin.payment_status.bulk_modal_action_cancel'|trans }}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <form id="form_bulk" method="POST" action="{{ url('amazon_pay4_admin_payment_status_request') }}">
+                        <input type="hidden" name="amazon_request" id="amazon_request" value="" />
+                        <input type="hidden" name="amazon_order_id" id="amazon_order_id" value="" />
+                        <input type="hidden" name="{{ constant('Eccube\\Common\\Constant::TOKEN_NAME') }}" value="{{ csrf_token(constant('Eccube\\Common\\Constant::TOKEN_NAME')) }}">
+                        <div class="row justify-content-between mb-2">
+                            <div class="col-12 text-right">
+                                <div class="d-inline-block">
+                                    <select class="custom-select" onchange="location.href = this.value;">
+                                        {% for pageMax in pageMaxis %}
+                                            <option {% if pageMax.name == page_count%} selected {% endif %}
+                                                    value="{{ path('amazon_pay4_admin_payment_status', {'page_no': 1, 'page_count': pageMax.name}) }}">
+                                                {{ 'amazon_pay4.admin.payment_status.display_count'|trans({ '%count%': pageMax.name|e }) }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card rounded border-0 mb-4">
+                            <div class="card-body p-0">
+                                <table class="table table-sm" id="search_result">
+                                    <thead>
+                                    <tr>
+                                        <th class="border-top-0 pt-2 pb-2 text-center">{{ 'amazon_pay4.admin.payment_status.col_order_date'|trans }}</th>
+                                        <th class="border-top-0 pt-2 pb-2 text-center">{{ 'amazon_pay4.admin.payment_status.col_order_no'|trans }}</th>
+                                        <th class="border-top-0 pt-2 pb-2 text-center">{{ 'amazon_pay4.admin.payment_status.col_order_name'|trans }}</th>
+                                        <th class="border-top-0 pt-2 pb-2 text-center">{{ 'amazon_pay4.admin.payment_status.col_order_price'|trans }}</th>
+                                        <th class="border-top-0 pt-2 pb-2 text-center">
+                                            <input type="checkbox" id="capture_all_check" name="capture" />
+                                            <label for="capture_all_check">{{ 'amazon_pay4.admin.payment_status.col_amazon_order_capture'|trans }}</label>
+                                            <input type="button" id="capture_button" value="実行" />
+                                        </th>
+                                        <th class="border-top-0 pt-2 pb-2 text-center">
+                                            <input type="checkbox" id="cancel_all_check" name="cancel" />
+                                            <label for="cancel_all_check">{{ 'amazon_pay4.admin.payment_status.col_amazon_order_cancel'|trans }}</label>
+                                            <input type="button" id="cancel_button" value="実行" />
+                                        </th>
+                                        <th class="border-top-0 pt-2 pb-2 text-center">{{ 'amazon_pay4.admin.payment_status.col_amazon_order_reference_id'|trans }}</th>
+                                        <th class="border-top-0 pt-2 pb-2 text-center">{{ 'amazon_pay4.admin.payment_status.col_amazon_order_status'|trans }}</th>
+                                        <th class="border-top-0 pt-2 pb-2 text-center">{{ 'amazon_pay4.admin.payment_status.col_order_staus'|trans }}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% set cssClassAmazonStatus = {
+                                        (constant('Plugin\\AmazonPay4\\Entity\\Master\\AmazonStatus::AUTHORI')): "badge-ec-blue",
+                                        (constant('Plugin\\AmazonPay4\\Entity\\Master\\AmazonStatus::CAPTURE')): "badge-ec-green",
+                                        (constant('Plugin\\AmazonPay4\\Entity\\Master\\AmazonStatus::CANCEL')): "badge-ec-glay",
+                                    }
+                                    %}
+                                    {% for Order in pagination %}
+                                        <tr>
+                                            <td class="align-middle text-left" id="order_date--{{ Order.id }}">{{ Order.order_date|date_min }}</td>
+                                            <td class="align-middle text-center" id="id--{{ Order.id }}"><a class="action-edit" href="{{ url('admin_order_edit', { id : Order.id }) }}">{{ Order.order_no }}</a></td>
+                                            <td class="align-middle text-center" id="name--{{ Order.id }}">{{ Order.name01 }} {{ Order.name02 }}</td>
+                                            <td class="align-middle text-right" id="payment_total--{{ Order.id }}">{{ Order.payment_total|price }}</td>
+                                            <td class="align-middle text-center">
+                                            {% if Order.payment_total <= Order.AmazonPay4SumCaptureAmount or Order.AmazonPay4AmazonStatus.id == constant('Plugin\\AmazonPay4\\Entity\\Master\\AmazonStatus::CANCEL') %}
+                                                -{{ Order.AmazonPay4SumCaptureAmount }}
+                                            {% elseif Order.payment_total - Order.AmazonPay4SumAuthoriAmount > Order.AmazonPay4BillableAmount %}
+                                                <span class="text-danger">金額超過</span>
+                                            {% else %}
+                                                {% if Order.payment_total < Order.AmazonPay4SumAuthoriAmount and Order.AmazonPay4AmazonStatus.id == constant('Plugin\\AmazonPay4\\Entity\\Master\\AmazonStatus::AUTHORI') %}
+                                                    <a href="?" id="capture_link_{{ Order.id }}">金額変更</a><br/>
+                                                    <span style="color:#0000FF;">-{{ Order.AmazonPay4SumAuthoriAmount - Order.payment_total }}円</span>
+                                                {% elseif Order.payment_total > Order.AmazonPay4SumAuthoriAmount and Order.AmazonPay4AmazonStatus.id == constant('Plugin\\AmazonPay4\\Entity\\Master\\AmazonStatus::AUTHORI') %}
+                                                    <a href="" id="capture_link_{{ Order.id }}">金額変更</a><br/>
+                                                    <span style="color:#FF0000;">+{{ Order.payment_total - Order.AmazonPay4SumAuthoriAmount }}円</span>
+                                                {% elseif Order.payment_total > Order.AmazonPay4SumAuthoriAmount and Order.AmazonPay4AmazonStatus.id == constant('Plugin\\AmazonPay4\\Entity\\Master\\AmazonStatus::CAPTURE') %}
+                                                    <a href="" id="capture_link_{{ Order.id }}">金額変更</a><br/>
+                                                    <span style="color:#FF0000;">+{{ Order.payment_total - Order.AmazonPay4SumCaptureAmount }}円</span>
+                                                {% else %}
+                                                    <input type="checkbox" name="capture_id[]" id="capture_check_{{ Order.id }}" value="{{ Order.id }}"/><label for="capture_check_{{ Order.id }}">一括</label><br/>
+                                                    <a href="" id="capture_link_{{ Order.id }}">個別売上</a>
+                                                {% endif %}
+                                            {% endif %}
+                                            </td>
+                                            <td class="align-middle text-center">
+                                            {% if Order.AmazonPay4AmazonStatus.id == constant('Plugin\\AmazonPay4\\Entity\\Master\\AmazonStatus::CANCEL') %}
+                                                -
+                                            {% elseif Order.AmazonPay4AmazonStatus.id == constant('Plugin\\AmazonPay4\\Entity\\Master\\AmazonStatus::CAPTURE') %}
+                                                {% if Order.payment_total > Order.AmazonPay4SumCaptureAmount %}
+                                                    <span class="text-danger">金額超過</span>
+                                                {% elseif Order.payment_total < Order.AmazonPay4SumCaptureAmount %}
+                                                    <a href="?" id="cancel_link_{{ Order.id }}">金額変更</a><br/>
+                                                    <span style="color:#0000FF;">-{{ Order.AmazonPay4SumCaptureAmount - Order.payment_total }}円</span>
+                                                {% else %}
+                                                    <input type="checkbox" name="cancel_id[]" id="cancel_check_{{ Order.id }}" value="{{ Order.id }}"/><label for="cancel_check_{{ Order.id }}">一括</label><br/>
+                                                    <a href="" id="cancel_link_{{ Order.id }}">個別取消</a>
+                                                {% endif %}
+                                            {% else %}
+                                                <input type="checkbox" name="cancel_id[]" id="cancel_check_{{ Order.id }}" value="{{ Order.id }}"/><label for="cancel_check_{{ Order.id }}">一括</label><br/>
+                                                <a href="" id="cancel_link_{{ Order.id }}">個別取消</a>
+                                            {% endif %}
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <a href="https://sellercentral.amazon.co.jp/hz/me/pmd/payment-details?orderReferenceId={{ Order.AmazonPay4ChargePermissionId }}" target="_blank">{{ Order.AmazonPay4ChargePermissionId }}</a>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <span class="badge {{ attribute(cssClassAmazonStatus, Order.AmazonPay4AmazonStatus.id)}} ">{{ Order.AmazonPay4AmazonStatus.name }}</span>
+                                            </td>
+                                            <td class="align-middle text-center"  id="order_status--{{ Order.id }}">
+                                                <span class="badge badge-ec-blue" style="background-color: #fff; color: {{ Order.OrderStatusColor }}; border-color: {{ Order.OrderStatusColor }}">{{ Order.OrderStatus }}</span>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                                <div class="row justify-content-md-center mb-4"></div>
+                            </div>
+                            <div class="row justify-content-md-center mb-4">
+                                {% if pagination.totalItemCount > 0 %}
+                                    {% include "@admin/pager.twig" with { 'pages' : pagination.paginationData, 'routes' : 'amazon_pay4_admin_payment_status_pageno' } %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </form>
+                {# 検索条件エラー時 #}
+                {% elseif has_errors %}
+                    <div class="card rounded border-0">
+                        <div class="card-body p-4">
+                            <div class="text-center text-muted mb-4 h5">{{ 'amazon_pay4.admin.payment_status.invalid_condition'|trans }}</div>
+                            <div class="text-center text-muted">{{ 'amazon_pay4.admin.payment_status.change_condition'|trans }}</div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="card rounded border-0">
+                        <div class="card-body p-4">
+                            <div class="text-center text-muted mb-4 h5">{{ 'amazon_pay4.admin.payment_status.no_result'|trans }}</div>
+                            <div class="text-center text-muted">{{ 'amazon_pay4.admin.payment_status.change_condition'|trans }}</div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

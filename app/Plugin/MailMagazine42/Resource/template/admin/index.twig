@@ -1,0 +1,371 @@
+{#
+ This file is part of EC-CUBE
+
+ Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+ http://www.ec-cube.co.jp/
+
+ For the full copyright and license information, please view the LICENSE
+ file that was distributed with this source code.
+#}
+{#
+[メルマガ管理]-[配信内容設定]-[一覧・検索]画面
+#}
+
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['mailmagazine', 'mailmagazine'] %}
+
+{% block title %}{{ 'mailmagazine.index.title'|trans }}{% endblock %}
+{% block sub_title %}{{ 'mailmagazine.title'|trans }}{% endblock %}
+
+{% form_theme searchForm '@admin/Form/bootstrap_4_horizontal_layout.html.twig' %}
+
+{% block javascript %}
+<script>
+$(function() {
+
+    var inputDate = document.createElement('input');
+    inputDate.setAttribute('type', 'date');
+    if (inputDate.type !== 'date') {
+        $('input[id$=_date_start]').datetimepicker({
+            locale: 'ja',
+            format: 'YYYY-MM-DD',
+            useCurrent: false,
+            showTodayButton: true
+        });
+
+        $('input[id$=_date_end]').datetimepicker({
+            locale: 'ja',
+            format: 'YYYY-MM-DD',
+            useCurrent: false,
+            showTodayButton: true
+        });
+
+    $('#admin_search_customer_birth_start').datetimepicker({
+            locale: 'ja',
+            format: 'YYYY-MM-DD',
+            useCurrent: false,
+            showTodayButton: true
+        });
+
+    $('#admin_search_customer_birth_end').datetimepicker({
+            locale: 'ja',
+            format: 'YYYY-MM-DD',
+            useCurrent: false,
+            showTodayButton: true
+        });
+
+    $('#admin_search_customer_last_buy_start').datetimepicker({
+            locale: 'ja',
+            format: 'YYYY-MM-DD',
+            useCurrent: false,
+            showTodayButton: true
+        });
+
+    $('#admin_search_customer_last_buy_end').datetimepicker({
+            locale: 'ja',
+            format: 'YYYY-MM-DD',
+            useCurrent: false,
+            showTodayButton: true
+        });
+    }
+});
+
+function fnChangeActionSubmit(action) {
+    document.search_form.action = action;
+    document.search_form.submit();
+}
+</script>
+{% endblock javascript %}
+
+{% block main %}
+<form name="search_form" id="search_form" method="post" action="">
+    {{ form_widget(searchForm._token) }}
+    <div class="c-outsideBlock">
+        <div class="c-outsideBlock__contents">
+            <div class="row justify-content-start">
+                <div class="col-6">
+                    <div class="mb-2">
+                        <label class="col-form-label" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ 'tooltip.order.multi_search_label'|trans }}">{{ 'admin.customer.multi_search_label'|trans }}<i class="fa fa-question-circle fa-lg ms-1"></i></label>
+                        {{ form_widget(searchForm.multi) }}
+                        {{ form_errors(searchForm.multi) }}
+                    </div>
+                    <div class="d-inline-block mb-3 collapsed" data-bs-toggle="collapse" href="#searchDetail" aria-expanded="false" aria-controls="searchDetail"><a><i class="fa fw-bold me-1 fa-plus-square-o"></i><span class="fw-bold">{{ 'admin.common.search_detail'|trans }}</span></a></div>
+                </div>
+            </div>
+        </div>
+        <div class="c-subContents ec-collapse collapse{{ has_errors ? ' show' }}" id="searchDetail">
+            <div class="row mb-2">
+                <div class="col">
+                    <div class="row">
+                        <div class="col-12">
+                            <p class="col-form-label">{{ 'admin.customer.customer_status'|trans }}</p>
+                            {{ form_widget(searchForm.customer_status, { 'label_attr': { 'class': 'checkbox-inline'}}) }}
+                            {{ form_errors(searchForm.customer_status) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div>
+                        <label>{{ 'admin.order.purchase_product'|trans }}</label>
+                        {{ form_widget(searchForm.buy_product_name) }}
+                        {{ form_errors(searchForm.buy_product_name) }}
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col">
+                    <div class="row">
+                        <div class="col-12">
+                            <p class="col-form-label">{{ 'admin.common.gender'|trans }}</p>
+                            {{ form_widget(searchForm.sex, { 'label_attr': { 'class': 'checkbox-inline'}}) }}
+                            {{ form_errors(searchForm.sex) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div>
+                        <label class="col-form-label">{{ 'admin.order.purchase_price'|trans }}</label>
+                        <div class="row align-items-center">
+                            <div class="col">
+                                {{ form_widget(searchForm.buy_total_start) }}
+                                {{ form_errors(searchForm.buy_total_start) }}
+                            </div>
+                            <div class="col-auto text-center"><span>{{ 'admin.common.separator__range'|trans }}</span></div>
+                            <div class="col">
+                                {{ form_widget(searchForm.buy_total_end) }}
+                                {{ form_errors(searchForm.buy_total_end) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col">
+                    <div>
+                        <label class="col-form-label">{{ 'admin.customer.birth_month'|trans }}</label>
+                        <div class="row">
+                            <div class="col-5">
+                                {{ form_widget(searchForm.birth_month) }}
+                                {{ form_errors(searchForm.birth_month) }}
+                            </div>
+                            <div class="col-7"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div>
+                        <label class="col-form-label">{{ 'admin.order.purchase_count'|trans }}</label>
+                        <div class="row align-items-center">
+                            <div class="col">
+                                {{ form_widget(searchForm.buy_times_start) }}
+                                {{ form_errors(searchForm.buy_times_start) }}
+                            </div>
+                            <div class="col-auto text-center"><span>{{ 'admin.common.separator__range'|trans }}</span></div>
+                            <div class="col">
+                                {{ form_widget(searchForm.buy_times_end) }}
+                                {{ form_errors(searchForm.buy_times_end) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col">
+                    <div>
+                        <label class="col-form-label">{{ 'admin.common.birth_day'|trans }}</label>
+                        <div class="row align-items-center">
+                            <div class="col">
+                                {{ form_widget(searchForm.birth_start) }}
+                                {{ form_errors(searchForm.birth_start) }}
+                            </div>
+                            <div class="col-auto text-center"><span>{{ 'admin.common.separator__range'|trans }}</span></div>
+                            <div class="col">
+                                {{ form_widget(searchForm.birth_end) }}
+                                {{ form_errors(searchForm.birth_end) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div>
+                        <label class="col-form-label">{{ 'admin.common.create_date'|trans }}</label>
+                        <div class="row align-items-center">
+                            <div class="col">
+                                {{ form_widget(searchForm.create_date_start) }}
+                                {{ form_errors(searchForm.create_date_start) }}
+                            </div>
+                            <div class="col-auto text-center"><span>{{ 'admin.common.separator__range'|trans }}</span></div>
+                            <div class="col">
+                                {{ form_widget(searchForm.create_date_end) }}
+                                {{ form_errors(searchForm.create_date_end) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col">
+                    <div>
+                        <label class="col-form-label">{{ 'admin.common.pref'|trans }}</label>
+                        <div class="row">
+                            <div class="col-5">
+                                {{ form_widget(searchForm.pref) }}
+                                {{ form_errors(searchForm.pref) }}
+                            </div>
+                            <div class="col-7"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div>
+                        <label class="col-form-label">{{ 'admin.common.update_date'|trans }}</label>
+                        <div class="row align-items-center">
+                            <div class="col">
+                                {{ form_widget(searchForm.update_date_start) }}
+                                {{ form_errors(searchForm.update_date_start) }}
+                            </div>
+                            <div class="col-auto text-center"><span>{{ 'admin.common.separator__range'|trans }}</span></div>
+                            <div class="col">
+                                {{ form_widget(searchForm.update_date_end) }}
+                                {{ form_errors(searchForm.update_date_end) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col">
+                    <div class="mb-3">
+                        <label class="col-form-label">{{ 'admin.common.phone_number'|trans }}</label>
+                        {{ form_widget(searchForm.phone_number) }}
+                        {{ form_errors(searchForm.phone_number) }}
+                    </div>
+                </div>
+                <div class="col">
+                    <div>
+                        <label class="col-form-label">{{ 'admin.order.last_buy_date'|trans }}</label>
+                        <div class="row align-items-center">
+                            <div class="col">
+                                {{ form_widget(searchForm.last_buy_start) }}
+                                {{ form_errors(searchForm.last_buy_start) }}
+                            </div>
+                            <div class="col-auto text-center"><span>{{ 'admin.common.separator__range'|trans }}</span></div>
+                            <div class="col">
+                                {{ form_widget(searchForm.last_buy_end) }}
+                                {{ form_errors(searchForm.last_buy_end) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# エンティティ拡張の自動出力 #}
+            {% for f in searchForm|filter(f => f.vars.eccube_form_options.auto_render) %}
+                {# TODO 1項目1行になるのを改善 #}
+                <div class="row mb-2">
+                    {% if f.vars.eccube_form_options.form_theme %}
+                        {% form_theme f f.vars.eccube_form_options.form_theme %}
+                        {{ form_row(f) }}
+                    {% else %}
+                        <div class="col">
+                            <div class="mb-3">
+                                <label class="col-form-label">{{ f.vars.label|trans }}</label>
+                                {{ form_widget(f) }}
+                                {{ form_errors(f) }}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="c-outsideBlock__contents mb-5">
+        <button type="submit" class="btn btn-ec-conversion px-5">{{ 'admin.common.search'|trans }}</button>
+        {% if pagination %}
+            <span class="fw-bold ms-2">{{ 'admin.common.search_result'|trans({'%count%':pagination.totalItemCount}) }}</span>
+        {% endif %}
+    </div>
+    <div class="c-outsideBlock__contents mb-5">
+        {{ include('@admin/search_items.twig', { 'form': searchForm }, ignore_missing = true) }}
+    </div>
+    <div class="c-contentsArea__cols">
+        <div class="c-contentsArea__primaryCol">
+            <div class="c-primaryCol">
+                {% if pagination and pagination.totalItemCount %}
+                    <div class="row justify-content-between mb-2">
+                        <div class="col-6"></div>
+
+                        <div class="col-5 text-end">
+                            {#Dropdown page count#}
+                            <div class="d-inline-block mr-2 align-bottom">
+                                <select class="form-select" onchange="location = this.value;">
+                                    {% for pageMax in pageMaxis %}
+                                        <option {% if pageMax.name == page_count %} selected {% endif %}
+                                                value="{{ path('plugin_mail_magazine_page', {'page_no': 1, 'page_count': pageMax.name }) }}">
+                                            {{ 'admin.common.count'|trans({ '%count%': pageMax.name }) }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="d-inline-block">
+                                <div class="btn-group" role="group"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-body p-0">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="border-top-0 pt-2 pb-3 pl-3">{{ 'admin.customer.customer_id'|trans }}</th>
+                                        <th class="border-top-0 pt-2 pb-3">{{ 'admin.common.name'|trans }}</th>
+                                        <th class="border-top-0 pt-2 pb-3">{{ 'admin.common.phone_number'|trans }}</th>
+                                        <th class="border-top-0 pt-2 pb-3">{{ 'admin.common.mail_address'|trans }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for Customer in pagination %}
+                                    <tr>
+                                        <td class="align-middle pl-3">{{ Customer.id }}</td>
+                                        <td class="align-middle"><a href="{{ url('admin_customer_edit', { 'id': Customer.id}) }}">{{ Customer.name01 }}&nbsp;{{ Customer.name02 }}</a></td>
+                                        <td class="align-middle">{{ Customer.phone_number }}</td>
+                                        <td class="align-middle">{{ Customer.email }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="row justify-content-md-center mb-4">
+                                {% if pagination.totalItemCount > 0 %}
+                                    {% include "@admin/pager.twig" with { 'pages' : pagination.paginationData, 'routes' : 'plugin_mail_magazine_page' } %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-md-center mb-4 ">
+                        <div class="col-auto">
+                            <button class="btn btn-ec-regular ps-4 pe-4" onclick="fnChangeActionSubmit('{{ url('plugin_mail_magazine_select') }}'); return false;">
+                                {{ 'mailmagazine.index.btn_select_template'|trans }}
+                            </button>
+                        </div>
+                    </div>
+                {% elseif has_errors %}
+                    <div class="card rounded border-0">
+                        <div class="card-body p-4">
+                            <div class="text-center text-muted mb-4 h5">{{ 'admin.common.search_invalid_condition'|trans }}</div>
+                            <div class="text-center text-muted">{{ 'admin.common.search_try_change_condition'|trans }}</div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="card rounded border-0">
+                        <div class="card-body p-4">
+                            <div class="text-center text-muted mb-4 h5">{{ 'admin.common.search_no_result'|trans }}</div>
+                            <div class="text-center text-muted">{{ 'admin.common.search_try_change_condition'|trans }}</div>
+                            <div class="text-center text-muted">{{ 'admin.common.search_try_advanced_search'|trans }}</div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

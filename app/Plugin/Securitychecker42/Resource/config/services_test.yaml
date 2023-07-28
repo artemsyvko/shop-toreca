@@ -1,0 +1,8 @@
+services:
+  Plugin\Securitychecker42\Service\Securitychecker42Service:
+    public: true
+    arguments:
+      - '@service_container'
+      - '@router.default'
+      - '@Eccube\Common\EccubeConfig'
+      - '@doctrine.orm.default_entity_manager'

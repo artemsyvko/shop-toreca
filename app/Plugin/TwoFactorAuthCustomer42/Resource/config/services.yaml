@@ -1,0 +1,47 @@
+eccube:
+  rate_limiter:
+    plg_customer_2fa_device_auth_input_onetime:
+      # 実行するルーティングを指定します。
+      route: plg_customer_2fa_device_auth_input_onetime
+      # 実行するmethodを指定します。デフォルトはPOSTです。
+      method: [ 'POST' ]
+      # スロットリングの制御方法を設定します。ip・customerを指定できます。
+      type: [ 'ip', 'customer' ]
+      # 試行回数を設定します。
+      limit: 5
+      # インターバルを設定します。
+      interval: '30 minutes'
+    plg_customer_2fa_device_auth_send_onetime:
+      # 実行するルーティングを指定します。
+      route: plg_customer_2fa_device_auth_send_onetime
+      # 実行するmethodを指定します。デフォルトはPOSTです。
+      method: [ 'POST' ]
+      # スロットリングの制御方法を設定します。ip・customerを指定できます。
+      type: [ 'ip', 'customer' ]
+      # 試行回数を設定します。
+      limit: 5
+      # インターバルを設定します。
+      interval: '30 minutes'
+    device_auth_request_email:
+      route: ~
+      limit: 10
+      interval: '30 minutes'
+
+parameters:
+  env(PLUGIN_ECCUBE_2FA_CUSTOMER_COOKIE_NAME): 'plugin_eccube_customer_2fa'
+  env(PLUGIN_ECCUBE_2FA_CUSTOMER_SMS_SEND_COOKIE_NAME): 'plugin_eccube_customer_2fa_sms'
+  env(PLUGIN_ECCUBE_2FA_CUSTOMER_DEVICE_AUTH_SEND_COOKIE_NAME): 'plugin_eccube_device_auth_2fa_sms'
+  env(PLUGIN_ECCUBE_2FA_CUSTOMER_EXPIRE): '3600'
+  env(PLUGIN_ECCUBE_2FA_ROUTE_CUSTOMER_COOKIE_NAME): 'plugin_eccube_route_customer_2fa'
+  env(PLUGIN_ECCUBE_2FA_ROUTE_CUSTOMER_EXPIRE): '3600'
+  env(PLUGIN_ECCUBE_2FA_ROUTE_COOKIE_VALUE_CHARACTER_LENGTH): '64'
+  env(PLUGIN_ECCUBE_2FA_ONE_TIME_TOKEN_LENGTH): '6'
+  env(PLUGIN_ECCUBE_2FA_ONE_TIME_TOKEN_EXPIRE_AFTER_SECONDS): '300'
+
+  plugin_eccube_2fa_customer_cookie_name: '%env(PLUGIN_ECCUBE_2FA_CUSTOMER_COOKIE_NAME)%'
+  plugin_eccube_2fa_route_customer_cookie_name: '%env(PLUGIN_ECCUBE_2FA_ROUTE_CUSTOMER_COOKIE_NAME)%'
+  plugin_eccube_2fa_customer_expire: '%env(PLUGIN_ECCUBE_2FA_CUSTOMER_EXPIRE)%'
+  plugin_eccube_2fa_route_customer_expire: '%env(PLUGIN_ECCUBE_2FA_ROUTE_CUSTOMER_EXPIRE)%'
+  plugin_eccube_2fa_route_cookie_value_character_length: '%env(PLUGIN_ECCUBE_2FA_ROUTE_COOKIE_VALUE_CHARACTER_LENGTH)%'
+  plugin_eccube_2fa_one_time_token_length: '%env(PLUGIN_ECCUBE_2FA_ONE_TIME_TOKEN_LENGTH)%'
+  plugin_eccube_2fa_one_time_token_expire_after_seconds: '%env(PLUGIN_ECCUBE_2FA_ONE_TIME_TOKEN_EXPIRE_AFTER_SECONDS)%'

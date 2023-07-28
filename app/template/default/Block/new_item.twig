@@ -1,0 +1,160 @@
+{#
+/*
+ *
+ * new_item.twig 
+ *
+ */
+#}
+{% block stylesheet %}
+    <style>
+        .slick-slider {
+            margin-bottom: 30px;
+        }
+
+        .slick-dots {
+            position: absolute;
+            bottom: -45px;
+            display: block;
+            width: 100%;
+            padding: 0;
+            list-style: none;
+            text-align: center;
+        }
+
+        .slick-dots li {
+            position: relative;
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin: 0 5px;
+            padding: 0;
+
+            cursor: pointer;
+        }
+
+        .slick-dots li button {
+            font-size: 0;
+            line-height: 0;
+            display: block;
+            width: 20px;
+            height: 20px;
+            padding: 5px;
+            cursor: pointer;
+            color: transparent;
+            border: 0;
+            outline: none;
+            background: transparent;
+        }
+
+        .slick-dots li button:hover,
+        .slick-dots li button:focus {
+            outline: none;
+        }
+
+        .slick-dots li button:hover:before,
+        .slick-dots li button:focus:before {
+            opacity: 1;
+        }
+
+        .slick-dots li button:before {
+            content: " ";
+            line-height: 20px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 12px;
+            height: 12px;
+            text-align: center;
+            opacity: .25;
+            background-color: black;
+            border-radius: 50%;
+
+        }
+
+        .slick-dots li.slick-active button:before {
+            opacity: .75;
+            background-color: black;
+        }
+
+        .slick-dots li button.thumbnail img {
+            width: 0;
+            height: 0;
+        }
+
+        .slide-arrow {
+          bottom: 0;
+          margin: auto;
+          position: absolute;
+          top: 0;
+          width: 50px !important;
+          height: 50px;
+        }
+        .prev-arrow {
+            left: 14%;
+            z-index: 1;
+        }
+        .next-arrow {
+            right: 14%;
+        }
+    @media screen and (max-width: 767px) {
+        .slide-arrow {
+        width: 25px !important;
+        height: 25px;
+        }
+    }
+    </style>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+$(function(){
+    function sliderSetting(){
+  
+        var width = $(window).width();
+  
+        if(width <= 767){
+          // スマートフォンの場合
+            $('.main_visual').slick({
+                dots: true,
+                arrows: true,
+                prevArrow: '<img src="{{ asset('assets/img/top/arrow_l.png') }}" class="slide-arrow prev-arrow">',
+                nextArrow: '<img src="{{ asset('assets/img/top/arrow_r.png') }}" class="slide-arrow next-arrow">',
+                autoplay: true,
+                speed: 300,
+                pauseOnHover: false,
+                centerMode: false
+            });
+        } else {
+            $('.main_visual').slick({
+                dots: true,
+                arrows: true,
+                prevArrow: '<img src="{{ asset('assets/img/top/arrow_l.png') }}" class="slide-arrow prev-arrow">',
+                nextArrow: '<img src="{{ asset('assets/img/top/arrow_r.png') }}" class="slide-arrow next-arrow">',
+                autoplay: true,
+                speed: 300,
+                pauseOnHover: false,
+                centerMode: true,
+                centerPadding: "30%"
+            });
+        }
+    }
+  
+    sliderSetting();
+  
+    $(window).resize( function() {
+        sliderSetting();
+    });
+});
+    </script>
+{% endblock javascript %}
+
+{% block main %}
+    <div class="ec-sliderRole">
+        <div class="main_visual">
+            <div class="item slick-slide"><a href="/shop_toreca/products/detail/125"><img src="{{ asset('assets/img/top/poke_banner.jpg') }}"></a></div>
+            <div class="item slick-slide"><a href="/shop_toreca/products/detail/119"><img src="{{ asset('assets/img/top/yugi_banner.jpg') }}"></a></div>
+            <div class="item slick-slide"><a href="/shop_toreca/products/detail/121"><img src="{{ asset('assets/img/top/dbh_banner.jpg') }}"></a></div>
+            <div class="item slick-slide"><a href="https://ounodoukutsu.jp/delivery_toreca/"><img src="{{ asset('assets/img/top/banner04.jpg') }}"></a></div>
+        </div>
+    </div>
+{% endblock %}

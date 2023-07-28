@@ -1,0 +1,81 @@
+{% if Page.url != 'homepage' %}
+
+    {# 区切りの文字を設定する HTML可 #}
+    {% set RefineBreadcrumbsBlockSplit = '/' %}
+
+    <style>
+        .ec-refineBreadcrumbsBlockRole {
+            padding: 20px;
+        }
+        .ec-refineBreadcrumbsBlockRole ul {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        .ec-refineBreadcrumbsBlockRole ul li div {
+            display: inline-block;
+            margin: 0 2px;
+            padding: 0;
+        }
+    </style>
+
+    <script>
+        $(function() {
+            const pageName = $('.ec-refineBreadcrumbsBlockRole .page_namme').html();
+            if (pageName.indexOf('{{ RefineBreadcrumbsBlockSplit|raw }}') >= 0) {
+                const pageNameHtml = pageName.replace('{{ RefineBreadcrumbsBlockSplit|raw }}','<div class="split" style="padding: 2px;">{{ RefineBreadcrumbsBlockSplit|raw }}</div>');
+                $('.ec-refineBreadcrumbsBlockRole .page_namme').html(pageNameHtml);
+            } else if (pageName.indexOf('/') >= 0) {
+                const pageNameHtml = pageName.replace('/','<div class="split" style="padding: 2px;">{{ RefineBreadcrumbsBlockSplit|raw }}</div>');
+                $('.ec-refineBreadcrumbsBlockRole .page_namme').html(pageNameHtml);
+            };
+        });
+    </script>
+
+    <div class="ec-refineBreadcrumbsBlockRole">
+        <ul>
+            <li>
+                <div><a href="{{ url('homepage') }}">TOP</a></div>
+                <div class="split">{{ RefineBreadcrumbsBlockSplit|raw }}</div>
+                {# 商品一覧ページ #}
+                {% if Page.url == 'product_list' %}
+                    {% if RefineBreadcrumbsBlock.categoryId %}
+                        {% set Category = repository('Eccube\\Entity\\Category').find( RefineBreadcrumbsBlock.categoryId ) %}
+                        <div><a href="{{ url('product_list') }}">商品一覧</a></div>
+                        <div class="split">{{ RefineBreadcrumbsBlockSplit|raw }}</div>
+                        <div class="page_namme">{{ Category.name }}</div>
+                    {% else %}
+                        <div>商品一覧</div>
+                    {% endif %}
+                {# 商品詳細ページ #}
+                {% elseif Page.url == 'product_detail' %}
+                    <div><a href="{{ url('product_list') }}">商品一覧</a></div>
+                    <div class="split">{{ RefineBreadcrumbsBlockSplit|raw }}</div>
+                    {% set Product = repository('Eccube\\Entity\\Product').find(RefineBreadcrumbsBlock.ProductsDetailId) %}
+                    {% set ProductCategories = repository('Eccube\\Entity\\ProductCategory').findBy({ product_id: RefineBreadcrumbsBlock.ProductsDetailId }) %}
+                    {% if Product.ProductCategories is not empty %}
+                        {% for ProductCategory in ProductCategories %}
+                            <div>
+                                <a href="{{ url('product_list') }}?category_id={{ ProductCategory.category_id }}">
+                                    {{ ProductCategory.Category.name }}
+                                </a>
+                            </div>
+                            <div class="split">{{ RefineBreadcrumbsBlockSplit|raw }}</div>
+                        {% endfor %}
+                    {% endif %}
+                    <div class="page_namme">{{ Product.name }}</div>
+                {# 新規会員登録 #}
+                {% elseif Page.url == 'entry' %}
+                    <div class="page_namme">新規会員登録</div>
+                {# ショッピングカート #}
+                {% elseif Page.url == 'cart' %}
+                    <div class="page_namme">{{ Page.name }}</div>
+                {% elseif Page.url matches '{^shopping}' %}
+                    <div class="page_namme">{{ Page.name }}</div>
+                {% else %}
+                    <div class="page_namme">{{ Page.name }}</div>
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+{% endif %}

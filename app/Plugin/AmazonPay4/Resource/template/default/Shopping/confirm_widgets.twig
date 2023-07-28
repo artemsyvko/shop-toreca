@@ -1,0 +1,56 @@
+{#
+Amazon Pay V2 for EC-CUBE4
+Copyright(c) 2020 IPLOGIC CO.,LTD. All Rights Reserved.
+
+http://www.iplogic.co.jp/
+
+This program is not free software.
+It applies to terms of service.
+#}
+
+<link rel="stylesheet" href="{{ asset('AmazonPay4/assets/css/amazon_shopping.css', 'plugin') }}">
+
+{% block javascript %}
+<script>
+$(function () {
+    $('button.ec-blockBtn--action').addClass('amazon_pay_button');
+    
+    // submit
+    $('#shopping-form').attr('action', '{{ url("amazon_pay_shopping_checkout") }}');
+
+    // back
+    $('.ec-blockBtn--cancel').attr('href', '{{ url("amazon_pay_shopping") }}');
+
+    //スクロール処理上書き
+    $('.pagetop').hide();
+
+    $(window).on('scroll', function() {
+        // ページトップフェードイン
+        if ($(this).scrollTop() > 300) {
+            $('.pagetop').fadeIn();
+        } else {
+            $('.pagetop').fadeOut();
+        }
+
+        // PC表示の時のみに適用
+        if (window.innerWidth > 767) {
+
+            var side = $(".ec-orderRole__summary"),
+                wrap = $("#shopping-form"),
+                amazon_wrap = $('.amazon_customer_regist'),
+                min_move = wrap.offset().top,
+                max_move = wrap.height(),
+                amazon_move = amazon_wrap.height(),
+                margin_bottom = max_move - min_move;
+
+            var scrollTop = $(window).scrollTop();
+            if (scrollTop > min_move && scrollTop < max_move && amazon_move > 0) {
+                side.css({"margin-top": 0});
+            } else if (scrollTop > max_move) {
+                side.css({"margin-top": margin_bottom});
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

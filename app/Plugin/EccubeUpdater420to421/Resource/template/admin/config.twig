@@ -1,0 +1,107 @@
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['store', 'plugin', 'plugin_list'] %}
+
+{% block title %}EC-CUBEのアップデート{% endblock %}
+{% block sub_title %}{% endblock %}
+
+{% block stylesheet %}
+    <meta name="referrer" content="no-referrer">
+{% endblock stylesheet %}
+
+{% block javascript %}{% endblock javascript %}
+
+{% block main %}
+    <div class="c-contentsArea__cols">
+        <div class="c-contentsArea__primaryCol">
+            <div class="c-primaryCol">
+                <div class="card rounded border-0 mb-4">
+                    <div class="card-header"><span>アップデートの注意点</span></div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col mb-2">
+                                <ul>
+                                    <li>・アップデートプラグインは、www.ec-cube.netからダウンロードしたEC-CUBEのパッケージを利用していることを想定しています。</li>
+                                    <li>・本番環境でバージョンアップを行う前に、<strong class="text-danger">必ずテスト環境で事前検証を行ってください。</strong></li>
+                                    <li>・本番環境でバージョンアップを行う前に、<strong class="text-danger">必ずファイルおよびデータベースのバックアップを行ってください。</strong></li>
+                                    <li>・アップデートプラグインではインストールされているプラグインのアップデートは行われません。<a href="{{ url('admin_store_plugin') }}">プラグイン一覧</a>からプラグインのアップデートををご確認ください。</strong></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card rounded border-0 mb-4">
+                    <div class="card-header"><span>リリースノート</span></div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col mb-2">
+                                EC-CUBE 4.2.1 の変更点は<a target="_blank" rel="noreferrer noopener"
+                                                      href="https://github.com/EC-CUBE/ec-cube/releases/tag/4.2.1">こちら</a>をご覧ください。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card rounded border-0 mb-4">
+                    <div class="card-header"><span>EC-CUBE 4系におけるクロスサイトスクリプティングの脆弱性(JVN#04785663)</span></div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col mb-2">
+                                EC-CUBE 4.2.1 では、1件の脆弱性が修正されています。詳しくは<a target="_blank" rel="noreferrer noopener"
+                                                      href="https://www.ec-cube.net/info/weakness/20230214/">こちら</a>をご覧ください。
+                            </div>
+                        </div>
+                        {% if app_template is not empty %}
+                            <div class="row">
+                                <div class="col mb-2">
+                                    ご利用の環境は、以下のテンプレートがカスタマイズされています。<br>
+                                    <strong class="text-danger">アップデートプラグインでは脆弱性の修正は適用されません。</strong><br>
+                                    <a href="https://www.ec-cube.net/info/weakness/20230214/#diff-v40" target="_blank" rel="noreferrer noopener">修正差分をご確認いただき</a>、必要な箇所に修正を反映してください。
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col mb-2">
+                                    <div class="alert alert-danger border border-danger">
+                                        <ul>
+                                            {% for template in app_template %}
+                                                <li>{{ template }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card rounded border-0 mb-4">
+                    <div class="card-header"><span>phpパス設定</span></div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col mb-2">
+                                <input type="text" value="{{ php_path }}" disabled="disabled" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col mb-2">
+                                phpの実行パスを確認してください。<br>表示されない場合や変更したい場合は、app/Plugin/EccubeUpdater420to421/Resource/config/services.yamlで実行パスを設定してください。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if supported %}
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-body">
+                            <div class="text-center">
+                                <a class="btn btn-ec-conversion"
+                                   href="{{ url('eccube_updater420to421_admin_check_plugin_version') }}" {{ csrf_token_for_anchor() }}
+                                   data-method="post" data-confirm="false">
+                                    プラグインの対応状況の確認へ
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

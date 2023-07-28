@@ -1,0 +1,27 @@
+{#
+
+#}
+
+<style>
+    .AmazonPayButton {
+        margin-top: 10px;
+    }
+</style>
+{% for CartIndex,Cart in Carts %}
+    {% set cartKey = Cart.cart_key %}
+    <div class="d-none">
+        <div style="width: 210px;">
+            <p style="height: 70px;" id="AmazonPayButton{{ cartKey }}" class="AmazonPayButton"></p>
+        </div>
+    </div>
+
+    {% set SaleType = Cart.CartItems[0].ProductClass.SaleType.id %}
+    {% if SaleType in AmazonSaleTypes %}
+        <script>
+            $(function () {
+                // ボタンを設置
+                $('#form_cart > div.ec-cartRole__actions').eq("{{ loop.index0 }}").append($("#AmazonPayButton{{ cartKey }}"));
+            });
+        </script>
+    {% endif %}
+{% endfor %}

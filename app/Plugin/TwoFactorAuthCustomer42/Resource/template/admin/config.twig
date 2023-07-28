@@ -1,0 +1,111 @@
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['store', 'plugin', 'plugin_list'] %}
+
+{% block title %}{{ 'admin.setting.2fa.config.title'|trans }}{% endblock %}
+{% block sub_title %}{% endblock %}
+
+{% form_theme form '@admin/Form/bootstrap_4_horizontal_layout.html.twig' %}
+
+{% block main %}
+
+    <form method="post" action="{{ url('two_factor_auth_customer42_admin_config') }}">
+        {{ form_widget(form._token) }}
+        <div class="c-contentsArea__cols">
+            <div class="c-contentsArea__primaryCol">
+                <div class="c-primaryCol">
+
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="d-inline-block" data-toggle="tooltip" data-placement="top"
+                                         title="Tooltip">
+                                        <span class="card-title">{{ 'admin.setting.2fa.sms.sub_title'|trans }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="collapse show ec-cardCollapse" id="basicConfig">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <label class="col-2 control-label">{{ 'admin.setting.2fa.sms.sid'|trans }}<span
+                                            class="badge bg-primary ms-1">{{ 'admin.common.required'|trans }}</span></label>
+                                    <div class="col mb-2">
+                                        {{ form_widget(form.api_key) }}
+                                        {{ form_errors(form.api_key) }}
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-2 control-label">{{ 'admin.setting.2fa.sms.api_token'|trans }}
+                                        <span
+                                            class="badge bg-primary ms-1">{{ 'admin.common.required'|trans }}</span></label>
+                                    <div class="col mb-2">
+                                        {{ form_widget(form.plain_api_secret, { type : 'password'}) }}
+                                        {{ form_errors(form.plain_api_secret) }}
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label
+                                        class="col-2 control-label">{{ 'admin.setting.2fa.sms.from_phone_number'|trans }}
+                                        <span
+                                            class="badge bg-primary ms-1">{{ 'admin.common.required'|trans }}</span></label>
+                                    <div class="col mb-2">
+                                        {{ form_widget(form.from_phone_number) }}
+                                        {{ form_errors(form.from_phone_number) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="d-inline-block" data-toggle="tooltip" data-placement="top"
+                                         title="Tooltip">
+                                        <span class="card-title">{{ 'admin.setting.2fa.route.sub_title'|trans }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="collapse show ec-cardCollapse" id="basicConfig">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <label class="col-2 control-label">{{ 'admin.setting.2fa.route.include'|trans }}
+                                        <span class="badge bg-primary ms-1"></span></label>
+                                    <div class="col mb-2">
+                                        {{ form_widget(form.include_routes, { 'attr': { 'rows': 8 }}) }}
+                                        {{ form_errors(form.include_routes) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="c-conversionArea">
+            <div class="c-conversionArea__container">
+                <div class="row justify-content-between align-items-center">
+                    <div class="col-6">
+                        <div class="c-conversionArea__leftBlockItem">
+                            <a class="c-baseLink" href="{{ url('admin_store_plugin') }}"><i class="fa fa-backward"
+                                                                                            aria-hidden="true"></i>
+                                <span>プラグイン一覧</span></a>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row align-items-center justify-content-end">
+                            <div class="col-auto">
+                                <button class="btn btn-ec-conversion px-5" type="submit">登録</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock main %}

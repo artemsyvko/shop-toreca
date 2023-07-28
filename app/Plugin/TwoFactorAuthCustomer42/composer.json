@@ -1,0 +1,1 @@
+{"name":"ec-cube\/twofactorauthcustomer42","version":"1.0.0","description":"2 factor authentication for Customers EC-CUBE42","type":"eccube-plugin","extra":{"code":"TwoFactorAuthCustomer42","id":2722},"require":{"ec-cube\/plugin-installer":"^2.0","twilio\/sdk":"^6.43"}}

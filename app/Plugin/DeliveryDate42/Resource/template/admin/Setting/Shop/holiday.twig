@@ -1,0 +1,168 @@
+{#
+* Plugin Name : DeliveryDate4
+*
+* Copyright (C) BraTech Co., Ltd. All Rights Reserved.
+* http://www.bratech.co.jp/
+*
+* For the full copyright and license information, please view the LICENSE
+* file that was distributed with this source code.
+#}
+
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['setting', 'shop', 'holiday'] %}
+
+{% block title %}{{ 'deliverydate.admin.nav.setting.deliverydate.holiday'|trans }}{% endblock %}
+{% block sub_title %}{{ 'admin.setting'|trans }}{% endblock %}
+
+{% form_theme form '@admin/Form/bootstrap_4_horizontal_layout.html.twig' %}
+{% if holidayForm is not null  %}
+    {% form_theme holidayForm '@admin/Form/bootstrap_4_horizontal_layout.html.twig' %}
+{% endif %}
+
+{% block javascript %}
+<script>
+    $(function() {
+        $('input[id^=form_check_day]').click(function() {
+            var check = $(this).prop('checked');
+            var day = $(this).val();
+
+            if (check) {
+                $('input[label=day_' + day + ']').prop('checked', true);
+            } else {
+                $('input[label=day_' + day + ']').prop('checked', false);
+            }
+        });
+    });
+</script>
+{% endblock %}
+
+{% block stylesheet %}
+    <style>
+        .day_Sun {
+            color:#f99;
+        }
+        .day_Sat {
+            color:#59f;
+        }
+        #page_admin_setting_deliverydate_holiday .box-body {
+        margin: 0 15px;
+        }
+
+        #page_admin_setting_deliverydate_holiday .box-body + p {
+        margin: 15px;
+        }
+
+        #page_admin_setting_deliverydate_holiday #holiday-form {
+        margin: 15px 0 0;
+        }
+
+        #page_admin_setting_deliverydate_holiday .table-check-day {
+        display: flex;
+        margin: 15px;
+        }
+
+        #page_admin_setting_deliverydate_holiday #form_check_day,
+        #page_admin_setting_deliverydate_holiday #form_check_day .form-check {
+        display: flex;
+        margin: 0 15px;
+        }
+
+        #page_admin_setting_deliverydate_holiday .form_check_day_label {
+        display: flex;
+        margin: 15px 0;
+        }
+    </style>
+{% endblock %}
+
+{% block main %}
+    <div class="box-body">
+        <div class="form-inline">
+            <form role="form" class="form-horizontal" name="form1" id="form1" method="post" action="{{ url('admin_setting_deliverydate_holiday') }}">
+            {{ form_widget(form._token) }}
+            {{ form_widget(form.month) }}
+            <button class="btn btn-ec-conversion" type="submit" onclick="document.form1.submit(); return false;">{{ 'deliverydate.admin.setting.shop.holiday.button'|trans }}</button>
+            </form>
+        </div>
+    </div>
+
+    {% if holidayForm is not null %}
+    <form id="holiday-form" class="form-inline" method="post" action="{{ url('admin_setting_deliverydate_holiday_edit') }}">
+    {{ form_widget(holidayForm._token) }}
+    <div class="c-contentsArea__cols">
+        <div class="c-contentsArea__primaryCol">
+            <div class="c-primaryCol">
+                <div class="card rounded border-0 mb-4">
+                    <div class="card-body p-0">
+                        <div class="table-check-day"><div class="form_check_day_label">{{ 'deliverydate.admin.setting.shop.holiday.checkall'|trans }}</div>{{ form_widget(holidayForm.check_day) }}</div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="border-top-0 pt-2 pb-3 pl-3">{{ 'deliverydate.admin.setting.shop.holiday.label.2'|trans }}</th>
+                                    <th class="border-top-0 pt-2 pb-3">{{ 'deliverydate.admin.setting.shop.holiday.label.3'|trans }}</th>
+                                    <th class="border-top-0 pt-2 pb-3">{{ 'deliverydate.admin.setting.shop.holiday.label.1'|trans }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for holiday_form in holidayForm.holidays %}
+                                {% set wdclass = 'day_' ~ holiday_form.date.vars.data|date('D') %}
+                                <tr>
+                                    <td>{{ form_widget(holiday_form.add, {'attr': {'label': wdclass }}) }}</td>
+                                    <td class="align-middle {{wdclass}}">
+                                        {{ holiday_form.date.vars.data|date('d') }}
+                                        (
+                                        {% if holiday_form.date.vars.data|date('w') == 0 %}
+                                            {{ 'deliverydate.common.sunday'|trans }}
+                                        {% elseif holiday_form.date.vars.data|date('w') == 1 %}
+                                            {{ 'deliverydate.common.monday'|trans }}
+                                        {% elseif holiday_form.date.vars.data|date('w') == 2 %}
+                                            {{ 'deliverydate.common.tuesday'|trans }}
+                                        {% elseif holiday_form.date.vars.data|date('w') == 3 %}
+                                            {{ 'deliverydate.common.wednesday'|trans }}
+                                        {% elseif holiday_form.date.vars.data|date('w') == 4 %}
+                                            {{ 'deliverydate.common.thursday'|trans }}
+                                        {% elseif holiday_form.date.vars.data|date('w') == 5 %}
+                                            {{ 'deliverydate.common.friday'|trans }}
+                                        {% elseif holiday_form.date.vars.data|date('w') == 6 %}
+                                            {{ 'deliverydate.common.saturday'|trans }}
+                                        {% endif %}
+                                        )
+                                        {{ form_widget(holiday_form.date) }}
+                                    </td>
+                                    <td>
+                                        {{ form_widget(holiday_form.title) }}
+                                        {{ form_errors(holiday_form.title) }}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="c-conversionArea">
+        <div class="c-conversionArea__container">
+            <div class="row justify-content-between align-items-center">
+                <div class="col-6">
+                    <div class="c-conversionArea__leftBlockItem">
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div id="ex-conversion-action" class="row align-items-center justify-content-end">
+                        <div class="col-auto">
+                            <button class="btn btn-ec-conversion px-5"
+                                    type="submit">{{ 'admin.common.registration'|trans }}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+    {% else %}
+        <p>{{ 'deliverydate.admin.setting.shop.holiday.nodata'|trans }}</p>
+    {% endif %}
+{% endblock %}
+

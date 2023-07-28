@@ -1,0 +1,73 @@
+api:
+
+  #------------------------------------------------------------------------------------
+  # Settings : API
+  #------------------------------------------------------------------------------------
+
+  admin:
+    management: API
+    oauth:
+      endpoint: Endpoint
+      authorization_endpoint: Authorization endpoint
+      token_endpoint: Token endpoint
+      api_endpoint: API endpoint
+      management: OAuth
+      identifier: Client ID
+      identifier_tooltip: Up to 32 alphanumeric characters
+      secret: Client Secret
+      secret_tooltip: Up to 128 alphanumeric characters
+      scope: Scope
+      scope_tooltip: GraphQL Query requires read, Mutation requires write/write Scope
+      scope.read.description: 'Read %shop_name% data'
+      scope.write.description: 'Write %shop_name% data'
+      redirect_uri: Redirect URI
+      redirect_uri_tooltip: You can enter multiple URIs separated by commas
+      grant_type: Grant Type
+      grant_type_tooltip: Supports only authorization code grant
+      client_registration: Client Registration
+      delete__confirm_title: Delete a Client
+      delete__confirm_message: Are you sure to delete this Client?
+      clear_expired_tokens: Clears all expired access and/or refresh tokens
+      copy: Copy
+      copied: Copied
+      allow__confirm_message: 'Do you want to allow access this app to %shop_name%?'
+      allow__confirm_description: 'Allow this app to:'
+      allow: Allow
+      deny: Deny
+    webhook:
+      management:  WebHook
+      registration: WebHook Registration
+      payload_url: Payload URL
+      secret: Secret
+      secret.tooltip: The payload is signed by HMAC-SHA256 with the entered value as a key in the X-ECCUBE-Signature header.
+      enabled: Enable / Disable
+      search_no_result_message: No WebHooks.
+      delete__confirm_title: Delete a WebHook
+      delete__confirm_message: Are you sure to delete this WebHook?
+    graphiql:
+      name: GraphiQL
+
+  #------------------------------------------------------------------------------------
+  # API
+  #------------------------------------------------------------------------------------
+
+  search_form_query:
+    args:
+      description:
+        page: Page number
+        limit: Limit number per page
+  update_product_stock:
+    args:
+      description:
+        product_code: SKU
+        stock: Stock (If the stock_unlimited is set to false, please set the value more than 0.)
+        stock_unlimited: 'Stock unlimited (Specify false: Limited or true: Unlimited)'
+  update_shipped:
+    args:
+      description:
+        id: Shipping ID
+        shipping_date: Shipping Date (Specify like Y-m-d\TH:i:sP. Execution date if not specified.)
+        shipping_delivery_name: Delivery Company Name
+        tracking_number: Tracking No.
+        note: Notes
+        is_send_mail: Shipment completion email send flag (specify true when sending)

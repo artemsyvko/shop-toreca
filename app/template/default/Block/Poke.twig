@@ -1,0 +1,46 @@
+{#
+/*
+ *
+ * new_item.twig 
+ *
+ */
+#}
+{% set Products = CustomizeNewProductPoke() %}
+{% if Products|length > 0 %}
+
+    <div class="ec-newItemRole">
+        <span class="pc_only"><img  src="{{ asset('assets/img/top/item_title.png') }}"></span>
+        <span class="sp_only"><img  src="{{ asset('assets/img/top/item_title_sp.png') }}"></span>
+        <a href="{{ url('product_list') }}?category_id=2">
+            <img class="pc_only" src="{{ asset('assets/img/top/poke.jpg') }}">
+            <img class="sp_only" src="{{ asset('assets/img/top/poke_sp.jpg') }}">
+        </a>
+        <div class="ec-newItemRole__list">
+ 
+            {% for Product in Products %}
+            <div class="ec-newItemRole__listItem">
+                <a href="{{ url('product_detail', {'id': Product.id}) }}">
+                    <img src="{{ asset(Product.main_list_image|no_image_product, 'save_image') }}">
+                    <!--<p class="ec-newItemRole__listItemTitle">{{ Product.name }}</p>
+                    <p class="ec-newItemRole__listItemPrice">
+                    {% if Product.hasProductClass %}
+                        {% if Product.getPrice02Min == Product.getPrice02Max %}
+                            {{ Product.getPrice02IncTaxMin|price }}
+                        {% else %}
+                            {{ Product.getPrice02IncTaxMin|price }} ～ {{ Product.getPrice02IncTaxMax|price }}
+                        {% endif %}
+                    {% else %}
+                        {{ Product.getPrice02IncTaxMin|price }}
+                    {% endif %}
+                    </p>-->
+                </a>
+            </div>
+            {% endfor %}
+ 
+        </div><!-- .ec-newItemRole__listItem end -->
+        <a href="{{ url('product_list') }}?category_id=2">
+            <div class="list_link sp_only">ポケカくじ一覧を見る</div>
+        </a>
+    </div><!-- .ec-newItemRole end -->
+
+{% endif %}

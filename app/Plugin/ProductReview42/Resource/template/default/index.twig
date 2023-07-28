@@ -1,0 +1,143 @@
+{#
+This file is part of EC-CUBE
+
+Copyright(c) LOCKON CO.,LTD. All Rights Reserved.
+
+http://www.lockon.co.jp/
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+#}
+{% extends 'default_frame.twig' %}
+
+{% set body_class = 'product_review' %}
+
+{% form_theme form 'Form/form_div_layout.twig' %}
+
+{% block stylesheet %}
+    <style>
+        #product_review_recommend_level {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+        }
+        #product_review_recommend_level label {
+            position: relative;
+            bottom: 18px;
+            left: 20px;
+            line-height: 0;
+        }
+    </style>
+{% endblock %}
+
+{% block main %}
+    <div class="ec-registerRole">
+        <div class="ec-pageHeader">
+            <h1>{{ 'product_review.front.review.title'|trans }}</h1>
+        </div>
+        <div class="ec-off1Grid">
+            <div class="ec-off1Grid__cell">
+                <form method="post" action="{{ url('product_review_index', { id: Product.id }) }}">
+                    {{ form_widget(form._token) }}
+                    <p class="ec-para-nomal">{{ 'product_review.front.review.description'|trans }}</p>
+                    <div class="ec-borderedDefs">
+                        {# 商品名 #}
+                        <dl>
+                            <dt>
+                                <label class="ec-label">{{ 'product_review.front.review.product_name'|trans }}</label>
+                            </dt>
+                            <dd>
+                                <div class="ec-input">
+                                    {{ Product.name }}
+                                </div>
+                            </dd>
+                        </dl>
+                        {# 投稿者名 #}
+                        <dl>
+                            <dt>
+                                {{ form_label(form.reviewer_name, '', {'label_attr': {'class': 'ec-label'}}) }}
+                            </dt>
+                            <dd>
+                                <div class="ec-input{{ has_errors(form.reviewer_name) ? ' error' }}">
+                                    {{ form_widget(form.reviewer_name) }}
+                                    {{ form_errors(form.reviewer_name) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        {# 投稿者URL #}
+                        <dl>
+                            <dt>
+                                {{ form_label(form.reviewer_url, '', {'label_attr': {'class': 'ec-label'}}) }}
+                            </dt>
+                            <dd>
+                                <div class="ec-input{{ has_errors(form.reviewer_url) ? ' error' }}">
+                                    {{ form_widget(form.reviewer_url) }}
+                                    {{ form_errors(form.reviewer_url) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        {# 性別 #}
+                        <dl>
+                            <dt>
+                                {{ form_label(form.sex, 'common.gender', {'label_attr': {'class': 'ec-label'}}) }}
+                            </dt>
+                            <dd>
+                                <div class="ec-radio{{ has_errors(form.sex) ? ' error' }}">
+                                    {{ form_widget(form.sex) }}
+                                    {{ form_errors(form.sex) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        {# おすすめレベル #}
+                        <dl>
+                            <dt>
+                                {{ form_label(form.recommend_level, '', {'label_attr': {'class': 'ec-label'}}) }}
+                            </dt>
+                            <dd>
+                                <div class="ec-radio{{ has_errors(form.recommend_level) ? ' error' }}">
+                                    {{ form_widget(form.recommend_level) }}
+                                    {{ form_errors(form.recommend_level) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        {# タイトル #}
+                        <dl>
+                            <dt>
+                                {{ form_label(form.title, '', {'label_attr': {'class': 'ec-label'}}) }}
+                            </dt>
+                            <dd>
+                                <div class="ec-input{{ has_errors(form.title) ? ' error' }}">
+                                    {{ form_widget(form.title) }}
+                                    {{ form_errors(form.title) }}
+                                </div>
+                            </dd>
+                        </dl>
+                        {# コメント #}
+                        <dl>
+                            <dt>
+                                {{ form_label(form.comment, '', {'label_attr': {'class': 'ec-label'}}) }}
+                            </dt>
+                            <dd>
+                                <div class="ec-input{{ has_errors(form.comment) ? ' error' }}">
+                                    {{ form_widget(form.comment) }}
+                                    {{ form_errors(form.comment) }}
+                                </div>
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="ec-registerRole__actions">
+                        <div class="ec-off4Grid">
+                            <div class="ec-off4Grid__cell">
+                                <button class="ec-blockBtn--action" type="submit" name="mode"
+                                        value="confirm">{{ 'product_review.front.review.confirm'|trans }}</button>
+                                <a class="ec-blockBtn--cancel"
+                                   href="{{ url('product_detail', { id: Product.id }) }}">{{ 'product_review.front.review.back'|trans }}</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

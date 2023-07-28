@@ -1,0 +1,587 @@
+{% extends 'default_frame.twig' %}
+
+{% form_theme form 'Form/form_div_layout.twig' %}
+
+{% block stylesheet %}
+<style type="text/css">
+    .ec-pageHeader h1{
+        padding: 16px 0 12px;
+        margin: 0 16px 48px;
+    }
+
+    .ec-blockBtn--action {
+        margin-bottom: 16px;
+    }
+
+    .sln_card_payment_container {
+        margin: 75px auto;
+        width: 100%;
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .ec-birth .ec-errorMessage,
+    .ec-halfInput .ec-errorMessage,
+    .ec-telInput .ec-errorMessage {
+        margin-top: 3px;
+        margin-bottom: 0px;
+    }
+
+    .ec-birth select {
+        margin: 0 8px 0;
+        background-color: white;
+    }
+
+    select#card_CardExpMonth {
+        margin-left: 0px;
+    }
+
+    #detail_box__name dd {
+        padding-left: 16px;
+        padding-right: 16px;
+        padding-bottom: 16px;
+    }
+
+    .sln-scInput .errormsg.text-danger {
+        color: #DE5D50;
+        margin-top: 16px;
+        margin-bottom: 16px;
+    }
+
+    .ec-halfInput input,
+    .sln-scInput input,
+    .ec-telInput input {
+        margin-bottom: 0px;
+    }
+
+    .sln-scInput input {
+        width: 100px;
+    }
+
+    @media all and (-ms-high-contrast: none){
+        .sln-scInput input {
+            width: 150px;
+        }
+    }
+
+    select#card_PayType {
+        width: 100%;
+        height: 40px;
+        background-color: white;
+    }
+
+    .ec-select {
+        margin-bottom: 0px;
+    }
+
+    label,.ec-label {
+        font-weight: normal;
+    }
+
+    .ec-errorMessage {
+        font-size: 12px;
+        font-weight: bold;
+        color: #DE5D50;
+    }
+
+</style>
+{% endblock stylesheet %}
+
+{% block javascript %}
+<script src="//ajaxzip3.github.io/ajaxzip3.js" charset="UTF-8"></script>
+<script type="text/javascript">
+
+    var isAddCard = false;
+
+    $(function(){
+        isAddCard = true;
+
+        $("input[data-key='card_no']").blur(function(){
+            checkCardNo();
+        });
+
+        $("select[data-key='card_exp_month']").blur(function(){
+            checkCardExp();
+        });
+
+        $("select[data-key='card_exp_year']").blur(function(){
+            checkCardExp();
+        });
+
+        $("input[data-key='kana_sei']").blur(function(){
+            checkKana();
+        });
+
+        $("input[data-key='kana_mei']").blur(function(){
+            checkKana();
+        });
+
+        $("input[data-key='sec_cd']").blur(function(){
+            checkSecCd();
+        });
+
+        $("input[data-key='birth_day']").blur(function(){
+            checkBirthDay();
+        });
+
+        $("input[data-key='tel_no']").blur(function(){
+            checkTelNo();
+        });
+    });
+
+    function checkCardNo() {
+        cardNo = $("input[data-key='card_no']").val();
+        $("#card_no_error").html("");
+        $("input[data-key='card_no']").css("border-color","#C4CCCE");
+
+        if ($("input[data-key='card_no']").length) {
+            if (!cardNo) {
+                $("#card_no_error").html("カード番号を入力してください");
+                $("#card_no_error").css("display","block");
+                $("input[data-key='card_no']").css("border-color","red");
+                return false;
+            } else if (isNaN(cardNo)) {
+                $("#card_no_error").html("ハイフンは間に入れず、番号のみを入力してください");
+                $("#card_no_error").css("display","block");
+                $("input[data-key='card_no']").css("border-color","red");
+                return false;
+            } else if (cardNo.length > 16 || cardNo.length < 14) {
+                $("#card_no_error").html("正しいカードを入力してください");
+                $("#card_no_error").css("display","block");
+                $("input[data-key='card_no']").css("border-color","red");
+                return false
+            }
+        }
+
+        return true;
+    }
+
+    function checkCardExp() {
+
+        reData = true
+
+        cardExpMonth = $("select[data-key='card_exp_month']").val();
+        cardExpYear = $("select[data-key='card_exp_year']").val();
+
+        $("#card_exp_month_error").html("");
+        $("#card_exp_year_error").html("");
+        $("select[data-key='card_exp_month']").css("border-color","#C4CCCE");
+        $("select[data-key='card_exp_year']").css("border-color","#C4CCCE");
+
+        if ($("select[data-key='card_exp_month']").length) {
+            if (!cardExpMonth) {
+                $("#card_exp_month_error").html("カード有効期限/月を入力してください");
+                $("select[data-key='card_exp_month']").css("border-color","red");
+                reData = false
+            }
+        }
+
+        if ($("select[data-key='card_exp_year']").length) {
+            if (!cardExpYear) {
+                $("#card_exp_year_error").html("カード有効期限/年を入力してください");
+                $("select[data-key='card_exp_year']").css("border-color","red");
+                reData = false
+            }
+        }
+
+        return reData;
+    }
+
+    function checkKana() {
+
+        reData = true
+
+        kanaSei = $("input[data-key='kana_sei']").val();
+        kanaMei = $("input[data-key='kana_mei']").val();
+
+        $("#kana_sei_error").html("");
+        $("#kana_mei_error").html("");
+        $("input[data-key='kana_sei']").css("border-color","#C4CCCE");
+        $("input[data-key='kana_mei']").css("border-color","#C4CCCE");
+
+        if ($("input[data-key='kana_sei']").length) {
+            if (!kanaSei) {
+                $("#kana_sei_error").html("カード名義/姓を入力してください");
+                $("#kana_sei_error").css("display","block");
+                $("input[data-key='kana_sei']").css("border-color","red");
+                reData = false
+            } else if (!kanaSei.match(/^[\u30A0-\u30FF]+$/)) {
+                $("#kana_sei_error").html("カード名義/姓をカタカナを入力してください");
+                $("#kana_sei_error").css("display","block");
+                $("input[data-key='kana_sei']").css("border-color","red");
+                reData = false
+            }
+        }
+
+        if ($("input[data-key='kana_mei']").length) {
+            if (!kanaMei) {
+                $("#kana_mei_error").html("カード名義/名を入力してください");
+                $("#kana_mei_error").css("display","block");
+                $("input[data-key='kana_mei']").css("border-color","red");
+                reData = false
+            } else if (!kanaMei.match(/^[\u30A0-\u30FF]+$/)) {
+                $("#kana_mei_error").html("カード名義/名をカタカナを入力してください");
+                $("#kana_mei_error").css("display","block");
+                $("input[data-key='kana_mei']").css("border-color","red");
+                reData = false
+            }
+        }
+
+        return reData
+    }
+
+    function checkSecCd() {
+        secCd = $("input[data-key='sec_cd']").val();
+
+        $("#sec_cd_error").html("");
+        $("input[data-key='sec_cd']").css("border-color","#C4CCCE");
+
+        if ($("input[data-key='sec_cd']").length) {
+            if (!secCd) {
+                $("#sec_cd_error").html("セキュリティコードを入力してください");
+                $("input[data-key='sec_cd']").css("border-color","red");
+                return false;
+            } else if (isNaN(secCd)) {
+                $("#sec_cd_error").html("セキュリティコードは数字のみを入力してください");
+                $("input[data-key='sec_cd']").css("border-color","red");
+                return false;
+            } else if (secCd.length < 3) {
+                $("#sec_cd_error").html("セキュリティコードは3文字以上数字を入力してください");
+                $("input[data-key='sec_cd']").css("border-color","red");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    function checkBirthDay() {
+        birthDay = $("input[data-key='birth_day']").val();
+
+        $("#birth_day_error").html("");
+        $("input[data-key='birth_day']").css("border-color","#C4CCCE");
+
+        if ($("input[data-key='birth_day']").length) {
+            if (!birthDay) {
+                $("#birth_day_error").html("生月日を入力してください");
+                $("input[data-key='birth_day']").css("border-color","red");
+                return false;
+            } else if (isNaN(birthDay)) {
+                $("#birth_day_error").html("生月日は数字のみを入力してください");
+                $("input[data-key='birth_day']").css("border-color","red");
+                return false;
+            } else if (birthDay.length != 4) {
+                $("#birth_day_error").html("生月日は4文字を入力してください");
+                $("input[data-key='birth_day']").css("border-color","red");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    function checkTelNo() {
+        telNo = $("input[data-key='tel_no']").val();
+
+        $("#tel_no_error").html("");
+        $("input[data-key='tel_no']").css("border-color","#C4CCCE");
+
+        if ($("input[data-key='tel_no']").length) {
+            if (!telNo) {
+                $("#tel_no_error").html("電話番号を入力してください");
+                $("input[data-key='tel_no']").css("border-color","red");
+                return false;
+            } else if (isNaN(telNo)) {
+                $("#tel_no_error").html("電話番号は数字のみを入力してください");
+                $("input[data-key='tel_no']").css("border-color","red");
+                return false;
+            } else if (telNo.length != 4) {
+                $("#tel_no_error").html("電話番号は下4桁をご記入下さい");
+                $("input[data-key='tel_no']").css("border-color","red");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    function getToken() {
+        
+        if (!isAddCard) {
+            alert("決済システムと通信中のため少々お待ちください。");
+            return false;
+        }
+
+
+        cardNo = $("input[data-key='card_no']").val();
+        cardExpMonth = $("select[data-key='card_exp_month']").val();
+        cardExpYear = $("select[data-key='card_exp_year']").val();
+        kanaSei = $("input[data-key='kana_sei']").val();
+        kanaMei = $("input[data-key='kana_mei']").val();
+        secCd = $("input[data-key='sec_cd']").val();
+        birthDay = $("input[data-key='birth_day']").val();
+        telNo = $("input[data-key='tel_no']").val();
+
+        isSub = true;
+        
+        isSub = checkCardNo()
+        if (isSub) {
+            isSub = checkCardExp()
+        } else {
+            checkCardExp()
+        }
+
+        if (isSub) {
+            isSub = checkKana()
+        } else {
+            checkKana()
+        }
+
+        if (isSub) {
+            isSub = checkSecCd()
+        } else {
+            checkSecCd()
+        }
+
+        if (isSub) {
+            isSub = checkBirthDay()
+        } else {
+            checkBirthDay()
+        }
+
+        if (isSub) {
+            isSub = checkTelNo()
+        } else {
+            checkTelNo()
+        }
+
+        if (!isSub) {
+            alert("入力項目を再度ご確認ください");
+            return false;
+        }
+        
+
+        $("#detail_box").hide(500);
+        $("#pay_status").show(100);
+
+        $("input[data-key='card_no']").val('');
+        $("select[data-key='card_exp_month']").val('');
+        $("select[data-key='card_exp_year']").val('');
+        $("input[data-key='kana_sei']").val('');
+        $("input[data-key='kana_mei']").val('');
+        $("input[data-key='sec_cd']").val('');
+        $("input[data-key='birth_day']").val('');
+        $("input[data-key='tel_no']").val('');
+
+        if (birthDay) {
+            birthDay1 = birthDay.substr(0, 2);
+            birthDay2 = birthDay.substr(2, 2);
+        } else {
+            birthDay1 = null;
+            birthDay2 = null;
+        }
+
+        if (cardExpYear) {
+            cardExpYear = cardExpYear.substr(2, 2);
+        }
+
+        try {
+            //token取る処理
+            SpsvApi.spsvCreateToken(cardNo, cardExpYear, cardExpMonth, secCd, birthDay1, birthDay2, telNo, kanaSei, kanaMei);
+        } catch(err) {
+            alert("現在決済通信障害が発生しております。後ほどお試しください。" + err);
+            window.location.href = "{{ url('cart') }}";
+        }
+        return false;
+    }
+
+    function setToken(token, card) {
+
+        if (token) {
+            $("input[data-key='card_token']").val(token);
+            $("form[id='add_card_form']").submit();
+        }
+    }
+</script>
+<script type="text/javascript"
+    src="{{ TokenJsUrl }}?k_TokenNinsyoCode={{ TokenNinsyoCode }}"
+    callBackFunc = "setToken"
+    class = "spsvToken"></script>
+{% endblock javascript %}
+
+{% block main %}
+<div class="sln_card_payment_container">
+
+<div class="ec-pageHeader">
+    <h1>クレジットカード購入画面</h1>
+</div>
+
+{% for message in app.session.flashBag.get('eccube.sln_payment.warning') %}
+    <div class="row">
+        <div class="alert alert-warning alert-dismissable alert-section">
+            {{ message|trans }}
+        </div>
+    </div>
+{% endfor %}
+
+
+<div id="detail_wrap" class="container-fluid">
+    <div id="pay_status" style="display:none" class="row">
+        <div class="col-md-10 col-md-offset-1">
+            決済処理中です。しばらくお待ち下さい。
+        </div>
+    </div>
+    <div id="detail_box" class="ec-off1Grid">
+        <div id="detail_box__body" class="ec-off1Grid__cell">
+            <form method="post" id="add_card_form" action="?" class="h-adr">
+                {{ form_widget(form._token) }}
+                <div id="detail_box__body_inner" class="ec-borderedDefs">
+                    {% if IsReCard == false %}
+                        <dl id="detail_box__name">
+                            <dt>{{ form_label(form.CardNo) }}</dt>
+                            <dd>
+                                <div class="ec-halfInput{{ has_errors(form.CardNo) ? ' error' }}">
+                                    {{ form_widget(form.CardNo, {'attr': {'data-key': 'card_no', 'value': ''}}) }}
+                                    {{ form_errors(form.CardNo) }}
+                                    <p class="ec-errorMessage" id="card_no_error" style="display:none;"></p>
+                                </div>
+                            </dd>
+                        </dl>
+
+                        <dl id="detail_box__name">
+                            <dt><label class="ec-label required" for="sln_card_CardNo">カード有効期限</label><span class="ec-required">必須</span></dt>
+                            <dd>
+                                <div class="ec-birth">
+                                    {{ form_widget(form.CardExpMonth, {'attr': {'data-key': 'card_exp_month'}}) }}月 / {{ form_widget(form.CardExpYear, {'attr': {'data-key': 'card_exp_year'}}) }}年
+                                    {{ form_errors(form.CardExpMonth) }}
+                                    {{ form_errors(form.CardExpYear) }}
+                                    <p class="ec-errorMessage" id="card_exp_month_error"></p>
+                                    <p class="ec-errorMessage" id="card_exp_year_error"></p>
+                                </div>
+                            </dd>
+                        </dl>
+
+                        {% if 'KanaSei' in config.AttestationAssistance %}
+                        <dl id="detail_box__name">
+                            <dt><label class="ec-label required" for="sln_card_CardNo">カード名義</label><span class="ec-required">必須</span></dt>
+                            <dd>
+                                <div class="ec-halfInput{{ (has_errors(form.KanaSei) or has_errors(form.KanaMei)) ? ' error' }}">
+                                    {{ form_widget(form.KanaSei, {'attr': {'data-key': 'kana_sei', 'value': ''}}) }}
+                                    {{ form_widget(form.KanaMei, {'attr': {'data-key': 'kana_mei', 'value': ''}}) }}
+                                    <p class="ec-errorMessage" id="kana_sei_error" style="display:none;"></p>
+                                    <p class="ec-errorMessage" id="kana_mei_error" style="display:none;margin-left:0;"></p>
+                                    {{ form_errors(form.KanaSei) }}
+                                    {{ form_errors(form.KanaMei) }}
+                                </div>
+                                <p class="ec-errorMessage">
+                                        ご本人名義のカードをご使用下さい。
+                                </p>
+                            </dd>
+                        </dl>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if IsReCard %}
+                        <dl id="detail_box__name">
+                            <dt><label class="ec-label required">登録済クレジットカード番号</label></dt>
+                            <dd>{{ cardNo }}</dd>
+                        </dl>
+                    {% endif %}
+
+                    {% if config.SecCd == 1 and IsReCard == 0 %}
+                    <dl id="detail_box__name">
+                        <dt>{{ form_label(form.SecCd) }}</dt>
+                        <dd>
+                            <div class="sln-scInput ec-input{{ has_errors(form.SecCd) ? ' error' }}">
+                                {{ form_widget(form.SecCd, {'attr': {'data-key': 'sec_cd', 'value': ''}}) }}
+                                {{ form_errors(form.SecCd) }}
+                                <p class="errormsg text-danger" id="sec_cd_error"></p>
+                                <p class="errormsg text-danger">
+                                    カード裏面の署名欄(AMEXは除く）に記載されている末尾３桁～４桁の数字をご記入下さい。
+                                </p>
+                                <p class="errormsg text-danger">
+                                    AMEXは表面にあります。(例: 1234)
+                                </p>
+                            </div>
+                        </dd>
+                    </dl>
+                    {% endif %}
+
+                    {% if IsReCard == false %}
+                        {% if 'BirthDay' in config.AttestationAssistance %}
+                        <dl id="detail_box__name">
+                            <dt>{{ form_label(form.BirthDay) }}</dt>
+                            <dd>
+                                <div class="ec-telInput{{ has_errors(form.BirthDay) ? ' error' }}">
+                                    {{ form_widget(form.BirthDay, {'attr': {'data-key': 'birth_day', 'value': ''}}) }}
+                                    {{ form_errors(form.BirthDay) }}
+                                    <p class="ec-errorMessage" id="birth_day_error"></p>
+                                    <p class="ec-errorMessage">
+                                        ご本人の誕生日の月日をご記入下さい(年は必要ありません)。
+                                    </p>
+                                </div>
+                            </dd>
+                        </dl>
+                        {% endif %}
+
+                        {% if 'TelNo' in config.AttestationAssistance %}
+                        <dl id="detail_box__name">
+                            <dt>{{ form_label(form.TelNo) }}</dt>
+                            <dd>
+                                <div class="ec-telInput{{ has_errors(form.TelNo) ? ' error' }}">
+                                    {{ form_widget(form.TelNo, {'attr': {'data-key': 'tel_no', 'value': ''}}) }}
+                                    {{ form_errors(form.TelNo) }}
+                                    <p class="ec-errorMessage" id="tel_no_error"></p>
+                                    <p class="ec-errorMessage">
+                                        カード会社に登録していますご本人の電話番号下4桁をご記入下さい。
+                                    </p>
+                                </div>
+                            </dd>
+                        </dl>
+                        {% endif %}
+                    {% endif %}
+
+                    <dl id="detail_box__name">
+                        <dt>{{ form_label(form.PayType) }}</dt>
+                        <dd>
+                            <div class="ec-select">
+                                {{ form_widget(form.PayType) }}
+                                {{ form_errors(form.PayType) }}
+                            </div>
+                        </dd>
+                    </dl>
+
+                    {% if config.MemberRegist == 1 and IsReCard == false and IsUser and IsAddMemView %}
+                    <dl id="detail_box__name">
+                        <dt>{{ form_label(form.AddMem) }}</dt>
+                        <dd>
+                            <div class="ec-checkbox">
+                                {{ form_widget(form.AddMem) }}
+                                {{ form_errors(form.AddMem) }}
+                            </div>
+                        </dd>
+                    </dl>
+                    {% endif %}
+
+                    {% if IsReCard == false %}
+                        {{ form_widget(form.Token, {'attr': {'data-key': 'card_token'}}) }}
+                    {% endif %}
+                </div>
+                <div id="top_box__footer" class="row no-padding">
+                    <div id="top_box__button_menu" class="btn_group offset-sm-4 col-sm-4">
+                        <p>
+                            <a id="add_card" {% if IsReCard == false %}onclick="return getToken();"{% else %}onclick="$('#detail_box').hide(500);
+        $('#pay_status').show(100); $('form[id=add_card_form]').submit();"{% endif %} class="ec-blockBtn--action">購入する</a>
+                        </p>
+                        <p><a href="{{ url('shopping') }}" class="ec-blockBtn--cancel">戻る</a></p>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</div>
+
+</div>
+{% endblock %}

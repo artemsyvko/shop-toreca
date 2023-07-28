@@ -1,0 +1,51 @@
+{#
+This file is part of EC-CUBE
+
+Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+
+http://www.ec-cube.co.jp/
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+#}
+<ul class="list-inline">
+    {% for child in form.children|filter(child => (child.vars.name != '_token' and child.vars.data is not empty)) %}
+        {% if false == (child.vars.label == 'admin.list.sort.key' or child.vars.label == 'admin.list.sort.type') %}{# ソートの選択結果は表示しない #}
+        <li class="list-inline-item"><span class="fw-bold">{{ child.vars.label|trans }}:&nbsp;</span>
+            {%- if child.vars.data is iterable -%}
+                {%- for value in child.vars.value -%}
+                    {# ChoiceType -> multiple:true #}
+                    {%- for choice in child.vars.choices -%}
+                        {%- if choice is selectedchoice(value) -%}
+                            {{ choice.label|trans }}
+                        {%- endif %}
+                    {%- endfor -%}
+                    {{ not loop.last ? ',&nbsp;' }}
+                {%- endfor -%}
+            {%- elseif child.vars.data.timestamp is defined -%}
+                {# DateTimeType の時は分まで表示 #}
+                {% if 'datetime' in child.vars.id %}
+                    {{ child.vars.data|date_sec }}
+                {% else %}
+                    {{ child.vars.data|date_day }}
+                {% endif %}
+            {%- else -%}
+                {# ChoiceType -> multiple:false #}
+                {%- if child.vars.choices is defined and child.vars.choices is not empty -%}
+                    {%- for choice in child.vars.choices -%}
+                        {%- if choice is selectedchoice(child.vars.value) -%}
+                            {{ choice.label|trans }}
+                        {%- endif %}
+                    {%- endfor -%}
+                {%- else -%}
+                    {%- if child.vars.data is integer -%}
+                        {{ child.vars.data|number_format }}
+                    {%- else -%}
+                        {{ child.vars.data }}
+                    {%- endif -%}
+                {%- endif-%}
+            {%- endif -%}
+        </li>
+        {% endif %}
+    {% endfor %}
+</ul>

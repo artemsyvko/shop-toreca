@@ -1,0 +1,149 @@
+{#
+/*
+ * This file is part of the ProductReview plugin
+ *
+ * Copyright (C) 2016 LOCKON CO.,LTD. All Rights Reserved.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+#}
+
+{% import _self as stars %}
+
+{# 星テキスト生成用マクロ #}
+{% macro stars(positive, negative) %}
+    {% set positive_stars = ["", "★", "★★", "★★★", "★★★★", "★★★★★"] %}
+    {% set negative_stars = ["", "☆", "☆☆", "☆☆☆", "☆☆☆☆", "☆☆☆☆☆"] %}
+    {{ positive_stars[positive] }}{{ negative_stars[negative] }}
+{% endmacro %}
+
+<style type="text/css">
+
+    #product_review_area {
+        border-top: 1px solid #E8E8E8;
+        padding-bottom: 0;
+        margin-bottom: 20px;
+    }
+
+    #product_review_area .ec-rectHeading {
+        cursor: pointer;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    #product_review_area .ec-rectHeading.is_active i {
+        transform: rotate(180deg);
+    }
+
+    #product_review_area .review_list {
+        padding-left: 25px;
+    }
+
+    #product_review_area .review_list li {
+        margin-bottom: 16px;
+    }
+
+    #product_review_area .review_list .review_date {
+        font-weight: bold;
+    }
+
+    #product_review_area .recommend_average {
+        margin-left: 16px;
+        color: #DE5D50;
+    }
+
+    #product_review_area .review_list .recommend_level {
+        margin-left: 16px;
+        color: #DE5D50;
+    }
+
+    #product_review_area .review_list .recommend_name {
+        margin-left: 16px;
+    }
+
+</style>
+
+<script>
+    $(function() {
+        $('#product_review_area').appendTo($('.ec-layoutRole__main, .ec-layoutRole__mainWithColumn, .ec-layoutRole__mainBetweenColumn'));
+
+        $('#product_review_area .ec-rectHeading').on('click', function() {
+            $content = $('#reviewContent');
+            if ($content.css('display') == 'none') {
+                $(this).addClass('is_active');
+                $content.addClass('is_active');
+                $content.slideDown(300);
+            } else {
+                $(this).removeClass('is_active');
+                $content.removeClass('is_active');
+                $content.slideUp(300);
+            }
+            return false;
+        });
+    });
+</script>
+
+<!--▼レビューエリア-->
+<div id="product_review_area">
+    <div class="ec-role">
+        {% set positive_avg_star = ProductReviewAvg %}
+        {% set negative_avg_star = 5 - positive_avg_star %}
+
+        <div class="ec-rectHeading is_active">
+            <h4>{{ 'product_review.front.product_detail.title'|trans }}
+                <!--平均の星の数-->
+                <span class="recommend_average">{{ stars.stars(positive_avg_star, negative_avg_star) }}</span>
+                <!--レビュー数-->
+                <span>({{ ProductReviewCount }})</span>
+                <span class="chevron pull-right">
+                    <i class="fas fa-angle-up fa-lg"></i>
+                </span>
+            </h4>
+        </div>
+        <div id="reviewContent">
+            {% if ProductReviews %}
+                <ul class="review_list">
+                    {% for ProductReview in ProductReviews %}
+                        <li>
+                            <p class="review_date">
+                                <!--投稿日-->
+                                {{ ProductReview.create_date|date_day }}
+
+                                <!--投稿者-->
+                                <span class="recommend_name">
+                                            {% if ProductReview.reviewer_url %}
+                                                <a href="{{ ProductReview.reviewer_url }}" rel="ugc nofollow"
+                                                   target="_blank">{{ 'product_review.front.product_detail.name'|trans({ '%name%': ProductReview.reviewer_name }) }}</a>
+                                            {% else %}
+                                                {{ 'product_review.front.product_detail.name'|trans({ '%name%': ProductReview.reviewer_name }) }}
+                                            {% endif %}
+                                        </span>
+
+                                <!--星の数-->
+                                {% set positive_star = ProductReview.recommend_level %}
+                                {% set negative_star = 5 - positive_star %}
+                                <span class="recommend_level">
+                                            {{ stars.stars(positive_star, negative_star) }}
+                                        </span>
+                            </p>
+
+                            <!--タイトル-->
+                            <strong>{{ ProductReview.title }}</strong>
+
+                            <!--レビューコメント-->
+                            <p>{{ ProductReview.comment|nl2br }}</p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>{{ 'product_review.front.product_detail.no_review'|trans }}</p>
+            {% endif %}
+        </div>
+        <div>
+            <a href="{{ url('product_review_index', { id: Product.id }) }}"
+               class="ec-inlineBtn--action">{{ 'product_review.front.product_detail.post_review'|trans }}</a>
+        </div>
+    </div>
+</div>
+<!-- ▲レビューエリア -->

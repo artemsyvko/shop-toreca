@@ -1,0 +1,216 @@
+services:
+    Plugin\SlnPayment42\Service\Util:
+        arguments:
+            - '@monolog.logger'
+            - '@monolog.logger'
+            - '@monolog.logger'
+            - '@Symfony\Component\Routing\Generator\UrlGeneratorInterface'
+            - '@Symfony\Component\EventDispatcher\EventDispatcherInterface'
+    Plugin\SlnPayment42\Service\SlnMailService:
+        arguments:
+            - '@Eccube\Service\MailService'
+            - '@Symfony\Component\Mailer\MailerInterface'
+            - '@twig'
+            - '@Symfony\Component\EventDispatcher\EventDispatcherInterface'
+            - '@Eccube\Repository\MailTemplateRepository'
+            - '@Eccube\Repository\MailHistoryRepository'
+            - '@Eccube\Repository\BaseInfoRepository'
+            - '@Plugin\SlnPayment42\Service\Util'
+            - '@Plugin\SlnPayment42\Service\BasicItem'
+            - '@Plugin\SlnPayment42\Repository\PluginConfigRepository'
+    Plugin\SlnPayment42\Service\SlnAction\HttpSend:
+        arguments:
+            - '@Plugin\SlnPayment42\Service\Util'
+            - '@Plugin\SlnPayment42\Repository\OrderPaymentHistoryRepository'
+    Plugin\SlnPayment42\Service\SlnAction\Credit:
+        arguments: 
+            - '@doctrine.orm.default_entity_manager'
+            - '@Eccube\Common\EccubeConfig'
+            - '@Eccube\Repository\OrderRepository'
+            - '@Plugin\SlnPayment42\Service\Util'
+            - '@Plugin\SlnPayment42\Service\SlnAction\HttpSend'
+            - '@Plugin\SlnPayment42\Repository\MemCardIdRepository'
+            - '@Plugin\SlnPayment42\Repository\PluginConfigRepository'
+            - '@Plugin\SlnPayment42\Repository\OrderPaymentHistoryRepository'
+    Plugin\SlnPayment42\Service\SlnAction\Cvs:
+        arguments: 
+            - '@Plugin\SlnPayment42\Service\Util'
+            - '@Plugin\SlnPayment42\Service\SlnAction\HttpSend'
+            - '@Plugin\SlnPayment42\Repository\OrderPaymentHistoryRepository'
+    Plugin\SlnPayment42\Service\SlnAction\Mem:
+        arguments: 
+            - '@Eccube\Common\EccubeConfig'
+            - '@Plugin\SlnPayment42\Service\Util'
+            - '@Plugin\SlnPayment42\Service\SlnAction\HttpSend'
+            - '@Plugin\SlnPayment42\Repository\MemCardIdRepository'
+            - '@Plugin\SlnPayment42\Repository\PluginConfigRepository'
+
+
+parameters:
+    #決済モジュール　モジュール設定画面
+    #MAXLENGTH設定
+    MERCHANTID_LEN: '20'
+    MERCHANTPASS_LEN: '20'
+    TENPOCODE_LEN: '4'
+    FREEAREA_LEN: '16'
+    ANNAI_LEN: '30'
+    QUESTIONSAKI_LEN: '21'
+    QUESTIONTIME_LEN: '11'
+    CUSTANNNAITITLE_LEN: '20'
+    MODORISAKIURL_LEN: '128'
+    QUESTIONTEL_LEN: '12'
+
+    #支払い最大額
+    SLN_PAYID_CREDIT_MAX: '9999999'
+    SLN_PAYID_REGIST_CREDIT_MAX: '9999999'
+    SLN_PAYID_CVS_MAX: '299999'
+
+    SLN_PAYNAME_CREDIT: クレジットカード決済
+    SLN_PAYNAME_REGIST_CREDIT: 登録済みクレジットカード決済
+    SLN_PAYNAME_CVS: コンビニ決済 楽天EDY SUICA ネットバンク ペイジー
+
+    #支払回数
+    arrPayKbnKaisu:
+        一括払い: '1'
+        分割払い(2回): '2'
+        分割払い(3回): '3'
+        分割払い(5回): '5'
+        分割払い(6回): '6'
+        分割払い(10回): '10'
+        分割払い(12回): '12'
+        分割払い(15回): '15'
+        分割払い(18回): '18'
+        分割払い(20回): '20'
+        分割払い(24回): '24'
+        リボルビング払い: '88'
+        ボーナス一括払い: '80'
+
+    #処理区分
+    arrJobCd:
+        1Auth: 1Auth
+        1Gathering: 1Gathering
+
+    #カード決済手続き
+    arrCardProcedure:
+        仮売上(1Auth): 1Auth 
+        即時売上(1Gathering): 1Gathering
+        
+    #受注入金済み手続き
+    arrGatheringOrderStatus:
+        新規受注: '1' 
+        入金済み: '2' 
+
+    #認証アシスト項目
+    arrAssistance:
+        カナ氏名: KanaSei
+        生月日: BirthDay
+        電話番号下4桁: TelNo 
+
+    #セキュリティコード
+    arrSecurityCode:
+        有り: '1'
+        無し: '2' 
+
+    #会員登録機能
+    arrMemberRegist:
+        有り: '1' 
+        無し: '2'
+
+    #クイック決済
+    arrQuickAccounts:
+        有り: '1' 
+        無し: '2' 
+
+    #３D決済
+    arr3DPay:
+        有り: '1'
+        無し: '2' 
+
+    #利用できるオンライン収納決済方法
+    arrOnlinePaymentMethod:
+        コンビニ決済(ローソン／ファミリーマート／サークルKサンクス／デイリーヤマザキグループ／ミニストップ／スリーエフ): convenience_1
+        コンビニ決済(セブンイレブン): convenience_seven
+        楽天EDY: electronic_money_edy
+        SUICA: electronic_money_suika 
+        ネットバンク(楽天銀行／ジャパンネット銀行／じぶん銀行／住信SBIネット銀行): netbank
+        ペイジー(ATM／インターネットバンキング): paygee
+
+    #利用できるオンライン収納決済方法(表示Short ver)
+    arrShortPaymentMethod:
+        コンビニ決済: convenience_1 
+        コンビニ決済2: convenience_seven 
+        楽天EDY: electronic_money_edy 
+        SUICA: electronic_money_suika 
+        ネットバンク: netbank 
+        ペイジー: paygee
+
+    #収納機関コード
+    arrCvsCd:
+        LSN: ローソン
+        FAM: ファミリーマート
+        ATM: Pay-easy（ATM)
+        ONL: Pay-easy（オンライン)
+        LNK: Pay-easy（情報リンク）
+        SEV: セブンイレブン
+        MNS: ミニストップ
+        DAY: デイリーヤマザキ
+        EBK: 楽天銀行（旧イーバンク銀行）
+        JNB: ジャパンネット銀行
+        EDY: Edy
+        SUI: Suica
+        FFF: スリーエフ
+        JIB: じぶん銀行
+        SNB: 住信 SBI ネット銀行
+        SCM: セイコーマート
+        VWA: 支払秘書
+    
+    #支払いステータス
+    arrPayStatus:
+        UNSETTLED: '0'
+        REQUEST_SUCCESS: '1'
+        PAY_SUCCESS: '2'
+        CANCEL: '4'
+        AUTH: '11'
+        COMMIT: '12'
+        CAPTURE: '13'
+        VOID: '14'
+        FAIL: '99'
+        
+    arrPayStatusNames:
+        未決済: '0' 
+        要求成功: '1'
+        支払い完了: '2'
+        キャンセル: '4'
+        仮売上済み: '11'
+        実売上済み: '12'
+        即時売上げ済み: '13'
+        取消済み: '14'
+        決済失敗: '99' 
+
+    #クレジット決済接続先
+    arrCreditConnectionDestination:
+        1: 
+            creditConnectionPlace1: https://www.test.e-scott.jp/online/aut/OAUT002.do
+            creditConnectionPlace2: https://www.test.e-scott.jp/online/crp/OCRP005.do
+            creditConnectionPlace6: https://www.test.e-scott.jp/euser/stn/CdGetJavaScript.do
+        2:
+            creditConnectionPlace1: https://www.e-scott.jp/online/aut/OAUT002.do
+            creditConnectionPlace2: https://www.e-scott.jp/online/crp/OCRP005.do
+            creditConnectionPlace6: https://www.e-scott.jp/euser/stn/CdGetJavaScript.do
+
+
+    #3Dセキュア認証接続先
+    arrThreedConnectionDestination:
+        1:
+            creditConnectionPlace7: https://www.test.e-scott.jp/online/tds/OTDS010.do
+        2:
+            creditConnectionPlace7: https://www.e-scott.jp/online/tds/OTDS010.do
+
+    #オンライン収納代行接続先
+    arrCvsConnectionDestination:
+        1:
+            creditConnectionPlace3: https://link.kessai.info/JLPCT/JLPcon
+            creditConnectionPlace5: https://www.test.e-scott.jp/online/cnv/OCNV005.do
+        2:
+            creditConnectionPlace3: https://link.kessai.info/JLP/JLPcon
+            creditConnectionPlace5: https://www.e-scott.jp/online/cnv/OCNV005.do

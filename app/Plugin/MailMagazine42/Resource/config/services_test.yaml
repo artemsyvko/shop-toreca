@@ -1,0 +1,8 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: true
+
+  Plugin\MailMagazine42\Service\MailMagazineService:
+  Plugin\MailMagazine42\Event\MailMagazineHistoryFilePaginationSubscriber:

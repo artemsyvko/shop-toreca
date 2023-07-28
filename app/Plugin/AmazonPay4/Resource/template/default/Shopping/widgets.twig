@@ -1,0 +1,136 @@
+{#
+Amazon Pay V2 for EC-CUBE4
+Copyright(c) 2020 IPLOGIC CO.,LTD. All Rights Reserved.
+
+http://www.iplogic.co.jp/
+
+This program is not free software.
+It applies to terms of service.
+#}
+
+
+<link rel="stylesheet" href="{{ asset('assets/css/amazon_shopping.css') }}">
+<script src="{{ AmazonPay4Api.checkout_script_url }}"></script>
+
+<div class="d-none">
+    <div id="amazon_pay__address">
+        <div class="ec-orderDelivery__title">{{ 'お届け先'|trans }}
+            <div class="ec-orderDelivery__change">
+                <button class="ec-inlineBtn" id="amazon_pay_shipping_change" type="button">{{ 'お届け先修正'|trans }}</button>
+            </div>
+        </div>
+        <div class="ec-orderDelivery__address">
+            <p>{% if AmazonShippingAddress.name is defined %}{{ AmazonShippingAddress.name }}{% endif %}</p>
+            {% spaceless %}
+            <p>
+                {% if AmazonShippingAddress.postalCode is defined %}{{ AmazonShippingAddress.postalCode }}{% endif %}
+                {% if AmazonShippingAddress.stateOrRegion is defined %}{{ AmazonShippingAddress.stateOrRegion }}{% endif %}
+                {% if AmazonShippingAddress.city is defined %}{{ AmazonShippingAddress.city }}{% endif %}
+                {% if AmazonShippingAddress.addressLine1 is defined %}{{ AmazonShippingAddress.addressLine1 }}{% endif %}
+                {% if AmazonShippingAddress.addressLine2 is defined %}{{ AmazonShippingAddress.addressLine2 }}{% endif %}
+                {% if AmazonShippingAddress.addressLine3 is defined %}{{ AmazonShippingAddress.addressLine3 }}{% endif %}
+            </p>
+            {% endspaceless %}
+            <p>{% if AmazonShippingAddress.phoneNumber is defined %}{{ AmazonShippingAddress.phoneNumber }}{% endif %}</p>
+        </div>
+    </div>
+    <div id="amazon_pay__payment_descriptor">
+        {% if AmazonPaymentDescriptor %}
+            <div class="amazon_pay_amazonpaymentdescriptor_block">
+                <div style="padding-right: 5px;"><img src="{{ asset('AmazonPay4/assets/img/logo-amzn_pay.png', 'plugin') }}"></div>
+                <div>{{ AmazonPaymentDescriptor }}</div>
+            </div>
+                <div class="amazon_pay_payment_change_block">
+                    <button class="ec-inlineBtn" id="amazon_pay_payment_change" type="button">{{ 'お支払方法修正'|trans }}</button>
+                </div>
+        {% endif %}
+    </div>
+</div>
+
+{% block javascript %}
+<script>
+
+    $(function () {
+    // submit
+{% if AmazonPay4Config.use_confirm_page == eccube_config.amazon_pay4.toggle.on %}
+    $('#shopping-form').attr('action', '{{ url("amazon_pay_shopping_confirm") }}')
+{% elseif Order.postal_code == ' ' %}
+    alert('お客様情報登録に失敗しました。他のお届け先を選択してください。');
+    $('button.ec-blockBtn--action').text('注文する').prop( 'disabled', true );
+    $('button.ec-blockBtn--action').addClass('amazon_pay_button');
+    $('#shopping-form').attr('action', '{{ url("amazon_pay_shopping_checkout") }}');
+{% else %}
+    $('button.ec-blockBtn--action').text('注文する');
+    $('button.ec-blockBtn--action').addClass('amazon_pay_button');
+    $('#shopping-form').attr('action', '{{ url("amazon_pay_shopping_checkout") }}');
+{% endif %}
+
+// イベント上書き
+var $redirectCallbackAmazon = function () {
+    loadingOverlay();
+    $('#shopping_order_redirect_to').val($(this).attr('data-path'));
+    $('#shopping-form').attr('action', '{{ url("amazon_pay_shopping_redirect_to") }}').submit();
+};
+$('[data-trigger]').each(function() {
+    $(this).off($(this).attr('data-trigger'));
+    $(this).on($(this).attr('data-trigger'), $redirectCallbackAmazon);
+});
+
+$('div.ec-orderRole__detail > div.ec-orderDelivery > div.ec-orderDelivery__title').remove();
+$('div.ec-orderRole__detail > div.ec-orderDelivery > div.ec-orderDelivery__item:not(:eq(0))').remove();
+$('div.ec-orderRole__detail > div.ec-orderDelivery > div.ec-orderDelivery__address').remove();
+$('div.ec-orderRole__detail > div.ec-orderDelivery > div.ec-orderDelivery__actions:not(:eq(0))').remove();
+$('div.ec-orderRole__detail > div.ec-orderDelivery > div.ec-orderDelivery__edit').remove();
+
+$('div.ec-orderRole__detail > div.ec-orderDelivery > .ec-rectHeading').after($('#amazon_pay__address > div.ec-orderDelivery__title'));
+$('div.ec-orderRole__detail > div.ec-orderDelivery > div.ec-orderDelivery__item').append($('#amazon_pay__address > div.ec-orderDelivery__address'));
+
+// payment
+$('div.ec-orderRole__detail > div.ec-orderPayment > .ec-radio').first().hide();
+$('div.ec-orderRole__detail > div.ec-orderPayment > .ec-input').first().hide();
+
+$('div.ec-orderRole__detail > div.ec-orderPayment:first').append($('#amazon_pay__payment_descriptor'));
+
+var orderSaveFlg = true;
+
+//変更された時の対応
+$("#amazon_pay_shipping_change, #amazon_pay_payment_change").on("click",function(){
+    if (orderSaveFlg) {
+        const targetButton = $(this);
+        const targetForm = $("#shopping-form");
+
+        $.ajax({
+            type: "POST",
+            url: "{{ url('amazon_pay_shopping_order_save') }}",
+            data: targetForm.serialize()
+        })
+            .done(function (data) {
+                amazon.Pay.bindChangeAction('#amazon_pay_shipping_change', {
+                    amazonCheckoutSessionId: '{{ amazonCheckoutSessionId }}',
+                    changeAction: 'changeAddress'
+                });
+                amazon.Pay.bindChangeAction('#amazon_pay_payment_change', {
+                    amazonCheckoutSessionId: '{{ amazonCheckoutSessionId }}',
+                    changeAction: 'changePayment'
+                });
+                orderSaveFlg = false;
+                targetButton.click();
+            }).fail(function (data) {
+                if (data.responseJSON.error == 'validateError') {
+                    targetForm.submit();
+                } else {
+                    alert('通信中にエラーが発生しました。カート画面に移動します。');
+                    //window.location.href = "{{ url('cart') }}";
+                }
+            });
+    };
+});
+
+$('#shopping-form').submit(function(e) {
+    $amazon_pay_button = $('.ec-blockBtn--action.amazon_pay_button');
+    // 2重クリック防止
+    $amazon_pay_button.prop('disabled', true);
+})
+});
+</script>
+{% endblock %}

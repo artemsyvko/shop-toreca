@@ -1,0 +1,63 @@
+admin.setting.shop.shop.customer_two_factor_is_activate_sms: 本会員時の本人認証
+admin.setting.shop.shop.customer_two_factor_is_activate_sms_tooltip: 本会員登録時、メール認証に加え携帯電話による本人認証を実施します
+admin.setting.shop.shop.customer_two_factor_auth: ログイン時の本人認証
+admin.setting.shop.shop.customer_two_factor_auth_tooltip: ログイン時、通常(メールアドレス・パスワード)認証に加え、多要素認証プラグインによる二段階認証を実施します。
+admin.setting.shop.shop.customer_two_factor_auth_type: 二段階認証方法
+admin.setting.shop.shop.customer_two_factor_auth_type_tooltip:
+
+admin.setting.2fa.config.title: 二段階認証設定
+admin.setting.2fa.sms.sub_title: SMS送信設定(Twilio)
+admin.setting.2fa.sms.sid: SID
+admin.setting.2fa.sms.api_token: APIトークン
+admin.setting.2fa.sms.from_phone_number: 送信元電話番号
+
+admin.setting.2fa.route.sub_title: 認証ルーティング設定
+admin.setting.2fa.route.include: 重要操作ルーティング
+admin.setting.2fa.route.exclude: 除外ルーティング
+
+admin.customer.2fa.title: 二段階認証設定
+admin.customer.2fa.device_authed: 本人認証
+admin.customer.2fa.device_authed_phone_number: 本人認証済み電話番号
+admin.customer.2fa.is_2fa_use: ログイン時の本人認証の利用
+admin.customer.2fa.type: ログイン時の本人認証方式
+admin.customer.2fa.type_option.default: 未設定
+
+front.2fa.entry.complete_title: ご本人確認を実施してください
+front.2fa.entry.complete_message__title: 仮登録ありがとうございます。
+front.2fa.entry.complete_message__activated: |
+  続いて携帯電話によるご本人様確認をお願いいたします。
+  ご本人様確認を頂けない場合、当ショップはご利用できません。
+front.2fa.entry.go_to_auth: ご本人確認へ
+
+front.2fa.device_auth.title: ご本人確認
+front.2fa.device_auth.send.message: |
+  携帯電話に認証コードを送信します。
+  お手持ちの携帯電話番号を入力して「認証コードを送信」をクリックしてください。
+front.2fa.device_auth.input.message: |
+  携帯電話に送信された認証コードを入力してください。
+  送信されていない場合は「認証コードを再送信」をクリックしてください。
+
+front.2fa.title: 二段階認証
+front.2fa.sms.send.message: |
+  携帯電話に認証コードを送信します。
+  お手持ちの携帯電話番号を入力して「認証コードを送信」をクリックしてください。
+front.2fa.sms.input.message: |
+  携帯電話に送信された認証コードを入力してください。
+  送信されていない場合は、「認証コードを再送信」をクリックしてください。
+
+front.2fa.sms.phone.place_holder: 電話番号を入力してください
+front.2fa.sms.token.place_holder: 認証コードを入力して下さい
+
+front.2fa.complete_message: 二段階認証の設定が完了しました。
+front.2fa.invalid_message__reinput: 二段階認証の設定に失敗しました。再度入力してください。
+front.2fa.configured_warning: 二段階認証は既に設定されています。
+
+front.2fa.type: 二段階認証方式
+front.2fa.type_message: |
+  二段階認証方式を選択してください。
+front.2fa.sms.send: 認証コードを送信
+front.2fa.sms.resend: 認証コードを再送信
+front.2fa.auth: 認証
+front.2fa.setting: 認証方式を設定
+front.2fa.onetime.invalid_message__reinput: 認証に失敗しました。正しい認証コードを入力してください。
+front.2fa.sms.send.failure_message: 認証コードが送信できませんでした。正しい電話番号を入力してください。

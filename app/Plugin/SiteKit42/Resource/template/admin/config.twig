@@ -1,0 +1,50 @@
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['store', 'plugin', 'plugin_list'] %}
+
+{% block title %}Site Kit{% endblock %}
+{% block sub_title %}設定{% endblock %}
+
+{% block stylesheet %}{% endblock stylesheet %}
+
+{% block javascript %}{% endblock javascript %}
+
+{% block main %}
+
+<div class="c-contentsArea__cols">
+    <div class="c-contentsArea__primaryCol">
+        <div class="c-primaryCol">
+            <div class="card rounded border-0 mb-4">
+                <div class="card-header"><span>Google アカウント設定</span></div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12 mb-2">
+                            <a href="{{ oauth_url }}" class="btn btn-primary">Googleアカウント連携</a>
+                        </div>
+                        {% if user_info %}
+                        <div class="col-12 mb-2">
+                            (<img src="{{ user_info.picture }}" height="20" width="20"> {{ user_info.name }} で連携中)
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="c-conversionArea">
+    <div class="c-conversionArea__container">
+        <div class="row justify-content-between align-items-center">
+            <div class="col-6">
+                <div class="c-conversionArea__leftBlockItem">
+                    <a class="c-baseLink"
+                       href="{{ url('admin_store_plugin') }}">
+                        <i class="fa fa-backward" aria-hidden="true"></i>
+                        <span>プラグイン一覧</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

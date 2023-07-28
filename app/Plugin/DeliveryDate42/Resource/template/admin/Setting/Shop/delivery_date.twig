@@ -1,0 +1,62 @@
+{#
+* Plugin Name : DeliveryDate4
+*
+* Copyright (C) BraTech Co., Ltd. All Rights Reserved.
+* http://www.bratech.co.jp/
+*
+* For the full copyright and license information, please view the LICENSE
+* file that was distributed with this source code.
+#}
+
+<div id="delivery_date" style="display:none;">
+    <div class="card rounded border-0 mb-4">
+        <div class="card-header"><span>{{ 'deliverydate.admin.setting.shop.delivery.edit.label.1'|trans }}</span></div>
+        <div id="ex-delivery-fee" class="card-body p-0">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <div class="row justify-content-start">
+                        <div class="col-2">
+                            <div class="d-inline-block align-middle"><span
+                                        class="card-title">{{ 'deliverydate.admin.setting.shop.delivery.edit.label.3'|trans }}</span></div>
+                            &nbsp;
+                        </div>
+                        <div class="col-3">
+                            {{ form_widget(form.delivery_date_flg) }}
+                            {{ form_errors(form.delivery_date_flg) }}
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row justify-content-start">
+                        <div class="col-2">
+                            <div class="d-inline-block align-middle"><span
+                                        class="card-title">{{ 'admin.setting.shop.delivery.apply_to_pref__title'|trans }}</span></div>
+                        </div>
+                        <div class="col-3">
+                            {{ form_widget(form.date_all) }}
+                        </div>
+                        <div class="col-auto">
+                            <button id="set_date_all" class="btn btn-ec-regular" type="button">{{ 'admin.setting.shop.delivery.apply_to_pref__button'|trans }}</button>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    {% for child in form.delivery_dates %}
+                        {% if loop.index % 2 != 0 %}<div class="row mb-2">{% endif %}
+                        <div class="col{{ loop.last ? '-6' }}">
+                            <div class="row">
+                                <div class="col-2">
+                                    <label>{{ child.vars.data.pref }}</label>
+                                </div>
+                                <div class="col pl-0">
+                                    {{ form_widget(child.dates) }}
+                                </div>
+                            </div>
+                        </div>
+                        {% if loop.index % 2 == 0 or loop.last %}</div>{% endif %}
+                    {% endfor %}
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

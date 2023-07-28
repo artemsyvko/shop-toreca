@@ -1,0 +1,55 @@
+parameters:
+  amazon_pay4:
+    test_account:
+      seller_id: A2A80MN1XQCQBA
+      public_key_id: AGWGWRKYSUOV4KUBKCQNV4UB
+      private_key_path: app/Plugin/AmazonPay4/Resource/key/Test_Iplogic_Demo_AmazonPay.pem
+    max_billable_amount: 70000
+    amazon_sc_url: https://sellercentral.amazon.co.jp/hz/me/pmd/payment-details?orderReferenceId=
+    toggle:
+      off: 0
+      on: 1
+    account_mode:
+      shared: 1
+      owned: 2
+    env:
+      sandbox: 1
+      prod: 2
+    sale:
+      authori: 1
+      capture: 2
+    button_place:
+      auto: 1
+      manual: 2
+    api:
+      config:
+        thlottle_err_limit: 5
+        thlottle_sleep: 2
+        authorize_limit: 3
+      payload:
+        currency_code: 'JPY'
+      prod:
+        checkout_script_url: https://static-fe.payments-amazon.com/checkout.js
+      sandbox:
+        checkout_script_url: https://static-fe.payments-amazon.com/checkout.js
+      error:
+        payment_method_not_allowed: 1
+        invalid_payment_method: 2
+        amazon_rejected: 3
+        transaction_timeout: 4
+monolog:
+    channels: ['amazon_pay4']
+    handlers:
+        amazon_pay:
+            type: fingers_crossed
+            action_level: error
+            passthru_level: info
+            handler: amazon_pay_rotating_file
+            channels: ['amazon_pay4']
+            # channels: ['!event', '!doctrine']
+        amazon_pay_rotating_file:
+            type: rotating_file
+            max_files: 60
+            path: '%kernel.logs_dir%/%kernel.environment%/amazon_pay4.log'
+            formatter: eccube.log.formatter.line
+            level: debug

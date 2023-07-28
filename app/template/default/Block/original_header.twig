@@ -1,0 +1,35 @@
+<div class="ec-layoutRole__contents">
+    <div class="ec-headerTitle">
+        <div class="ec-headerTitle__title">
+            <h1>
+                <a href="{{ url('homepage') }}">
+                    <img class="hlogo" src="{{ asset('assets/img/logo.png') }}">
+                </a>
+            </h1>
+        </div>
+    </div>
+
+<div class="ec-headerNaviRole pc_only">
+    <div class="ec-headerNaviRole__left">
+        <div class="ec-headerNaviRole__search">
+            {{ render(path('block_search_product')) }}
+        </div>
+        <div class="ec-headerRole__navSP">
+            {{ include('Block/nav_sp.twig') }}
+        </div>
+    </div>
+    <div class="ec-headerNaviRole__right">
+        <div class="ec-headerNaviRole__nav">
+            {{ include('Block/login.twig') }}
+        </div>
+        <div class="ec-headerRole__cart">
+            {{ include('Block/cart.twig') }}
+        </div>
+    </div>
+</div>
+<div style="max-width:215px;padding:0;margin: 20px 5px 20px 25px;" class="ec-headerNaviRole sp_only">
+    <div class="">
+        <img src="{{ asset('assets/img/top/card.png') }}">
+    </div>
+</div>
+</div>

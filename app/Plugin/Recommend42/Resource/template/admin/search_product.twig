@@ -1,0 +1,96 @@
+{#
+ * This file is part of the Recommend Product plugin
+ *
+ * Copyright (C) EC-CUBE CO.,LTD. All Rights Reserved.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+#}
+
+<script type="text/javascript">
+    function fnSelectProduct($row, product_id, product_name, product_image_link, product_image_img, product_code_min, product_code_max) {
+        // Add product argument
+        var productName = $('#product_name');
+        var productImageLink = $('#product_image_link');
+        var productImageImg = $('#product_image_img');
+        var productCode = $('#product_code');
+
+        productName.text(product_name);
+        $('#recommend_product_Product').val(product_id);
+        productImageLink.removeAttr('href');
+        productImageLink.attr('href', product_image_link);
+        productImageImg.removeAttr('src');
+        productImageImg.attr('src', product_image_img);
+        if (product_code_min != product_code_max) {
+            product_code_min += ' ～ ' + product_code_max;
+        }
+        productCode.text(product_code_min);
+
+        // Display new product
+        $('#product_image').removeClass('d-none');
+        productName.removeClass('d-none');
+        productCode.removeClass('d-none');
+
+        // Check product exist
+        var warning = $('#warning');
+        warning.text('');
+        if (recommend.indexOf(product_id) != -1) {
+            warning.text("{{ 'plugin_recommend.admin.edit.existed'|trans }}");
+        }
+
+        // モーダル閉じる.
+        $('#searchProductModal').modal('hide');
+        return false;
+    }
+
+    // 商品検索
+    $('div.box-footer a').on('click', function(event) {
+        var list = $('#searchProductModalList');
+        list.children().remove();
+        $.ajax({
+            type: 'GET',
+            dataType: 'html',
+            url: $(this).attr('href'),
+            success: function(data) {
+                $('#searchProductModalList').html(data);
+            },
+            error: function() {
+                alert('paginator failed.');
+            }
+        });
+        event.preventDefault();
+    });
+</script>
+<div class="table-responsive">
+    <table class="table">
+        <tbody>
+        {% for Product in pagination %}
+            <form name="product_form{{ Product.id }}">
+                <tr>
+                    <td>
+                        {{ Product.name }}
+                        <br>
+                        <span>{{ Product.code_min }}
+                            {% if Product.code_min != Product.code_max %} ～ {{ Product.code_max }}
+                            {% endif %}
+                        </span>
+                    </td>
+                    <td class="text-end">
+                        <button onclick="fnSelectProduct($(this).parent().parent(), '{{ Product.id }}', '{{ Product.name|escape('js') }}', '{{ url('admin_product_product_edit', { id : Product.id }) }}', '{{ asset(Product.mainFileName|no_image_product, 'save_image') }}', '{{ Product.code_min }}', '{{ Product.code_max }}')" type="button" class="btn btn-default btn-sm">
+                            決定
+                        </button>
+                    </td>
+                </tr>
+            </form>
+        {% endfor %}
+
+        </tbody>
+    </table>
+    {% if pagination.totalItemCount > 0 %}
+    <div class="col box-footer">
+        <div class="row justify-content-md-center mb-4">
+            {% include "@admin/pager.twig" with {'pages': pagination.paginationData, 'routes': 'plugin_recommend_search_product_page'} %}
+        </div>
+    </div>
+    {% endif %}
+</div>

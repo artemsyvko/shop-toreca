@@ -1,0 +1,31 @@
+{#
+This file is part of EC-CUBE
+
+Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+http://www.ec-cube.co.jp/
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+#}
+<script type="text/javascript">
+    $(function () {
+        $('#two_factor_use > div.col-3 > div').tooltip();
+        $("#ex-shop-customer").last().append($("#two_factor_use").detach());
+        $("#ex-shop-customer").last().append($("#two_factor_type").detach());
+    });
+</script>
+{# 2段階認証利用有無 #}
+<div class="row" id="two_factor_use">
+    <div class="col-3">
+        <div class="d-inline-block" data-bs-toggle="tooltip" data-bs-placement="top"
+             title="{{ 'admin.setting.shop.shop.customer_two_factor_auth_tooltip'|trans }}">
+            <span>{{ 'admin.setting.shop.shop.customer_two_factor_auth'|trans }}</span>
+            <i class="fa fa-question-circle fa-lg ms-1"></i>
+        </div>
+    </div>
+    <div class="col mb-2">
+        {{ form_widget(form.two_factor_auth_use) }}
+        {{ form_errors(form.two_factor_auth_use) }}
+    </div>
+</div>
+

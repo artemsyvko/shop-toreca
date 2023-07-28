@@ -1,0 +1,354 @@
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['store', 'plugin', 'plugin_list'] %}
+
+{% form_theme form '@admin/Form/bootstrap_4_horizontal_layout.html.twig' %}
+
+{% set menus = ['store', 'plugin', 'plugin_list'] %}
+
+{% block title %}セキュリティチェックプラグイン{% endblock %}
+{% block sub_title %}{% endblock %}
+
+{% block main %}
+    <form role="form" method="post" action="{{ url('securitychecker42_admin_config_check') }}">
+        {{ form_widget(form._token) }}
+        <div class="c-contentsArea__cols">
+            <div class="c-contentsArea__primaryCol">
+                <div class="c-primaryCol">
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header">
+                            <p>EC-CUBEのセキュリティチェックリストに基づいた、セキュリティチェックをします。</p>
+                            <p>前回確認日時: {{ target.check_date|default('未確認') }}</p>
+                        {% if app.session.flashBag.has('eccube.admin.securitychecker3.warning') %}
+                            <div class="alert alert-warning">
+                                <p>本モジュールでは、EC-CUBE旧バージョンの脆弱性や、カスタマイズやプラグインにより生じた脆弱性はチェックできません。</p>
+                                <p><a href="https://www.ec-cube.net/info/weakness/index.php?version={{ constant('Eccube\\Common\\Constant::VERSION') }}" target="_blank">こちらのEC-CUBE脆弱性情報も必ずご確認ください。</a></p>
+                        </div>
+                        {% endif %}
+                    </div><!-- /.box-header -->
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-5"><span>var 以下のファイル、フォルダが公開されていないか</span></div>
+                            <div class="col mb-2">
+                                {% if target.var is not defined %}
+                                    <p>未確認</p>
+                                {% elseif target.var == false or target.var is empty %}
+                                    <p>問題ありません</p>
+                                {% else %}
+                                    <p class="alert alert-danger">
+                                        var フォルダが外部から存在確認出来ます。
+                                    </p>
+                                    <p class="remark">.htaccess というファイル名で、以下の内容のファイルを作成し、 var フォルダにアップロードしてください。アップロード後、再度セキュリティチェックを実行してください。</p>
+                                    <pre>
+order allow,deny
+deny from all
+                                    </pre>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-5"><span>vendor 以下のファイル、フォルダが公開されていないか</span></div>
+                            <div class="col mb-2">
+                                {% if target.vendor is not defined %}
+                                    <p>未確認</p>
+                                {% elseif target.vendor == false or target.vendor is empty %}
+                                    <p>問題ありません</p>
+                                {% else %}
+                                    <p class="alert alert-danger">
+                                        vendor フォルダが外部から存在確認出来ます。
+                                    </p>
+                                    <p class="remark">.htaccess というファイル名で、以下の内容のファイルを作成し、 vendor フォルダにアップロードしてください。アップロード後、再度セキュリティチェックを実行してください。</p>
+                                    <pre>
+order allow,deny
+deny from all
+                                    </pre>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-5">codeception が公開されていないか</div>
+                            <div class="col mb-2">
+                                {% if target.codeception is not defined %}
+                                    <p>未確認</p>
+                                {% elseif target.codeception == false or target.codeception is empty %}
+                                    <p>問題ありません</p>
+                                {% else %}
+                                    <p class="alert alert-danger">
+                                        codeception フォルダが外部から存在確認出来ます
+                                    </p>
+                                    <p class="remark">
+                                        通常の運用では使用しないプログラムが含まれています。
+                                        codeception フォルダを削除してください。
+                                    </p>
+
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-5">.env が公開されていないか</div>
+                            <div class="col mb-2">
+                                {% if target.dotenv is not defined %}
+                                    <p>未確認</p>
+                                {% elseif target.dotenv == false or target.dotenv is empty %}
+                                    <p>問題ありません</p>
+                                {% else %}
+                                    <p class="alert alert-danger">
+                                        .env ファイルが外部から存在確認出来ます
+                                    </p>
+                                    <p class="remark">
+                                    EC-CUBE をインストールしたフォルダの .htaccess ファイルに以下の内容を追加し、保存してください。
+                                    </p>
+<textarea class="form-control" style="height: 150px" disabled="disabled">
+&lt;FilesMatch &quot;^composer|^COPYING|^\.env|^\.maintenance|^Procfile|^app\.json|^gulpfile\.js|^package\.json|^package-lock\.json|web\.config|^Dockerfile|\.(ini|lock|dist|git|sh|bak|swp|env|twig|yml|yaml|dockerignore)$&quot;&gt;
+    order allow,deny
+    deny from all
+&lt;/FilesMatch&gt;
+</textarea>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-5">デバッグモードが有効になっていないか</label>
+                            <div class="col mb-2">
+                                {% if target.debug_mode is not defined %}
+                                    <p>未確認</p>
+                                {% elseif target.debug_mode == false %}
+                                    <p>問題ありません</p>
+                                {% else %}
+                                    <p class="alert alert-danger">
+                                        デバッグモードが有効になっているようです
+                                    </p>
+                                    <p class="remark">
+                                        .env ファイルを確認し、 APP_ENV=prod に設定してください
+                                    </p>
+
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-5">SSLが導入されているか</label>
+                            <div class="col mb-2">
+                                {% if target.ssl is not defined %}
+                                    <p>未確認</p>
+                                {% elseif target.ssl == false %}
+                                    <p>問題ありません</p>
+                                {% else %}
+                                    <p class="alert alert-danger">
+                                        SSLが強制されておらず、平文で情報がやり取りされておりますので情報が漏洩する可能性があります。
+                                    </p>
+                                    <p class="remark">
+                                        常時SSLの利用をご検討ください。
+                                    </p>
+
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-5">管理画面へのアクセスには常に SSL を利用しているか</label>
+                            <div class="col mb-2">
+                                {% if target.force_ssl is not defined %}
+                                    <p>未確認</p>
+                                {% elseif target.force_ssl == false %}
+                                    <p>問題ありません</p>
+                                {% else %}
+                                    <p class="alert alert-danger">
+                                        管理画面へのアクセスでSSLが強制されておらず、平文で情報がやり取りされておりますので情報が漏洩する可能性があります。
+                                    </p>
+                                    <p class="remark">
+                                        SSLの導入後に、システム設定＞セキュリティ設定より、SSLを強制するを設定してください。
+                                    </p>
+
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-5">TRUSTED_HOSTSを設定しているか</label>
+                            <div class="col mb-2">
+                                {% if target.trusted_hosts_is_checked is not defined %}
+                                    <p>未確認</p>
+                                {% elseif target.trusted_hosts_is_empty is defined and target.trusted_hosts_is_empty %}
+                                    <p class="alert alert-danger">
+                                        信頼できるホスト名が設定されていません。
+                                    </p>
+                                    <p class="remark">
+                                        システム設定＞セキュリティ設定より、信頼できるホスト名を設定してください。
+                                    </p>
+                                {% elseif target.trusted_hosts_is_not_exact_match is defined and target.trusted_hosts_is_not_exact_match %}
+                                    <p class="alert alert-danger">
+                                        信頼できるホスト名が完全一致で設定されていません。
+                                    </p>
+                                    <p class="remark">
+                                        システム設定＞セキュリティ設定より、信頼できるホスト名を設定してください。
+                                        正規表現で完全一致となるよう設定することを推奨します。
+                                    </p>
+                                {% else %}
+                                    <p>問題ありません</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <h4>不正が疑われるデータのチェック</h4>
+                        <div class="row">
+                            <div class="col">
+                                <p>
+                                    不正なコードに利用される「&lt;」や「&gt;」の記号を含むデータをチェック対象としています。<br>
+                                    実際には不正でないデータも抽出される可能性がありますので、対象のデータが検出された場合はダウンロードして内容を確認してください。<br>
+                                    ご自身で判断がつかない場合は<a href="https://www.ec-cube.net/info/security/" target="_blank">公式サイトで紹介されている専門企業</a>へご相談ください。
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-5">会員情報</label>
+                            <div class="col mb-2">
+                                {% if target.unsafe_customers is not defined %}
+                                    <p>未確認</p>
+                                {% elseif target.unsafe_customers == 0 %}
+                                    <p>検出されませんでした</p>
+                                {% else %}
+                                    <p class="alert alert-danger">
+                                        不正と疑われるデータが存在します。<a href="{{ url('securitychecker42_admin_config_download', { 'type':'customer' }) }}" class="link">対象の会員情報をダウンロード</a>
+                                    </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-5">お届け先情報</label>
+                            <div class="col mb-2">
+                                {% if target.unsafe_customers_address is not defined %}
+                                    <p>未確認</p>
+                                {% elseif target.unsafe_customers_address == 0 %}
+                                    <p>検出されませんでした</p>
+                                {% else %}
+                                    <p class="alert alert-danger">
+                                        不正と疑われるデータが存在します。<a href="{{ url('securitychecker42_admin_config_download', { 'type':'customer_address' }) }}" class="link">対象のお届け先情報をダウンロード</a>
+                                    </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-5">受注情報</label>
+                            <div class="col mb-2">
+                                {% if target.unsafe_orders is not defined %}
+                                    <p>未確認</p>
+                                {% elseif target.unsafe_orders == 0 %}
+                                    <p>検出されませんでした</p>
+                                {% else %}
+                                    <p class="alert alert-danger">
+                                        不正と疑われるデータが存在します。<a href="{{ url('securitychecker42_admin_config_download', { 'type':'order' }) }}" class="link">対象の受注情報をダウンロード</a>
+                                    </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-5">配送情報</label>
+                            <div class="col mb-2">
+                                {% if target.unsafe_shippings is not defined %}
+                                    <p>未確認</p>
+                                {% elseif target.unsafe_shippings == 0 %}
+                                    <p>検出されませんでした</p>
+                                {% else %}
+                                    <p class="alert alert-danger">
+                                        不正と疑われるデータが存在します。<a href="{{ url('securitychecker42_admin_config_download', { 'type':'shipping' }) }}" class="link">対象の配送情報をダウンロード</a>
+                                    </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <h4>環境情報</h4>
+                        <div class="row">
+                            <label class="col-5">PHPバージョン</label>
+                            <div class="col mb-2">
+                                {% if target.php_version is not defined %}
+                                    <p>未確認</p>
+                                {% else %}
+                                    {{ target.php_version }}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-5">データーベースバージョン</label>
+                            <div class="col mb-2">
+                                {% if target.db_version is not defined %}
+                                    <p>未確認</p>
+                                {% else %}
+                                    {{ target.db_version }}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-5">サイトURL</label>
+                            <div class="col mb-2">
+                                {% if target.site_url is not defined %}
+                                    <p>未確認</p>
+                                {% else %}
+                                    {% for url in target.site_url %}
+                                        <p>{{ url }}</p>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-5">EC-CUBEバージョン</label>
+                            <div class="col mb-2">
+                                {% if target.eccube_version is not defined %}
+                                    <p>未確認</p>
+                                {% else %}
+                                    {{ target.eccube_version }}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-5">利用しているプラグイン</label>
+                            <div class="col mb-2">
+                                {% if target.plugins is defined %}
+                                    {% for plugin in target.plugins %}
+                                        <p>{{ plugin.plugin_name }}({{ plugin.plugin_code }}) version{{ plugin.plugin_version }}</p>
+                                    {% endfor %}
+                                {% endif %}
+                                {% if target.public_key is defined %}
+                                    <p><small>認証キー: {{ target.public_key }}</small></p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-5">株式会社イーシーキューブと共有</label>
+                            <div class="col mb-2">
+                                {{ form_widget(form.eccube_share) }}
+                                {{ form_errors(form.eccube_share) }}
+                                <small>共有したチェック結果は、セキュリティリスクの分析・伝達等を目的としてのみ利用されます。</small>
+                            </div>
+                        </div>
+
+                        <div class="row {% if form.tools_agreement.vars.errors|length %} has-error {% endif %}">
+                            <div class="col-sm-12">
+                                <a href="https://www.ec-cube.net/info/security/tools_agreement.php" target="_blank">EC-CUBEセキュリティチェックモジュール・プラグイン利用約款</a>に同意いただける場合は「同意する」にチェックを入れ、「セキュリティチェック実行」ボタンをクリックしてください。
+                                {{ form_widget(form.tools_agreement) }}
+                                {% if form.tools_agreement.vars.errors|length %}<p class="alert alert-danger">セキュリティチェックを実行する場合は、必ず利用約款への同意をお願い致します。</p>{% endif %}
+                            </div>
+                        </div>
+                    </div><!-- /.box-body -->
+                </div><!-- /.box -->
+                </div><!-- /.col -->
+                <div class="c-conversionArea">
+            <div class="c-conversionArea__container">
+                <div class="row justify-content-between align-items-center">
+                    <div class="col-6">
+                        <div class="c-conversionArea__leftBlockItem">
+                            <a class="c-baseLink"
+                               href="{{ url('admin_store_plugin') }}">
+                                <i class="fa fa-backward" aria-hidden="true"></i>
+                                <span>戻る</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row align-items-center justify-content-end">
+                            <div class="col-auto">
+                                <button class="btn btn-ec-conversion px-5"
+                                        type="submit">セキュリティチェックを実行</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock main %}

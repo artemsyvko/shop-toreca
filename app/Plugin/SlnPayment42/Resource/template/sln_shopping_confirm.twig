@@ -1,0 +1,52 @@
+{% block stylesheet %}
+<style type="text/css">
+    .modal {
+        -webkit-animation-name: fadeIn;
+        -webkit-animation-duration: 0.5s;
+    }
+    #creditCardConfirmationModal .modal-footer {
+        justify-content: center;
+        width: auto;
+    }
+</style>
+{% endblock stylesheet %}
+
+{% block javascript %}
+<script>
+    $(function () {
+        $(document).on('shown.bs.modal', '#creditCardConfirmationModal',function (e) {
+            modalResize();
+        });
+    });
+
+    $(function () {
+        $(window).resize(function() {
+            modalResize();
+        });
+    });
+
+    function modalResize() {
+        var modalHeight = $(window).height() / 2 - $('#creditCardConfirmationModal .modal-dialog').height() / 2;
+        if (modalHeight > 0){
+            $('#creditCardConfirmationModal').find('.modal-dialog').css({
+                'margin-top': modalHeight
+            });
+        }
+    };
+
+    {% if Is3DPay and IsCcCard %}
+    $(function () {
+        $('#shopping-form > div > div.ec-orderRole__summary > div > div.ec-totalBox__btn > button').replaceWith('<button type="button" class="ec-blockBtn--action" data-bs-toggle="modal" data-bs-target="#creditCardConfirmationModal">{{ Order.payment_method }}</button>'); 
+    });
+    {% else %}
+    $(function () {
+        $('#shopping-form > div > div.ec-orderRole__summary > div > div.ec-totalBox__btn > button').text('{{ Order.payment_method }}');
+    });
+    {% endif %}
+
+    
+    $(function () {
+        $('#shopping-form').append('<!-- 個人情報取得同意確認モーダル --><div class="modal" id="creditCardConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="creditCardConfirmationModal" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"><div class="modal-dialog modal-lg" role="document"><div class="modal-content"><div class="modal-body text-start" ><p class="text-start" style="height:340px;overflow-y:auto;">■利用上の注意<br>クレジットカード番号などの情報の盗用による不正利用を防ぎ、安全にクレジットカードをご利用いただくため、国際ブランドの推奨する本人認証サービス「EMV3Dセキュア」を用いています。<br>EMV3Dセキュアを利用するためには、カード発行会社に、お客様に関する情報などを送信する必要がございます。<br>以下の「■個人情報の第三者提供」をご確認いただき、同意の上カード情報をご入力ください。<br><br>■個人情報の第三者提供<br>お客様から収集した以下の個人情報等は、カード発行会社が行う不正利用検知・防止のために、お客様が利用されているカードの発行会社へ提供させていただきます。<br>・「事業者が保有する会員情報」<br>・「IPアドレス」<br>・「デバイス情報」<br>・「インターネット利用環境に関する情報」<br>・「請求書送付先住所」<br>お客様が利用されているカードの発行会社が外国にある場合、これらの情報は当該発行会社が所属する国に移転される場合があります。<br>お客様が未成年の場合、親権者または後見人の承諾を得た上で、本サービスを利用するものとします。<br><br>■個人情報の第三者提供についての同意<br>上記「■個人情報の第三者提供」について同意いただける場合は、「同意する」のボタンを押してください。<br><br>■安全管理措置について<br>お客様から取得した情報の全部または一部をアメリカ合衆国の業務委託先に提供する場合があります。<br>かかる業務委託先において情報の安全管理のために必要かつ適切な措置が行われていることを確認の上、保存を行います。<br>なお、当該国の個人情報保護に関する法制度の概要はこちらからご確認ください。<br><a target="_blank" href="https://www.ppc.go.jp/personalinfo/legal/kaiseihogohou/#gaikoku" style="word-break: break-all;">https://www.ppc.go.jp/personalinfo/legal/kaiseihogohou/#gaikoku </a><br></p><div class="modal-footer col-md-8 text-center" style="padding-bottom: 0px;"><button type="button" class="btn btn-ec-regular" data-bs-dismiss="modal" style="width:133px;background-color:#F3F3F3">{{ 'front.entry.disagree'|trans }}</button><button type="submit" class="btn btn-ec-regular" style="background-color:#403939;color:white;width:133px;">{{ 'front.entry.agree'|trans }}</button></div></div></div></div></div>');
+    });
+</script>
+{% endblock javascript %}

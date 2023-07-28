@@ -1,0 +1,124 @@
+{#
+* Plugin Name : DeliveryDate4
+*
+* Copyright (C) BraTech Co., Ltd. All Rights Reserved.
+* http://www.bratech.co.jp/
+*
+* For the full copyright and license information, please view the LICENSE
+* file that was distributed with this source code.
+#}
+
+<!--営業日カレンダー-->
+<style>
+#businessday_calendar {
+    width: 100%;
+    max-width: 1150px;
+    margin: 0 auto;
+    padding: 60px 0;
+}
+
+#businessday_calendar .calendar_title {
+    text-align: center;
+    font-size: 24px;
+    background: #f8f8f8;
+    color: #525263;
+    line-height: 3.3;
+    margin-bottom: 20px;
+    border-bottom: 1px dotted #ccc;
+}
+#businessday_calendar .note {
+    margin-bottom: 30px;
+}
+#businessday_calendar .note span {
+  display: inline-block;
+  width: 2.5em;
+  background: #ee6666;
+  height: 1em;
+  margin-right: 5px;
+}
+#businessday_calendar .note span + span {
+  background: #fff;
+  border: 2px solid #000;
+}
+#businessday_calendar table {
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 0;
+    empty-cells: show;
+}
+#businessday_calendar table caption {
+  margin-bottom: 10px;
+  caption-side: top;
+  font-weight: 700;
+  font-size: 20px;
+}
+#businessday_calendar th {
+    text-align: center;
+    background: #f8f8f8;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+#businessday_calendar th#saturday {
+    color: #3366cc;
+}
+#businessday_calendar th#sunday {
+    color: #ff3300;
+}
+#businessday_calendar td {
+    text-align: center;
+    border-bottom: 1px dotted #ccc;
+    background: #fff;
+    color: #333;
+}
+#businessday_calendar .today {
+    background: #fff;
+    color: #000;
+    font-weight: bold;
+    border: 2px solid #000;
+}
+#businessday_calendar .holiday {
+    background: #ee6666;
+    color: #ffffff;
+}
+</style>
+
+<div id="businessday_calendar">
+    <div class="calendar_title">営業日カレンダー</div>
+    <div class="note"><span></span>：店休日　<span></span>：本日</div>
+    {% set year = 'now'|date('Y') %}
+    {% for month, monthitem in Date %}
+        {% if loop.index0 > 0 and month == '1' %}
+            {% set year = year+1 %}
+        {% endif %}
+        <table>
+            <caption>{{ year }}/{{ month }}</caption>
+            <thead><tr><th id="sunday">日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th id="saturday">土</th></tr></thead>
+            <tbody>
+                {% for dayitem in monthitem %}
+                    {% set day = dayitem.day %}
+                    {% if day|date('j') == '1' %}
+                        <tr>
+                        {% if day|date('w') != '0' %}
+                            {% for i in 1..day|date('w') %}
+                                <td></td>
+                            {% endfor %}
+                        {% endif %}
+                    {% elseif day|date('w') == 0 %}
+                        <tr>
+                    {% endif %}
+                    {% set class = '' %}
+                    {% if day|date('y/m/d') == 'now'|date('y/m/d') %}
+                        {% set class = class ~ 'today' %}
+                    {% endif %}
+                    {% if dayitem.is_holiday %}
+                        {% set class = class ~ ' holiday' %}
+                    {% endif %}
+                        <td {% if class != '' %} class="{{ class }}" {% endif %}>{{ day|date('j') }}</td>
+                    {% if day|date('w') == 6 or loop.last %}
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+</div>

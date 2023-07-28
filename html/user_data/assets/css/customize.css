@@ -1,0 +1,561 @@
+/* カスタマイズ用CSS */
+/*
+.ec-headerRole{
+    position: absolute;
+    left: -20%;
+    top: 0
+}
+*/
+
+.prev-arrow,
+.next-arrow{
+    background: rgba(20, 20, 20, 0.5);
+    border-radius: 5px;
+}
+
+.ec-headerNav{
+    display: flow-root;
+}
+
+.ec-layoutRole__header{
+    background: #000;
+    padding: 0;
+}
+
+.ec-headerSearch .ec-headerSearch__category .ec-select.ec-select_search{
+    background: #333;
+}
+
+.ec-headerSearch .ec-headerSearch__keyword input[type=search]{
+    width: calc(14vw * 2);
+    max-width: 585px;
+}
+
+.ec-sliderRole{
+    margin-top: 0 !important;
+}
+
+.ec-headerNav .ec-headerNav__item{
+    width: 60%;
+    border-radius: 1em;
+    background: #fff;
+    margin: 5px 0;
+    text-align: center;
+}
+
+.ec-headerNav .ec-headerNav__itemIcon, .ec-headerNav .ec-headerNav__itemLink, .ec-withdrawRole{
+    color: #000 !important;
+}
+.ec-headerNav .ec-headerNav__itemIcon{
+    margin-left: 0;
+}
+
+.ec-headerTitle img{
+    width: 209px;
+    height: 90px;
+}
+
+.ec-categoryNaviRole{
+    display: none;
+    padding-left: 0;
+    padding-right: 0;
+    max-width: initial;
+}
+
+.ec-headerNaviRole .ec-headerNaviRole__left{
+    width: initial;
+}
+
+
+.ec-cartNavi__label{
+    display: none;
+}
+
+.ec-cartNavi{
+    min-width: 80px;
+}
+
+.ec-headerNav .ec-headerNav__itemIcon,
+.ec-headerNav .ec-headerNav__itemLink,
+.ec-productRole__profile,
+.ec-withdrawRole{
+    /* color: white;*/
+}
+
+.ec-sliderRole{
+    margin-top: 24px;
+    max-width: initial;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.slick-dots li button:before,
+.slick-dots li.slick-active button:before{
+    background-color: #f00 !important;
+    border-color: #fff !important;
+}
+
+.ec-login{
+    background: initial;
+}
+
+.ec-topicRole__list{
+    width: 92%;
+}
+
+.ec-newItemRole{
+    padding: 0;
+}
+
+.ec-newItemRole__list{
+    margin: 25px 5% 0 0 !important;
+}
+
+.ec-newItemRole .ec-newItemRole__listItem:nth-child(odd),
+.ec-newItemRole .ec-newItemRole__listItem:nth-child(even){
+    width: 33.3%;
+    margin-right: 0;
+}
+
+.ec-newItemRole .ec-newItemRole__listItem:nth-child(4){
+    display: none;
+}
+
+.ec-radio,
+.ec-input,
+.ec-cartRow,
+.ec-numberInput span,
+.ec-topicpath__item,
+.ec-topicpath__divider,
+.ec-orderAccount__account,
+.ec-shelfGrid__item p,
+.ec-topicpath__item--active a,
+.ec-cartRow__name a,
+.ec-orderDelivery__title,
+.ec-orderDelivery__item,
+.ec-orderDelivery__address,
+.ec-orderDelivery__actions,
+.ec-withdrawRole__title,
+.ec-withdrawRole__description,
+#customer_detail_box{
+    /* color: #fff !important; */
+}
+
+
+.side_img{
+    width: 96%;
+    padding: 15px 0;
+    margin: 0 auto;
+    display: block;
+}
+
+.side_bar{
+    background: #000;
+	/* background-image: url(https://ounodoukutsu.jp/shop_toreca/html/template/default/assets/img/top/bg_side.jpg); */
+    background-position: center top;
+    left: 0;
+    width: 100%;
+    background-size: 100%;
+}
+
+.ec-layoutRole__main,
+.ec-contactCompleteRole,
+.ec-contactConfirmRole,
+.ec-blockRadio,
+.ec-searchnavRole__counter span,
+.ec-contactRole,
+.ec-registerRole,
+.ec-registerCompleteRole,
+.ec-mypageRole,
+.ec-welcomeMsg,
+.ec-topicpath{
+    /* color: #fff;
+    background-color: rgba(0, 0, 0, 0.8); */
+    padding: 25px 0;
+    margin-top: 25px;
+}
+
+.ec-cartHeader,
+.ec-cartHeader .ec-cartHeader__label{
+    /* background: #000; */
+}
+
+.ec-role,
+.ec-cartRole,
+.ec-headingTitle,
+.ec-cartCompleteRole,
+.amazon_pay_amazonpaymentdescriptor_block{
+    /* color: #fff; */
+}
+
+.ec-guest__inner{
+    color: #525263;
+}
+
+.ec-itemNav{
+    background: #a92218;
+}
+
+.ec-itemNav__nav li a,
+.ec-itemNav__nav li a:hover,
+.ec-itemNav__nav li ul li a,
+.ec-itemNav__nav li ul li a:hover{
+    background: #c9291d;
+    color: #fff;
+}
+
+.ec-layoutRole__mainWithColumn img{
+    max-width: 93%;
+}
+
+.ec-layoutRole{
+    background: #f0f0f0;
+	/* background-image: url(https://ounodoukutsu.jp/shop_toreca/html/template/default/assets/img/bg.png); */
+    background-position: center top;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: 100%;
+    padding-top: 100px;
+}
+
+.scrole{
+	background-image: url(https://ounodoukutsu.jp/shop_toreca/html/template/default/assets/img/top/scroll.png);
+    background-repeat: no-repeat;
+    background-position: center center;
+    width: 100%;
+    height: calc(100vw * 130 / 1031);
+    text-align: center;
+    padding-top: calc(100vw * 52 / 1031);
+    background-size: cover;
+    font-weight: bold;
+    color: #6b4a2b;
+    font-size: 2.5vw;
+    margin-bottom: 5px;
+}
+
+.guide_title{
+background-image: url(https://ounodoukutsu.jp/shop_toreca/html/template/default/assets/img/common/scroll_long.png);
+    background-repeat: no-repeat;
+    background-position: center center;
+    width: 100%;
+    height: calc(100vw * 69 / 1007);
+    text-align: center;
+    padding-top: calc(100vw * 23 / 1007);
+    font-weight: bold;
+    color: #6b4a2b;
+    font-size: 1.5vw;
+}
+
+.guide_text{
+    line-height: 2em;
+    padding: 1em 5%;
+    text-align: justify;
+}
+
+.guide_icon{
+    margin: 25px auto;
+    display: block;
+    width: 600px !important;
+    max-width: 90% !important;
+}
+
+.ec-blockBtn--action,
+.ec-blockBtn--cancel{
+    border-radius: 35px;
+}
+
+.ec-modal .ec-modal-wrap{
+    background: #000;
+}
+
+.modal-body .text-start{
+    color:#000;
+}
+
+.flogo{
+    width: initial !important;
+}
+
+.ec-layoutRole{
+    padding-top: 0px;
+}
+
+.ec-layoutRole .ec-layoutRole__contents{
+    margin-top: 0px;
+}
+
+a img:hover {
+  filter: opacity(70%);
+  cursor: pointer;
+}
+
+.ec-productRole .ec-productRole__btn{
+    margin-top: 10px;
+}
+
+.sp_only{
+    display: none;
+}
+
+@media screen and (max-width: 767px) {
+    
+    .sp_only{
+        display: initial;
+    }
+    
+    .ec-headerSearch .ec-headerSearch__keyword input[type=search]{
+        width: initial;
+    }
+    
+    .ec-layoutRole__header{
+        padding: 20px 0 0 0;
+    }
+    
+    .ec-headerNavSP{
+        top: initial;
+        bottom: 15px;
+    }
+    
+    .ec-headerNav .ec-headerNav__item:nth-child(1){
+        position: absolute;
+        width: 28%;
+        text-align: unset;
+        left: 15%;
+        bottom: 12%;
+    }
+    .fa-lock:before,
+    .fa-user:before{
+        position: absolute;
+        left: 15%;
+        margin: 0;
+        top: 25%;
+    }
+    .ec-headerNav .ec-headerNav__item:nth-child(1)::after {
+        content: "ログイン";
+        font-size: 16px;
+        position: absolute;
+        right: 10%;
+        margin: 0;
+        top: 25%;
+        pointer-events: none;
+    }
+    
+    .ec-headerNav .ec-headerNav__item:nth-child(2){
+        position: absolute;
+        width: 28%;
+        text-align: unset;
+        left: 47%;
+        bottom: 12%;
+    }
+    .ec-headerNav .ec-headerNav__item:nth-child(2)::after {
+        content: "会員登録";
+        font-size: 15px;
+        position: absolute;
+        right: 10%;
+        margin: 0;
+        top: 25%;
+        pointer-events: none;
+    }    
+    
+    .ec-cartNaviIsset{
+        right: 87.5%;
+        bottom: 150%;
+    }
+    
+    .ec-headerRole__cart{
+        position: absolute;
+        width: 80%;
+        text-align: unset;
+        left: 80%;
+        bottom: 20%;
+    }
+    
+    .ec-headerTitle .ec-headerTitle__title a{
+        margin: 5px 0;
+    }
+    
+    .ec-footerNaviRoleSp{
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background: #000;
+        height: 70px;
+        z-index: 100;
+    }
+    
+    .ec-sliderRole{
+        margin-top:0px;
+    }
+    
+    .ec-cartNavi{
+        color: #fff;
+    }
+    
+    .ec-layoutRole__mainWithColumn img{
+        max-width: 100%;
+    }
+    
+    .ec-newItemRole__list{
+        margin: 15px 0 !important;
+    }
+    
+    .ec-layoutRole__main,
+    .ec-contactCompleteRole,
+    .ec-contactConfirmRole,
+    .ec-blockRadio,
+    .ec-searchnavRole__counter span,
+    .ec-contactRole,
+    .ec-registerRole,
+    .ec-registerCompleteRole,
+    .ec-mypageRole,
+    .ec-welcomeMsg,
+    .ec-topicpath{
+        margin-top: 0;
+    }    
+    
+    .ec-layoutRole .ec-layoutRole__contents{
+        width: 90%;
+    }
+    
+    .ec-newItemRole .ec-newItemRole__listItem:nth-child(odd),
+    .ec-newItemRole .ec-newItemRole__listItem:nth-child(even){
+        width: 100%;
+    }
+    
+    .ec-newItemRole .ec-newItemRole__listItem:nth-child(even){
+        /*margin-left: 6%;*/
+        margin-right: initial;
+    }
+    
+    .ec-newItemRole .ec-newItemRole__listItem:nth-child(3),
+    .ec-newItemRole .ec-newItemRole__listItem:nth-child(4){
+        display: none;
+        /*display: initial;*/
+    }
+    
+    .guide_title{
+        background-image: url(https://ounodoukutsu.jp/shop_toreca/html/template/default/assets/img/common/scroll_long_sp.png);
+        height: calc(100vw * 90 / 1007);
+        padding-top: calc(100vw * 25 / 1007);
+        font-size: 3vw;
+        background-size: contain;
+    }
+    .guide_text{
+        font-size: 3vw;
+    }
+    
+    .scrole{
+        padding-top: calc(100vw * 35 / 1031);
+        font-size: 5vw;
+        margin-bottom: 5px;
+    }
+    
+    .ec-footerNavi .ec-footerNavi__link a{
+        padding: 10px 0;
+        font-size: 10px;
+    }
+    
+     .ec-headerRole{
+        position: absolute;
+        left: 0;
+        top: 0;
+    }  
+    
+    .ec-headerTitle img{
+        width: 144px;
+        height: 70px ;
+    }
+    
+    .ec-topicRole__list{
+        width :100%;
+    }
+    
+    .ec-layoutRole{
+        /* padding-top: 10px; */
+    }
+    .ec-footerTitle{
+        padding:20px 0 80px;
+    }
+    
+    .ec-headerNaviRole{
+        padding-left: 0;
+        padding-right: 0;
+        padding-bottom: 0;
+    }
+    
+    .flogo{
+        width: 40%  !important;;
+    }
+    
+    .ec-cartNaviNull.is-active{
+        left: -85%;
+        bottom: 135%;
+    }
+    
+    .ec-footerNavi .ec-footerNavi__link a{
+        font-size: 14px;
+    }
+
+    .list_link{
+        padding: 5px 0;
+        background: #555;
+        color: #fff;
+        width: 100%;
+        display: block;
+        margin: -10px auto 20px;
+        text-align: center;
+    }
+
+    .pc_only{
+        display: none;
+        /* visibility: hidden; */
+    }
+
+}
+
+/* 追加カスタムここから*/
+
+/* ヘッダーの余白無効化 */
+@media only screen and (min-width: 768px){
+    .ec-headerNaviRole {
+        padding: 0px 20px;
+    }
+}
+.ec-headerTitle .ec-headerTitle__title a{
+    margin: 10px 0 10px 10px;
+}
+
+/* 商品セクション上部余白無効化 PC*/
+.ec-layoutRole__main {
+    margin-top: 0;
+    padding-top: 0;
+}
+/* 商品セクション上部余白無効化 SP*/
+@media screen and (max-width: 767px){
+    .ec-layoutRole__header {
+        padding: 0;
+    }
+}
+
+/*ヘッダーアイコンの縦横比固定 */
+@media screen and (max-width: 767px){
+    .ec-headerTitle img {
+        width: 144px;
+        height: auto;
+    }
+}
+
+/* ヘッダーのボタン大きさ調整 */
+.ec-headerNaviRole .ec-headerNaviRole__right {
+    width: 40%;
+}
+.ec-headerNav .ec-headerNav__item {
+    width: 135px;
+}
+
+.ec-headerNav .ec-headerNav__item {
+    display: block;
+}
+
+/* 追加カスタムここまで */

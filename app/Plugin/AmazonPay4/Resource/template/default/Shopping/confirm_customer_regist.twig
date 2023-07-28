@@ -1,0 +1,103 @@
+{#
+AmazonPay for EC-CUBE4
+Copyright(c) 2018 IPLOGIC CO.,LTD. All Rights Reserved.
+
+http://www.iplogic.co.jp/
+
+This program is not free software.
+It applies to terms of service.
+#}
+{% block javascript %}
+<script>
+
+$(function () {
+    {% if not is_granted('ROLE_USER') and AmazonPay4Config.login_required == eccube_config.amazon_pay4.toggle.on %}
+        $('.ec-orderRole__summary').append($('.amazon_customer_regist'));
+
+        // 仮の値をセット
+        $('#shopping_order_amazon_login_password').val("{{ form.amazon_login_password.vars.data }}");
+    {% endif %}
+
+    $('.amazon_cancel_button').on('click', function(){
+        form = $('#shopping-form');
+        form.attr('action', "{{ url('amazon_pay_shopping') }}");
+        form.submit();
+    });
+});
+</script>
+{% endblock %}
+
+<div class="d-none">
+    <div class="amazon_customer_regist">
+    {% if is_granted('ROLE_USER') %}
+       
+    {% else %}
+        {% if AmazonPay4Config.login_required == eccube_config.amazon_pay4.toggle.on %}
+            <dl>
+                <dd>
+                    <div >
+                        {{ form_widget(form.login_check[0], { attr: { disabled: 'disabled' } }) }}
+                    </div>
+                </dd>
+            </dl>
+        {% endif %}
+        <dl>
+            <dd>
+                {{ form_errors(form.customer_regist) }}
+            </dd>
+        </dl>
+        <dl>
+            <dd>
+                {{ form_widget(form.customer_regist, { attr: { disabled: 'disabled' } }) }}
+                ※ {{ 'front.entry.agree_with_terms'|trans({ '%url%': url('help_agreement') })|raw }}
+            </dd>
+        </dl>
+        {% if useMailMagazine %}
+            <dl>
+                <dd>
+                    <div class="ec-halfInput{{ has_errors(form.mail_magazine) ? ' error'}}">
+                        {{ form_errors(form.mail_magazine) }}
+                    </div>
+                </dd>
+            </dl>
+            <dl>
+                <dd>
+                     {{ form_widget(form.mail_magazine, { attr: { disabled: 'disabled' } }) }}
+                </dd>
+            </dl>
+        {% endif %}
+        {% if AmazonPay4Config.login_required == eccube_config.amazon_pay4.toggle.on %}
+            <dl>
+                <dd>
+                    <div>
+                        {{ form_widget(form.login_check[1], { attr: { disabled: 'disabled' } }) }}
+                    </div>
+                </dd>
+            </dl>
+            <dl>
+                <div class="col">
+                    {{ form_errors(form.amazon_login_email) }}
+                </div>
+                <dd>メールアドレス</dd>
+            </dl>
+            <dl>
+                <div {% if form.amazon_login_email.vars.errors is not empty %}class="has-error"{% endif %}>
+                    {{ form_widget(form.amazon_login_email, { attr: { disabled: 'disabled' } }) }}
+                </div>
+            </dl>
+            <dl>
+                <div class="col">
+                    {{ form_errors(form.amazon_login_password) }}
+                </div>
+                <dd>パスワード</dd>
+            </dl>
+            <dl>
+                <div {% if form.amazon_login_password.vars.errors is not empty %}class="has-error"{% endif %}>
+                    {{ form_widget(form.amazon_login_password, { attr: { disabled: 'disabled' } }) }}
+                </div>
+            </dl>
+        {% endif %}
+    {% endif %}
+    </div>
+
+</div>

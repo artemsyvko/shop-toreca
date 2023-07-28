@@ -1,0 +1,1 @@
+{"name":"ec-cube\/recommend42","version":"4.2.2","description":"\u304a\u3059\u3059\u3081\u5546\u54c1\u7ba1\u7406\u30d7\u30e9\u30b0\u30a4\u30f3","type":"eccube-plugin","require":{"ec-cube\/plugin-installer":"^2.0"},"extra":{"code":"Recommend42","id":2403}}

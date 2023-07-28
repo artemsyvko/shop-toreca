@@ -1,0 +1,30 @@
+{#
+This file is part of EC-CUBE
+
+Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+http://www.ec-cube.co.jp/
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+#}
+
+<script type="text/javascript">
+    $(function () {
+        $('#sms_use > div.col-3 > div').tooltip();
+        $("#ex-shop-customer").last().append($("#sms_use").detach());
+    });
+</script>
+
+<div class="row" id="sms_use">
+    <div class="col-3">
+        <div class="d-inline-block" data-bs-toggle="tooltip" data-bs-placement="top"
+             title="{{ 'admin.setting.shop.shop.customer_two_factor_is_activate_sms_tooltip'|trans }}">
+            <span>{{ 'admin.setting.shop.shop.customer_two_factor_is_activate_sms'|trans }}</span>
+            <i class="fa fa-question-circle fa-lg ms-1"></i>
+        </div>
+    </div>
+    <div class="col mb-2">
+        {{ form_widget(form.option_activate_device) }}
+        {{ form_errors(form.option_activate_device) }}
+    </div>
+</div>

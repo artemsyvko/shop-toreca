@@ -1,0 +1,1 @@
+{"name":"ec-cube\/salesreport42","version":"4.2.3","description":"\u58f2\u4e0a\u96c6\u8a08\u30d7\u30e9\u30b0\u30a4\u30f3","type":"eccube-plugin","require":{"ec-cube\/plugin-installer":"^2.0"},"extra":{"code":"SalesReport42","id":2406}}

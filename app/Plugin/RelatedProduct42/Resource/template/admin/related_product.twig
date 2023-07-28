@@ -1,0 +1,165 @@
+{#
+ This file is part of the Related Product plugin
+
+ Copyright(c) 2000-2016 EC-CUBE CO.,LTD. All Rights Reserved.
+ http://www.ec-cube.co.jp/
+
+ For the full copyright and license information, please view the LICENSE
+ file that was distributed with this source code.
+#}
+
+<script>
+$(function() {
+    $('#plugin_related_product_related_product').appendTo('.c-contentsArea__primaryCol');
+    $('#plugin_related_product_related_product').removeClass('d-none');
+
+    var dataId = null;
+
+    $(document).on('click', 'button[id^="RelatedProduct-delete"]', function() {
+        var data = $(this).data();
+        $('.RelatedProduct-view' + data.id ).addClass('d-none');
+        $('#admin_product_RelatedProducts_' + data.id + '_ChildProduct').val('');
+        $('#admin_product_RelatedProducts_' + data.id + '_content' ).val('');
+        $('#RelatedProductSearchResult').children().remove();
+    });
+
+    $(document).on("click", 'button[id^="RelatedProduct-search"]', function () {
+        dataId = $(this).attr("data-id");
+        $("#RelatedProductDataId").val(dataId);
+        $("#RelatedProductSearchResult").children().remove();
+    });
+
+    $("#RelatedProductSearchButton").on("click", function () {
+        var formIdVal = $("#{{ searchForm.id.vars.id }}").val();
+        var formCatIdVal = $("#{{ searchForm.category_id.vars.id }}").val();
+        var data = {
+            id: formIdVal,
+            category_id: formCatIdVal,
+            product_id: {{ Product.id ? Product.id : 0 }}
+        };
+        $("#RelatedProductSearchResult")
+                .children()
+                .remove();
+        $.ajax({
+            type: "POST",
+            url: "{{ url('admin_related_product_search') }}",
+            data: data,
+            success: function(data){
+                $("#RelatedProductSearchResult").append(data);
+            },
+            error: function() {
+                alert('product search failed.');
+            }
+        });
+    });
+});
+</script>
+
+<div id="plugin_related_product_related_product" class="d-none">
+    <div class="card rounded border-0 mb-4">
+        <div class="card-header">
+            <span class="card-title">{{ form.RelatedProducts.vars.label|trans }}</span>
+        </div>
+        <div class="card-body">
+            {% for RelatedProductForm in form.RelatedProducts %}
+            {% set RelatedProduct = RelatedProductForm.vars.value %}
+            {% set ChildProduct = RelatedProduct.ChildProduct %}
+            <div class="row mb-2">
+                <div class="col-3">
+                    <label>
+                        {{ RelatedProductForm.ChildProduct.vars.label }}
+                    </label>
+                </div>
+                <div class="col-9">
+                    {% if ChildProduct %}
+                        <div>
+                            <a href="{{ url('admin_product_product_edit', { id : ChildProduct.id }) }}" id="RelatedProduct-product_image_link{{ loop.index0 }}" class="RelatedProduct-view{{ loop.index0 }}" >
+                                <img src="{{ asset(ChildProduct.mainFileName|no_image_product, 'save_image') }}" id="RelatedProduct-product_image_img{{ loop.index0 }}" style="max-width: 100px;margin-right: 10px;" />
+                            </a>
+                            <span id="RelatedProduct-product_name{{ loop.index0 }}" class="RelatedProduct-view{{ loop.index0 }}" style="margin-right: 10px;">{{ ChildProduct.name }}</span>
+                            {{ form_widget(RelatedProductForm.ChildProduct, { attr: { style: 'display: none', class: 'child-product' } }) }}
+                            <br>
+                            <span class="RelatedProduct-view{{ loop.index0 }}" id="RelatedProduct-product_code{{ loop.index0 }}">
+                        {{ ChildProduct.code_min }}
+                                {% if ChildProduct.code_min != ChildProduct.code_max %} ～ {{ ChildProduct.code_max }}
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div>
+                            <button type="button" id="RelatedProduct-search{{ loop.index0 }}" class="btn btn-ec-regular" data-bs-toggle="modal" data-bs-target="#RelatedProductSearchProductModal" data-id="{{ loop.index0 }}">
+                                {{ 'related_product.select_product'|trans }}
+                            </button>
+                            <button type="button" id="RelatedProduct-delete{{ loop.index0 }}" class="btn text-end RelatedProduct-view{{ loop.index0 }}" data-id="{{ loop.index0 }}">
+                                {{ 'related_product.remove_product'|trans }}
+                            </button>
+                        </div>
+                    {% else %}
+                        <div>
+                            <a href="" id="RelatedProduct-product_image_link{{ loop.index0 }}" class="RelatedProduct-view{{ loop.index0 }} d-none" >
+                                <img src="" id="RelatedProduct-product_image_img{{ loop.index0 }}" style="max-width: 100px;margin-right: 10px;" />
+                            </a>
+                            <span id="RelatedProduct-product_name{{ loop.index0 }}" class="RelatedProduct-view{{ loop.index0 }} d-none" ></span>
+                            {{ form_widget(RelatedProductForm.ChildProduct, { attr: { style: 'display: none' , class: 'child-product' } }) }}
+                            <br>
+                            <span id="RelatedProduct-product_code{{ loop.index0 }}" class="RelatedProduct-view{{ loop.index0 }} d-none"></span>
+                        </div>
+                        <div>
+                            <button type="button" id="RelatedProduct-search{{ loop.index0 }}" class="btn btn-ec-regular" data-bs-toggle="modal" data-bs-target="#RelatedProductSearchProductModal" data-id="{{ loop.index0 }}">
+                                {{ 'related_product.select_product'|trans }}
+                            </button>
+                            <button  type="button" id="RelatedProduct-delete{{ loop.index0 }}" class="btn text-end RelatedProduct-view{{ loop.index0 }} d-none" data-id="{{ loop.index0 }}">
+                                {{ 'related_product.remove_product'|trans }}
+                            </button>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    <label>
+                        {{ RelatedProductForm.content.vars.label }}
+                    </label>
+                </div>
+                <div class="col-9">
+                    <div>
+                        {{ form_widget(RelatedProductForm.content, { 'attr': { 'rows': 8 }}) }}
+                        {{ form_errors(RelatedProductForm.content) }}
+                    </div>
+                </div>
+            </div>
+            <hr>
+            {% endfor %}
+            <input type="hidden" id="RelatedProductDataId" value="">
+        </div>
+    </div>
+</div>
+
+{% form_theme searchForm '@admin/Form/bootstrap_4_horizontal_layout.html.twig' %}
+
+<div class="modal fade" id="RelatedProductSearchProductModal" tabindex="-1" role="dialog"
+     aria-labelledby="RelatedProductSearchProductModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ 'related_product.modal.product_search.title'|trans }}</h5>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    {{ form_widget(searchForm.id, { attr : { placeholder : 'related_product.modal.product_search.input_name' } } ) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_widget(searchForm.category_id) }}
+                </div>
+                <div class="mb-3">
+                    <button type="button" id="RelatedProductSearchButton" class="btn btn-ec-conversion" >
+                        {{ 'admin.common.execute'|trans }}
+                    </button>
+                </div>
+                <div id="RelatedProductSearchResult">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

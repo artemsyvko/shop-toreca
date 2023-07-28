@@ -1,0 +1,3 @@
+parameters:
+    product_review_display_count_min: 1
+    product_review_display_count_max: 30

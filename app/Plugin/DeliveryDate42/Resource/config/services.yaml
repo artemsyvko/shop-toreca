@@ -1,0 +1,11 @@
+services:
+    deliverydate4.api.allow_list:
+        class: ArrayObject
+        tags: ['eccube.api.allow_list']
+        arguments:
+            - #
+                Eccube\Entity\ProductClass: ['delivery_date_days']
+                Eccube\Entity\Delivery: ['delivery_date_flg','DeliveryDates']
+                Plugin\DeliveryDate42\Entity\DeliveryDate: ['dates','Delivery','Pref']
+                Plugin\DeliveryDate42\Entity\Holiday: ['title','date']
+

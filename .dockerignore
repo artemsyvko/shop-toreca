@@ -1,0 +1,5 @@
+vendor
+.git
+var
+node_modules
+bin/.phpunit

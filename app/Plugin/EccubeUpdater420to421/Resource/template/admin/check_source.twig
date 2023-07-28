@@ -1,0 +1,102 @@
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['store', 'plugin', 'plugin_list'] %}
+
+{% block title %}EC-CUBEのアップデート（ソースコードの変更確認）{% endblock %}
+{% block sub_title %}{% endblock %}
+
+{% block stylesheet %}{% endblock stylesheet %}
+
+{% block javascript %}{% endblock javascript %}
+
+{% block main %}
+    <div class="c-contentsArea__cols">
+        <div class="c-contentsArea__primaryCol">
+            <div class="c-primaryCol">
+                <div class="card rounded border-0 mb-4">
+                    {% if changes|length <= 0 %}
+                        <div class="card-header">
+                            <span>ソースの変更はありません。</span>
+                        </div>
+                    {% else %}
+                        <div class="card-header">
+                            <span>以下の{{ changes|length }}ファイルが変更されています</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col mb-2">
+                                    <div class="alert alert-danger border border-danger">
+                                        <ul>
+                                            {% for file in changes %}
+                                                <li>{{ file }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col mb-2">
+                                    <ul>
+                                        <li>・アップデートを継続するとファイルが上書きされます。この操作は取り消せません。</li>
+                                        <li>・カスタマイズされている部分は正しく動作しない可能性があります。</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                {% if overwriteRequires %}
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header">
+                            <span>composer.json/composer.lockが上書きされます</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col mb-2">
+                                    独自にライブラリを導入している場合は、アップデート後、手動でcomposer requireを行ってください。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="card rounded border-0 mb-4">
+                    <div class="card-body">
+                        <div class="text-center">
+                            <a class="btn btn-ec-regular"
+                               href="{{ path('eccube_updater420to421_admin_config') }}">中止</a>
+                            <button type="button" class="btn btn-ec-conversion" data-bs-toggle="modal"
+                                    data-bs-target="#copy_files">最新バージョンで上書き
+                            </button>
+                            <div class="modal fade" id="copy_files" tabindex="-1" role="dialog"
+                                 aria-labelledby="discontinuance" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title font-weight-bold">ファイルを上書きします</h5>
+                                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body text-start">
+                                            <p class="text-start">
+                                                ファイルを上書きします。この操作以降、アップデートを中止することはできません。<br>
+                                                アップデートが完了するとログアウトします。再度ログインし完了画面を確認してください。
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-ec-sub" type="button" data-bs-dismiss="modal">キャンセル
+                                            </button>
+                                            <a class="btn btn-ec-delete"
+                                               href="{{ url('eccube_updater420to421_admin_update_files') }}" {{ csrf_token_for_anchor() }}
+                                               data-method="post" data-confirm="false">
+                                                最新バージョンで上書き
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

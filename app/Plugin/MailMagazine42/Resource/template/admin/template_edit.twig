@@ -1,0 +1,93 @@
+{#
+ This file is part of EC-CUBE
+
+ Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+ http://www.ec-cube.co.jp/
+
+ For the full copyright and license information, please view the LICENSE
+ file that was distributed with this source code.
+#}
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['mailmagazine', 'mailmagazine_template'] %}
+
+{% block title %}{{ 'mailmagazine.template.title'|trans }}{% endblock %}
+{% block sub_title %}{{ 'mailmagazine.title'|trans }}{% endblock %}
+
+{% form_theme form '@admin/Form/bootstrap_4_horizontal_layout.html.twig' %}
+
+{% block main %}
+    <form role="form" name="content_page_form" id="content_page_form" method="post"
+          action="{{ url('plugin_mail_magazine_template_commit', { id: Template.id } ) }}">
+        {{ form_widget(form._token) }}
+        <div class="c-outsideBlock">
+            <div class="c-outsideBlock__contents">
+                <div class="card rounded border-0 mb-4">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-8">
+                                <span class="card-title">
+                                    {{ 'テンプレート編集'|trans }}
+                                </span>
+                            </div>
+                            <div class="col-4 text-end">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body mb-lg-5">
+                        <div class="row">
+                            <div class="col-3">
+                                {{ form.subject.vars.label|trans }}<span class="badge bg-primary ms-1">{{ 'admin.common.required'|trans }}</span>
+                            </div>
+                            <div class="col mb-2">
+                                {{ form_widget(form.subject) }}
+                                {{ form_errors(form.subject) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                {{ form.body.vars.label|trans }}<span class="badge bg-primary ms-1">{{ 'admin.common.required'|trans }}</span>
+                            </div>
+                            <div class="col mb-2">
+                                {{ form_widget(form.body, {'attr' : { 'rows' : 20 }}) }}
+                                {{ form_errors(form.body) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                <span>{{ form.htmlBody.vars.label|trans }}</span>
+                            </div>
+                            <div class="col mb-2">
+                                {{ form_widget(form.htmlBody, {'attr' : { 'rows' : 20 }}) }}
+                                {{ form_errors(form.htmlBody) }}
+                            </div>
+                        </div>
+                        <span class="help-block">{{ 'mailmagazine.select.note_name'|trans }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="c-conversionArea">
+            <div class="c-conversionArea__container">
+                <div class="row justify-content-between align-items-center">
+                    <div class="col-6">
+                        <div class="c-conversionArea__leftBlockItem">
+                            <a class="c-baseLink" href="{{ url('plugin_mail_magazine_template') }}">
+                                <i class="fa fa-backward" aria-hidden="true"></i><span>{{ 'mailmagazine.template.title'|trans }}</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row align-items-center justify-content-end">
+                            <div class="col-auto">
+                                <button class="btn btn-ec-conversion px-5" type="submit">
+                                    {{ 'mailmagazine.template.btn_save'|trans }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}

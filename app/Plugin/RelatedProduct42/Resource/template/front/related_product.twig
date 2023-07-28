@@ -1,0 +1,35 @@
+<script>
+    $(function () {
+        $('#RelatedProduct-product_area').appendTo($('.ec-layoutRole__main, .ec-layoutRole__mainWithColumn, .ec-layoutRole__mainBetweenColumn'));
+    });
+</script>
+
+<div id="RelatedProduct-product_area" class="ec-shelfRole">
+    <ul class="ec-shelfGrid">
+        {% for RelatedProduct in Product.RelatedProducts %}
+            {% set ChildProduct = RelatedProduct.ChildProduct %}
+            {% if ChildProduct.Status.id == constant("Eccube\\Entity\\Master\\ProductStatus::DISPLAY_SHOW") %}
+                <li class="ec-shelfGrid__item">
+                    <a href="{{ url('product_detail', {id : ChildProduct.id}) }}">
+                        <p class="ec-shelfGrid__item-image">
+                            <img src="{{ asset(RelatedProduct.ChildProduct.main_list_image|no_image_product, 'save_image') }}">
+                        </p>
+                        <p>{{ RelatedProduct.ChildProduct.name }}</p>
+                        <p>
+                            {% if RelatedProduct.ChildProduct.hasProductClass %}
+                                {% if RelatedProduct.ChildProduct.getPrice02Min == RelatedProduct.ChildProduct.getPrice02Max %}
+                                    {{ RelatedProduct.ChildProduct.getPrice02IncTaxMin|price }}
+                                {% else %}
+                                    {{ RelatedProduct.ChildProduct.getPrice02IncTaxMin|price }} ～ {{ RelatedProduct.ChildProduct.getPrice02IncTaxMax|price }}
+                                {% endif %}
+                            {% else %}
+                                {{ RelatedProduct.ChildProduct.getPrice02IncTaxMin|price }}
+                            {% endif %}
+                        </p>
+                    </a>
+                    <span>{{ RelatedProduct.content|raw|purify }}</span>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</div>

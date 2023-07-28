@@ -1,0 +1,41 @@
+{#
+
+#}
+<script src="{{ AmazonPay4Api.checkout_script_url }}"></script>
+
+{% for CartIndex,Cart in Carts %}
+    {% set cartKey = Cart.cart_key %}
+    {% set SaleType = Cart.CartItems[0].ProductClass.SaleType.id %}
+    {% if SaleType in AmazonSaleTypes %}
+    <script>
+    // ボタンを設置
+    $('#form_cart > div.ec-cartRole__actions').eq("{{ loop.index0 }}").after($("#AmazonPayJS{{ cartKey }}"));
+
+    $(function () {
+        amazon.Pay.renderButton('#AmazonPayButton{{ cartKey }}', {
+            // set checkout environment
+            merchantId: '{{ AmazonPay4Config.seller_id }}',
+            ledgerCurrency: 'JPY',
+            {% if AmazonPay4Config.env == eccube_config.amazon_pay4.env.sandbox %}
+            sandbox: true,
+            {% endif %}
+            // customize the buyer experience
+            checkoutLanguage: 'ja_JP',
+            productType: 'PayAndShip',
+            placement: 'Cart',
+            buttonColor: '{{ AmazonPay4Config.cart_button_color }}',
+            // configure Create Checkout Session request
+            createCheckoutSessionConfig: {
+                payloadJSON: '{{ cart[cartKey].payload | raw }}', // string generated in step 2
+                signature: '{{ cart[cartKey].signature }}', // signature generated in step 3
+                publicKeyId: '{{ AmazonPay4Config.public_key_id }}'
+            }
+        });
+    });
+    </script>
+    {% else %}
+        <script>
+            $("#AmazonPayButton{{ cartKey }}").remove();
+        </script>
+    {% endif %}
+{% endfor %}

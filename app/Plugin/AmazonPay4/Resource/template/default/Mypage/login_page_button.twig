@@ -1,0 +1,29 @@
+{#
+Amazon Pay V2 for EC-CUBE4
+Copyright(c) 2020 IPLOGIC CO.,LTD. All Rights Reserved.
+
+http://www.iplogic.co.jp/
+
+This program is not free software.
+It applies to terms of service.
+#}
+
+<style>
+    .div_AmazonLogin {
+        margin: 35px 0;
+    }
+</style>
+
+<script>
+    $(function () {
+        // ボタンを設置
+        $("div.ec-login").append($(".div_AmazonLogin"));
+    });
+</script>
+
+<div class="hidden">
+    <div class="div_AmazonLogin">
+        <div id="AmazonLoginButton" style="height: 56px;"></div>
+        <p class="small">※Amazonアカウントでの決済履歴がある会員の方のみご利用頂けます。</p>
+    </div>
+</div>

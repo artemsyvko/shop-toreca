@@ -1,0 +1,48 @@
+<script>
+    $(function () {
+        // 「クレジットカード決済」「登録済みクレジットカード決済」の要素を取得
+        var ccPay = null;
+        var rcPay = null;
+        var rcPayContainer = null;
+        $('#shopping-form > div.ec-orderRole > div.ec-orderRole__detail > div.ec-orderPayment > div.ec-radio > div').each(function(index, elm){
+            try {
+                var input = $('input', this);
+                if (input.val() == {{ ccPayId }}) {
+                    ccPay = input;
+                }
+                else if (input.val() == {{ rcPayId }}) {
+                    rcPay = input;
+                    rcPayContainer = this;
+                }
+            } catch(e) {}
+        });
+
+        // クイック決済選択時の処理
+        {% if slClink == true %}
+            {% if isEnabledQuickPay == true %}
+                // クイック決済の条件をすべて満たすので「登録済みクレジットカード決済」を選択
+                if (rcPay != null) {
+                    rcPay.attr('checked', 'checked');
+                }
+            {% else %}
+                // クレジットカード未登録の状態でクイック決済を選択した場合「クレジットカード決済」を選択
+                if (ccPay != null) {
+                    ccPay.attr('checked', 'checked');
+                }
+            {% endif %}
+        {% endif %}
+
+        // クレジットカードが登録されていなければ「登録済みクレジットカード決済」を削除
+        {% if isCreditCardRegistered == false %}
+            if (rcPayContainer != null) {
+                if (typeof rcPayContainer.remove === "function") {
+                    rcPayContainer.remove();
+                }
+                else {
+                    // IE11用
+                    rcPayContainer.parentNode.removeChild(rcPayContainer);
+                }
+            }
+        {% endif %}
+    });
+</script>

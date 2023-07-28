@@ -1,0 +1,79 @@
+{#
+ This file is part of the Related Product plugin
+
+ Copyright(c) 2000-2016 EC-CUBE CO.,LTD. All Rights Reserved.
+ http://www.ec-cube.co.jp/
+
+ For the full copyright and license information, please view the LICENSE
+ file that was distributed with this source code.
+#}
+<script>
+    function fnRelatedProductSelectProduct(product_id, product_name, product_image_link, product_image_img, product_code_min, product_code_max) {
+        var data_id = $('#RelatedProductDataId').val();
+
+        // Add product argument
+        $('#RelatedProduct-product_name' + data_id).text(product_name);
+        $('#RelatedProduct-product_image_link' + data_id).attr('href', product_image_link);
+        $('#RelatedProduct-product_image_img' + data_id).attr('src', product_image_img);
+
+        if(product_code_min != product_code_max)
+            product_code_min += ' ～ ' + product_code_max;
+        $('#RelatedProduct_product_code' + data_id).text(product_code_min);
+        // Display new product
+        $('.RelatedProduct-view' + data_id).removeClass('d-none');
+        $("#admin_product_RelatedProducts_" + data_id + "_ChildProduct").val(product_id);
+        // モーダル閉じる.
+        $("#RelatedProductSearchResult").children().remove();
+        $("#RelatedProductSearchProductModal").modal("hide");
+        return false;
+    }
+
+    // 商品検索
+    $('#RelatedProductSearchProductModal .pagination a').on('click', function(event) {
+        var list = $('#RelatedProductSearchResult');
+        list.children().remove();
+        $.ajax({
+            type: 'GET',
+            dataType: 'html',
+            url: $(this).attr('href'),
+            success: function(data) {
+                $('#RelatedProductSearchResult').html(data);
+            },
+            error: function() {
+                alert('paginator failed.');
+            }
+        });
+        event.preventDefault();
+    });
+</script>
+<div class="table-responsive">
+    <table class="table">
+        <tbody>
+        {% for Product in pagination %}
+            <form name="product_form{{ Product.id }}">
+                <tr>
+                    <td>
+                        {{ Product.name }}
+                        <br>
+                        <span>{{ Product.code_min }}
+                            {% if Product.code_min != Product.code_max %} ～ {{ Product.code_max }}
+                            {% endif %}
+                        </span>
+                    </td>
+                    <td class="text-end">
+                        <button onclick="fnRelatedProductSelectProduct('{{ Product.id }}', '{{ Product.name|escape('js') }}', '{{ url('admin_product_product_edit', { id : Product.id }) }}', '{{ asset(Product.mainFileName|no_image_product, 'save_image') }}', '{{ Product.code_min|escape('js') }}', '{{ Product.code_max|escape('js') }}')" type="button" class="btn btn-sm">
+                            <i class="fa fa-plus fa-lg fw-bold text-secondary"></i>
+                        </button>
+                    </td>
+                </tr>
+            </form>
+        {% endfor %}
+
+        </tbody>
+    </table>
+    {% if pagination.totalItemCount > 0 %}
+        <div class="pagination">
+            {% include "@admin/pager.twig" with {'pages': pagination.paginationData, 'routes': 'admin_related_product_search_product_page'} %}
+        </div>
+    {% endif %}
+</div>

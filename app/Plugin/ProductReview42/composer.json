@@ -1,0 +1,1 @@
+{"name":"ec-cube\/productreview42","version":"4.2.4","description":"\u5546\u54c1\u30ec\u30d3\u30e5\u30fc\u7ba1\u7406\u30d7\u30e9\u30b0\u30a4\u30f3","type":"eccube-plugin","require":{"ec-cube\/plugin-installer":"^2.0"},"extra":{"code":"ProductReview42","id":2405}}

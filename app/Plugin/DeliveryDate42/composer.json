@@ -1,0 +1,1 @@
+{"name":"ec-cube\/deliverydate42","version":"1.0.2","description":"\u6700\u77ed\u304a\u5c4a\u3051\u65e5\u8abf\u6574\u30d7\u30e9\u30b0\u30a4\u30f3","type":"eccube-plugin","require":{"ec-cube\/plugin-installer":"~0.0.6 || ^2.0"},"extra":{"code":"DeliveryDate42","id":2517}}

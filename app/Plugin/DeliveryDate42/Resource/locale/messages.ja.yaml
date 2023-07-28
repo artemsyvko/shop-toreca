@@ -1,0 +1,43 @@
+deliverydate.common.1: 発送日数
+deliverydate.common.choice.default: 選択してください
+deliverydate.common.sunday: 日
+deliverydate.common.monday: 月
+deliverydate.common.tuesday: 火
+deliverydate.common.wednesday: 水
+deliverydate.common.thursday: 木
+deliverydate.common.friday: 金
+deliverydate.common.saturday: 土
+
+deliverydate.admin.nav.setting.deliverydate.holiday: 店休日設定
+deliverydate.admin.nav.setting.deliverydate.config: お届け日調整・カレンダー表示設定
+deliverydate.admin.setting.deliverydate.config.title: 設定
+deliverydate.admin.setting.deliverydate.config.label.1: 即日発送受付可能時間
+deliverydate.admin.setting.deliverydate.config.label.2: 発送日数初期値
+deliverydate.admin.setting.deliverydate.config.label.3: 発送日数カウント方法
+deliverydate.admin.setting.deliverydate.config.label.4: 営業日カレンダー表示
+deliverydate.admin.setting.deliverydate.config.label.5: 全商品を対象とする（即日発送商品以外も対象）
+deliverydate.admin.setting.deliverydate.config.choice.default: 設定しない
+deliverydate.admin.setting.deliverydate.config.choice.holiday.disable: 店休日をカウントしない
+deliverydate.admin.setting.deliverydate.config.choice.holiday.enable: 店休日もカウントする
+deliverydate.admin.setting.deliverydate.config.choice.month: ヶ月
+deliverydate.admin.setting.shop.delivery.edit.choice.cannot: お届け日指定不可
+deliverydate.admin.setting.shop.delivery.edit.label.1: 都道府県別配送日数設定
+deliverydate.admin.setting.shop.delivery.edit.label.2: お届け日指定不可
+deliverydate.admin.setting.shop.delivery.edit.label.3: お届け日指定不可設定
+deliverydate.admin.setting.shop.holiday.label.1: 休日名
+deliverydate.admin.setting.shop.holiday.label.2: 登録
+deliverydate.admin.setting.shop.holiday.label.3: 日付
+deliverydate.admin.setting.shop.holiday.button: 選択
+deliverydate.admin.setting.shop.holiday.checkall: 曜日一括チェック
+deliverydate.admin.setting.shop.holiday.nodata: 年月が選択されていません
+
+deliverydate.shopping.shipping.form.cannot: 指定不可
+deliverydate.shopping.shipping.form.nothing: 指定なし
+
+deliverydate.block.title: 営業日カレンダー
+
+admin.setting.deliverydate.save.complete: 設定を登録しました。
+admin.deliverydate.holiday.save.complete: 休日を登録しました。
+admin.deliverydate.holiday.delete.complete: 休日を削除しました。
+
+deliverydate.admin.product.product_csv.delivery_date_description: 0以上の数値を設定(お届け日指定不可の場合は空欄)

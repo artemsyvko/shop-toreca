@@ -1,0 +1,7 @@
+html/upload/save_image/
+html/upload/temp_image/
+var/cache/
+var/log/
+var/sessions/
+vendor/
+.env

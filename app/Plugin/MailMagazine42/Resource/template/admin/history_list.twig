@@ -1,0 +1,220 @@
+{#
+ This file is part of EC-CUBE
+
+ Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+ http://www.ec-cube.co.jp/
+
+ For the full copyright and license information, please view the LICENSE
+ file that was distributed with this source code.
+#}
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['mailmagazine', 'mailmagazine_history'] %}
+
+{% block title %}{{ 'mailmagazine.history.title'|trans }}{% endblock %}
+{% block sub_title %}{{ 'mailmagazine.title'|trans }}{% endblock %}
+
+{% block javascript %}
+<script>
+function fnDelete(action) {
+    if (confirm('この履歴を削除してもよろしいですか？')) {
+        document.form1.action = action;
+        document.form1.submit();
+    }
+}
+function sendMail(id, offset, token) {
+    $.post('{{ url('plugin_mail_magazine_commit') }}', { id : id, offset: offset || 0, _token:token })
+        .done(function(res) {
+            $('#send-progress').css('width', (res.count / res.total * 100) + '%');
+            $('#send-status-message').text(res.count + ' / ' + res.total + ' 件処理完了');
+            if (res.count < res.total) {
+                sendMail(id, res.count);
+            } else {
+                $('.modal-title').text('送信完了');
+                $('#send-progress').removeClass('progress-bar-striped active');
+                $('.modal-footer').show();
+            }
+        })
+        .fail(function() {
+            alert('エラーが発生しました。');
+        });
+}
+$(function () {
+    var lock = false;
+    $('.retry-btn').click(function(e) {
+        e.preventDefault();
+        if (!lock && confirm('配信失敗と未配信のメールを再送します。\nよろしいですか？')) {
+            lock = true;
+            $('#sendModal').modal('show');
+            var id = $(this).data('id');
+            $.post($(this).data('url'))
+                .done(function() { sendMail(id, 0); })
+                .fail(function() { alert('エラーが発生しました。'); });
+        }
+        return false;
+    });
+    $('#sendModal').on('show.bs.modal', function () {
+        $('.modal-title').text('送信中...');
+        $('#send-progress').addClass('progress-bar-striped active');
+        $('#send-status-message').text('');
+    });
+    $('#sendModal').on('hide.bs.modal', function() {
+        location.reload(true);
+    });
+    {% if app.session.flashBag.has('eccube.mailmagazine.history') %}
+    $('#sendModal').modal('show');
+    sendMail({{ app.session.flashBag.get('eccube.mailmagazine.history')[0] }}, 0);
+    {% endif %}
+})
+</script>
+{% endblock %}
+
+{% block main %}
+<form name="form1" id="form1" method="post" action="">
+    <input type="hidden" name="_token" value="{{ csrf_token(constant('Eccube\\Common\\Constant::TOKEN_NAME')) }}">
+    <div class="c-outsideBlock__contents mb-5">
+        {% if pagination %}
+            <span class="fw-bold ml-2">{{ 'admin.mailmagazine.history.search_count'|trans({'%count%':pagination.totalItemCount}) }}</span>
+        {% endif %}
+    </div>
+    <div class="c-contentsArea__cols">
+        <div class="c-contentsArea__primaryCol">
+            <div class="c-primaryCol">
+                {% if pagination and pagination.totalItemCount %}
+                    <div class="row justify-content-between mb-2">
+                        <div class="col-6"></div>
+
+                        <div class="col-5 text-end">
+                            {#Dropdown page count#}
+                            <div class="d-inline-block mr-2 align-bottom">
+                                <select class="form-select" onchange="location = this.value;">
+                                    {% for pageMax in pageMaxis %}
+                                        <option {% if pageMax.name == page_count %} selected {% endif %}
+                                                value="{{ path('plugin_mail_magazine_history_page', {'page_no': 1, 'page_count': pageMax.name }) }}">
+                                            {{ 'admin.common.count'|trans({ '%count%': pageMax.name }) }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="d-inline-block">
+                                <div class="btn-group" role="group"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-body p-0">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="border-top-0 pt-2 pb-2">{{ 'admin.mailmagazine.history.th_send_start_time'|trans }}</th>
+                                        <th class="border-top-0 pt-2 pb-2">{{ 'admin.mailmagazine.history.th_send_end_time'|trans }}</th>
+                                        <th class="border-top-0 pt-2 pb-2">{{ 'admin.mailmagazine.history.th_subject'|trans }}</th>
+                                        <th class="border-top-0 pt-2 pb-2">{{ 'admin.mailmagazine.history.th_send_total'|trans }}</th>
+                                        <th class="border-top-0 pt-2 pb-2">{{ 'admin.mailmagazine.history.th_send_complete'|trans }}</th>
+                                        <th class="border-top-0 pt-2 pb-2">{{ 'admin.mailmagazine.history.th_send_fail'|trans }}</th>
+                                        <th class="border-top-0 pt-2 pb-2">{{ 'admin.mailmagazine.history.th_unsend'|trans }}</th>
+                                        <th class="border-top-0 pe-2 pb-2 text-center pe-3">&nbsp;</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for SendHistory in pagination %}
+                                    <tr>
+                                        <td class="">{{ SendHistory.start_date|date("Y/m/d H:i") }}</td>
+                                        <td class="">
+                                            {% if SendHistory.end_date is not null %}
+                                                {{ SendHistory.end_date|date("Y/m/d H:i") }}
+                                            {% endif %}
+                                        </td>
+                                        <td class="">{{ SendHistory.subject}}</td>
+                                        <td>{{ SendHistory.send_count }}</td>
+                                        <td>{{ SendHistory.complete_count }}</td>
+                                        <td>{{ SendHistory.error_count }}</td>
+                                        <td>{{ SendHistory.send_count - SendHistory.complete_count }}</td>
+                                        <td class="icon_edit align-middle pe-3 text-center">
+                                            <div class="row justify-content-end">
+                                                <div class="col-auto text-center">
+                                                    <a href="{{ url('plugin_mail_magazine_history_preview', { id: SendHistory.id }) }}" >
+                                                        {{ 'mailmagazine.history.btn_preview'|trans }}
+                                                    </a>
+                                                </div>
+                                                <div class="col-auto text-center">
+                                                    <a href="{{ url('plugin_mail_magazine_history_condition', { id: SendHistory.id }) }}">
+                                                        {{ 'mailmagazine.history.btn_condition'|trans }}
+                                                    </a>
+                                                </div>
+                                                <div class="col-auto text-center">
+                                                    <a href="{{ url('plugin_mail_magazine_history_result', { id: SendHistory.id }) }}">
+                                                        {{ 'mailmagazine.history.btn_result'|trans }}
+                                                    </a>
+                                                </div>
+                                                <div class="col-auto text-center">
+                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal{{ SendHistory.id }}">
+                                                        {{ 'mailmagazine.history.btn_delete'|trans }}
+                                                    </a>
+                                                    <div id="deleteModal{{ SendHistory.id }}" class="modal" data-bs-keyboard="false" data-bs-backdrop="static">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h4 class="modal-title">{{ 'mailmagazine.history.modal_del_message'|trans }}</h4>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-ec-regular" data-bs-dismiss="modal">
+                                                                        {{ 'common.cancel'|trans }}
+                                                                    </button>
+                                                                    <button type="submit" class="btn btn-ec-delete" onclick="document.form1.action = '{{ url('plugin_mail_magazine_history_delete', { id: SendHistory.id }) }}'">
+                                                                        {{ 'common.delete'|trans }}
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {% if SendHistory.error_count > 0 or (SendHistory.send_count - SendHistory.complete_count) > 0 %}
+                                                    <div class="col-auto text-center">
+                                                        <a href="#" class="retry-btn" data-id="{{ SendHistory.id }}" data-url="{{ url('plugin_mail_magazine_history_retry', {id: SendHistory.id}) }}">
+                                                            {{ 'mailmagazine.history.btn_resend'|trans }}
+                                                        </a>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="row justify-content-md-center mb-4">
+                                {% if pagination.totalItemCount > 0 %}
+                                    {% include "@admin/pager.twig" with { 'pages' : pagination.paginationData, 'routes' : 'plugin_mail_magazine_history_page' } %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="card rounded border-0">
+                        <div class="card-body p-4">
+                            <div class="text-center text-muted">{{ 'admin.mailmagazine.history.notice_no_data'|trans }}</div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</form>
+<div id="sendModal" class="modal" data-bs-keyboard="false" data-bs-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">送信中...</h4>
+            </div>
+            <div class="modal-body">
+                <div class="progress">
+                    <div id="send-progress" class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
+                </div>
+                <div id="send-status-message"></div>
+            </div>
+            <div class="modal-footer" style="display: none;">
+                <button type="button" class="btn btn-ec-sub" data-bs-dismiss="modal">{{ 'mailmagazine.confirm.modal.btn_cancel'|trans }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+#amazon_pay__payment_descriptor {
+  display: flex;
+  margin-bottom: 14px;
+}
+
+#amazon_pay__payment_descriptor img {
+  width: 30px;
+  min-width: 30px;
+}
+
+.amazon_pay_amazonpaymentdescriptor_block {
+  display: flex;
+  align-items: center;
+}
+
+
+.amazon_pay_payment_change_block {
+  margin-left: auto;
+}
+
+.amazon_pay_button {
+  -moz-box-shadow: inset 0px 1px 0px 0px #f9eacf;
+  -webkit-box-shadow: inset 0px 1px 0px 0px #f9eacf;
+  box-shadow: inset 0px 1px 0px 0px #f9eacf;
+  background: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    color-stop(0.05, #f6dd9f),
+    color-stop(1, #f0c24d)
+  );
+  background: -moz-linear-gradient(center top, #f6dd9f 5%, #f0c24d 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#F6DD9F', endColorstr='#F0C24D');
+  background-color: #f5d78a;
+  border-color: #f5d78a;
+}
+
+.amazon_pay_button:hover {
+  background: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    color-stop(0.05, #f5d589),
+    color-stop(1, #eeba35)
+  );
+  background: -moz-linear-gradient(center top, #f5d589 5%, #eeba35 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#F5D589', endColorstr='#EEBA35');
+  background-color: #eeba35;
+  border-color: #eeba35;
+}

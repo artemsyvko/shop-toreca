@@ -1,0 +1,21 @@
+{#
+* Plugin Name : DeliveryDate4
+*
+* Copyright (C) BraTech Co., Ltd. All Rights Reserved.
+* http://www.bratech.co.jp/
+*
+* For the full copyright and license information, please view the LICENSE
+* file that was distributed with this source code.
+#}
+
+<span id="deliverydate_days_th" style="display:none;">
+    {{ 'deliverydate.common.1'|trans }}
+</span>
+
+
+{% for product_class_form in form.product_classes %}
+<div id="deliverydate_days_{{ loop.index }}" style="display:none;">
+    {{ form_widget(product_class_form.delivery_date_days) }}
+    {{ form_errors(product_class_form.delivery_date_days) }}
+</div>
+{% endfor %}

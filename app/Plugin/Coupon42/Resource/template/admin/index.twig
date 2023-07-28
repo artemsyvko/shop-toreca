@@ -1,0 +1,138 @@
+{#
+ This file is part of the Coupon plugin
+
+ Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+ http://www.ec-cube.co.jp/
+
+ For the full copyright and license information, please view the LICENSE
+ file that was distributed with this source code.
+#}
+
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['order', 'plugin_coupon'] %}
+
+{% block title %}{{ 'plugin_coupon.admin.index.title'|trans }}{% endblock %}
+{% block sub_title %}{{ 'plugin_coupon.admin.index.subtitle'|trans }}{% endblock %}
+
+{% block main %}
+<form name="search_form" id="search_form" method="post" action="">
+    <div class="c-contentsArea__cols">
+        <div class="c-contentsArea__primaryCol">
+            <div class="c-primaryCol">
+                <div class="card rounded border-0 mb-4">
+                    <div class="card-header"><span class="normal">{{ 'plugin_coupon.admin.index.number'|trans({'%number%': Coupons|length})|raw }}</span></div>
+                    <div class="card-body p-0">
+                            <table class="table tabel-sm">
+                                <thead>
+                                <tr>
+                                    <th>{{ 'plugin_coupon.admin.index.col01'|trans }}</th>
+                                    <th>{{ 'plugin_coupon.admin.index.col02'|trans }}</th>
+                                    <th>{{ 'plugin_coupon.admin.index.col03'|trans }}</th>
+                                    <th>{{ 'plugin_coupon.admin.index.col04'|trans }}</th>
+                                    <th>{{ 'plugin_coupon.admin.index.col05'|trans }}</th>
+                                    <th>{{ 'plugin_coupon.admin.index.col06'|trans }}</th>
+                                    <th>{{ 'plugin_coupon.admin.index.col07'|trans }}</th>
+                                    <th>{{ 'plugin_coupon.admin.index.col08'|trans }}</th>
+                                    <th>{{ 'plugin_coupon.admin.index.col09'|trans }}</th>
+                                    <th>{{ 'plugin_coupon.admin.index.col10'|trans }}</th>
+                                    <th>{{ 'plugin_coupon.admin.index.col11'|trans }}</th>
+                                    <th>{{ 'plugin_coupon.admin.index.col12'|trans }}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for Coupon in Coupons %}
+                                <tr class="{% if Coupon.enable_flag == 0 %}active{% endif %}">
+                                    <td class="coupon_id">{{ Coupon.id }}</td>
+                                    <td class="coupon_cd">{{ Coupon.coupon_cd }}</td>
+                                    <td class="coupon_name">{{ Coupon.coupon_name }}</td>
+                                    {% if Coupon.coupon_type == 1 %}
+                                        <td class="coupon_type">{{ 'plugin_coupon.admin.coupon_type.product'|trans }}</td>
+                                    {% elseif Coupon.coupon_type == 2 %}
+                                        <td class="coupon_type">{{ 'plugin_coupon.admin.coupon_type.category'|trans }}</td>
+                                    {% elseif Coupon.coupon_type == 3 %}
+                                        <td class="coupon_type">{{ 'plugin_coupon.admin.coupon_type.all'|trans }}</td>
+                                    {% else %}
+                                        <td class="coupon_type"></td>
+                                    {% endif %}
+
+                                    {% if Coupon.coupon_member == 1 %}
+                                        <td class="coupon_member">{{ 'plugin_coupon.admin.coupon_member.yes'|trans }}</td>
+                                    {% else %}
+                                        <td class="coupon_member">{{ 'plugin_coupon.admin.coupon_member.no'|trans }}</td>
+                                    {% endif %}
+
+                                    {% if Coupon.discount_type == 1 %}
+                                        <td class="coupon_discount">{{ Coupon.discount_price|price }}</td>
+                                    {% elseif Coupon.discount_type == 2 %}
+                                        <td class="coupon_discount">{{ Coupon.discount_rate }} %</td>
+                                    {% else %}
+                                        <td class="coupon_discount"></td>
+                                    {% endif %}
+
+                                    <td>{{ Coupon.coupon_use_time|number_format }} / {{ Coupon.coupon_release|number_format }}</td>
+                                    <td>{{ Coupon.coupon_lower_limit|price }}</td>
+                                    <td>{{ Coupon.available_from_date|date_format }} ～ {{ Coupon.available_to_date|date_format }}</td>
+
+                                    <td><a href="{{ url('plugin_coupon_edit', { id: Coupon.id }) }}">{{ 'admin.common.edit'|trans }}</a></td>
+                                    <td>
+                                        <a href="{{ url('plugin_coupon_enable', { id: Coupon.id }) }}" {{ csrf_token_for_anchor() }} data-confirm="false" data-method="put">
+                                        {% if Coupon.enable_flag == 1 %}
+                                            {{ 'common.enabled'|trans }}
+                                        {% else %}
+                                            {{ 'common.disabled'|trans }}
+                                        {% endif %}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a class="" data-bs-toggle="modal" data-bs-target="#confirmModal-{{ Coupon.id }}" data-bs-tooltip="tooltip" data-bs-placement="top" title="{{ 'common.delete'|trans }}">
+                                            <i class="fa fa-close fa-lg text-secondary"></i>
+                                        </a>
+
+                                        <div class="modal fade" id="confirmModal-{{ Coupon.id }}" tabindex="-1"
+                                             role="dialog"
+                                             aria-labelledby="confirmModal-{{ Coupon.id }}" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title fw-bold">
+                                                            {{ 'plugin_coupon.admin.index.delete__confirm_title'|trans }}</h5>
+                                                        <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body text-start">
+                                                        <p class="text-start">
+                                                            {{ 'plugin_coupon.admin.index.delete__confirm_message'|trans }}</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button class="btn btn-ec-sub" type="button"
+                                                                data-bs-dismiss="modal">{{ 'common.cancel'|trans }}
+                                                        </button>
+                                                        <a href="{{ url('plugin_coupon_delete', {'id' : Coupon.id}) }}" class="btn btn-ec-delete" data-confirm="false" {{ csrf_token_for_anchor() }} data-method="delete">
+                                                            {{ 'common.delete'|trans }}
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card rounded border-0">
+                <div class="card-body p-4">
+                    <div class="text-center">
+                        <a href="{{ url('plugin_coupon_new') }}" class="btn btn-ec-regular ps-4 pe-4">{{ 'plugin_coupon.admin.index.create_button'|trans }}</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+{% endblock %}

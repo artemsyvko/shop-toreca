@@ -1,0 +1,136 @@
+{#
+ This file is part of EC-CUBE
+
+ Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+ http://www.ec-cube.co.jp/
+
+ For the full copyright and license information, please view the LICENSE
+ file that was distributed with this source code.
+#}
+
+{#
+[メルマガ管理]-[配信内容設定]-[テンプレート選択]画面
+#}
+
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['mailmagazine', 'mailmagazine'] %}
+
+{% block title %}{{ 'mailmagazine.index.title'|trans }}{% endblock %}
+{% block sub_title %}{{ 'mailmagazine.title'|trans }}{% endblock %}
+
+{% form_theme form '@admin/Form/bootstrap_4_horizontal_layout.html.twig' %}
+
+{% block javascript %}
+    <script>
+        $(function(){
+            $("#mail_magazine_template").on("change", function(){
+                var id = $(this).val()
+                if (id) {
+                    action= '{{ url('plugin_mail_magazine_select') }}/' + id;
+                } else {
+                    action= '{{ url('plugin_mail_magazine_select') }}';
+                }
+
+                $('#mode').val('select');
+
+                document.form1.action = action;
+                document.form1.submit();
+            });
+        });
+
+        function changeAction(action) {
+            document.form1.action = action;
+            document.form1.submit();
+        }
+
+    </script>
+{% endblock javascript%}
+
+{% block main %}
+    <form name="form1" role="form" class="form-horizontal" id="form1" method="post" action="">
+        {{ form_widget(form._token) }}
+        <input id="mode" type="hidden" name="mode" value="confirm">
+        <div class="c-outsideBlock">
+            <div class="c-outsideBlock__contents">
+                <div class="card rounded border-0 mb-4">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-8">
+                                <span class="card-title">
+                                    {{ 'mailmagazine.select.card_title'|trans }}
+                                </span>
+                            </div>
+                            <div class="col-4 text-end">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body mb-lg-5">
+                        <div class="row">
+                            <div class="col-3">
+                                <span>{{ form.template.vars.label|trans }}</span>
+                            </div>
+                            <div class="col mb-2">
+                                {{ form_widget(form.template) }}
+                                {{ form_errors(form.template) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                <span>{{ form.subject.vars.label|trans }}</span>
+                            </div>
+                            <div class="col mb-2">
+                                {{ form_widget(form.subject) }}
+                                {{ form_errors(form.subject) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                <span>{{ form.body.vars.label|trans }}</span>
+                            </div>
+                            <div class="col mb-2">
+                                {{ form_widget(form.body, {'attr' : { 'rows' : 20 }}) }}
+                                {{ form_errors(form.body) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                <span>{{ form.htmlBody.vars.label|trans }}</span>
+                            </div>
+                            <div class="col mb-2">
+                                {{ form_widget(form.htmlBody, {'attr' : { 'rows' : 20 }}) }}
+                                {{ form_errors(form.htmlBody) }}
+                            </div>
+                        </div>
+                        <div style="display: none">
+                            {{ form_rest(form) }}
+                        </div>
+                        <span class="help-block">{{ 'mailmagazine.select.note_name'|trans }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="c-conversionArea">
+            <div class="c-conversionArea__container">
+                <div class="row justify-content-between align-items-center">
+                    <div class="col-6">
+                        <div class="c-conversionArea__leftBlockItem">
+                            <a class="c-baseLink" href="{{ url('plugin_mail_magazine') }}" onclick="changeAction('{{ url('plugin_mail_magazine') }}'); return false;">
+                                <i class="fa fa-backward" aria-hidden="true"></i><span>{{ 'mailmagazine.select.btn_back'|trans }}</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row align-items-center justify-content-end">
+                            <div class="col-auto">
+                                <button class="btn btn-ec-conversion px-5" type="submit">
+                                    {{ 'mailmagazine.select.btn_confirm'|trans }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}

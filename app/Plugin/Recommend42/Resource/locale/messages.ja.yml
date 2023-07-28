@@ -1,0 +1,29 @@
+plugin_recommend.admin.navi: おすすめ管理
+plugin_recommend.admin.not_found: おすすめ商品が存在しません。
+plugin_recommend.admin.register.success: おすすめ商品を登録しました。
+plugin_recommend.admin.update.success: おすすめ商品を修正しました。
+plugin_recommend.admin.delete.success: おすすめ商品を削除しました。
+plugin_recommend.admin.delete.confirm: おすすめ情報を削除してもよろしいですか？
+plugin_recommend.admin.type.product.not_found: 商品を追加してください。
+plugin_recommend.admin.type.comment.placeholder: 説明文を入力してください(HTMLタグ使用可)。
+
+plugin_recommend.admin.index.title: おすすめ商品管理
+plugin_recommend.admin.index.subtitle: おすすめ商品内容設定
+plugin_recommend.admin.index.total_num: <strong>%number% 件</strong> が該当しました
+plugin_recommend.admin.index.col2: 商品画像
+plugin_recommend.admin.index.col3: 商品名
+plugin_recommend.admin.index.col4: 説明文
+plugin_recommend.admin.index.delete.confirm: このおすすめ商品を削除しても宜しいですか？
+plugin_recommend.admin.notice: 項目の順番はドラッグ＆ドロップでも変更可能です。
+plugin_recommend.admin.new: おすすめ商品を新規登録
+
+plugin_recommend.admin.edit.title: おすすめ商品管理
+plugin_recommend.admin.edit.subtitle: おすすめ商品内容設定
+plugin_recommend.admin.edit.header: おすすめ商品情報
+plugin_recommend.admin.edit.product: 商品
+plugin_recommend.admin.edit.comment: 説明文
+plugin_recommend.admin.edit.comment.help: （最大%number%文字）
+plugin_recommend.admin.edit.existed: この商品はすでにおすすめ商品として登録されています。
+plugin_recommend.admin.edit.search: 商品の追加
+plugin_recommend.admin.edit.product_search.header: 商品検索
+plugin_recommend.admin.edit.product_search.button: 検索

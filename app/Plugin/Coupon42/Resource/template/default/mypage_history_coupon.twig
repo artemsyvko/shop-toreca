@@ -1,0 +1,25 @@
+{#
+ This file is part of the Coupon plugin
+
+ Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+ http://www.ec-cube.co.jp/
+
+ For the full copyright and license information, please view the LICENSE
+ file that was distributed with this source code.
+#}
+<script type="text/javascript">
+    $(function () {
+        // append to layout
+        $(".ec-orderConfirm").last().before($("#coupon").detach());
+    })
+</script>
+
+{# クーポン情報 #}
+<div id="coupon" class="ec-orderCoupon">
+    <div class="ec-rectHeading">
+        <h2>{{ 'plugin_coupon.front.mypage.header'|trans }}</h2>
+    </div>
+    <p>
+        {{ 'plugin_coupon.front.mypage.body'|trans }} ： {{ coupon_cd }} {{ coupon_name}}
+    </p>
+</div>

@@ -1,0 +1,1 @@
+{"name":"ec-cube\/securitychecker42","version":"4.2.0","license":"LGPL-2.1-or-later","authors":[{"name":"EC-CUBE CO.,LTD.","email":"support@ec-cube.net"}],"config":{"optimize-autoloader":true,"sort-packages":true,"preferred-install":{"*":"dist"}},"type":"eccube-plugin","require":{"ec-cube\/plugin-installer":"^2.0"},"extra":{"code":"Securitychecker42","id":2402}}

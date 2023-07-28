@@ -1,0 +1,10 @@
+{% if Carts|length > 0  %}
+<script>
+    $(function () {
+        {% for cart in Carts %}
+            {% set cartKey = cart.cart_key %}
+            $('#form_cart > div.ec-cartRole__actions:eq({{ loop.index0 }}) > a:eq(0)').after('<a id="sln_quick_pay" class="ec-blockBtn--action" href="{{ path('cart_buystep', {'cart_key':cartKey}) }}?slClink=1">クイック決済</a>');
+        {% endfor %}
+    });
+</script>
+{% endif %}

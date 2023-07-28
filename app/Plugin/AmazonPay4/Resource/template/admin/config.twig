@@ -1,0 +1,342 @@
+{#
+Amazon Pay 4 for EC-CUBE4
+Copyright(c) 2020 IPLOGIC CO.,LTD. All Rights Reserved.
+
+http://www.iplogic.co.jp/
+
+This program is not free software.
+It applies to terms of service.
+#}
+{% extends '@admin/default_frame.twig' %}
+
+{% set menus = ['store', 'plugin', 'plugin_list'] %}
+
+{% block title %}{{ 'amazon_pay4.admin.config.title'|trans }}{% endblock %}
+{% block sub_title %}{{ 'amazon_pay4.admin.config.sub_title'|trans }}{% endblock %}
+
+{% form_theme form '@admin/Form/bootstrap_4_horizontal_layout.html.twig' %}
+
+{% block stylesheet %}
+
+{% endblock stylesheet %}
+
+{% block javascript %}
+<script>
+    $(function(){
+        toggleButtonCode("cart");
+        toggleButtonCode("products");
+        toggleButtonCode("mypage_change");
+        toggleButtonCode("mypage_login");
+    });
+
+    $("#config_env").click(function(){
+        toggleEnv();
+    });
+
+    $("#config_amazon_account_mode").click(function(){
+        toggleAmazonAccountMode();
+    });
+
+    $("#config_products_button_place").click(function(){
+        toggleButtonCode("products");
+    });
+
+    $("#config_cart_button_place").click(function(){
+        toggleButtonCode("cart");
+    });
+
+    $("#config_mypage_change_button_place").click(function(){
+        toggleButtonCode("mypage_change");
+    });
+
+    $("#config_mypage_login_button_place").click(function(){
+        toggleButtonCode("mypage_login");
+    });
+
+    function toggleButtonCode(page) {
+        if ($("#config_" + page + "_button_place_0").prop('checked')) {
+            $("#button_code_" + page).css("display", "none");
+        } else {
+            $("#button_code_" + page).css("display", "block");
+        }
+    }
+
+</script>
+{% endblock %}
+{% block main %}
+    <form role="form" method="post">
+
+        {{ form_widget(form._token) }}
+        <div class="c-contentsArea__cols">
+            <div class="c-contentsArea__primaryCol">
+                <div class="c-primaryCol">
+                    <div class="card-header"><span>{{ 'amazon_pay4.admin.config.header'|trans }}</span></div>
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-body">
+                            <div class="row">
+                                <label class="col-3">{{ 'amazon_pay4.admin.config.env'|trans }}</label>
+                                <div class="col mb-2">
+                                    <div class="mode--owned">
+                                        {{ form_widget(form.env, {'label_attr': {'class': 'radio-inline'}}) }}
+                                        {{ form_errors(form.env) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <label class="col-3">{{ 'amazon_pay4.admin.config.seller_id'|trans }}</label>
+                                <div class="col mb-2">
+                                    <div class="mode--owned">
+                                        {{ form_widget(form.seller_id) }}
+                                        {{ form_errors(form.seller_id) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <label class="col-3">{{ 'amazon_pay4.admin.config.public_key_id'|trans }}</label>
+                                <div class="col mb-2">
+                                    <div class="mode--owned">
+                                        {{ form_widget(form.public_key_id) }}
+                                        {{ form_errors(form.public_key_id) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <label class="col-3">{{ 'amazon_pay4.admin.config.private_key_path'|trans }}</label>
+                                <div class="col mb-2">
+                                    <div class="mode--owned">
+                                        {{ form_widget(form.private_key_path) }}
+                                        {{ form_errors(form.private_key_path) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body mode--owned">
+                            <div class="row">
+                                <label class="col-3">{{ 'amazon_pay4.admin.config.client_id'|trans }}</label>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.client_id) }}
+                                    {{ form_errors(form.client_id) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="c-contentsArea__cols">
+            <div class="c-contentsArea__primaryCol">
+                <div class="c-primaryCol">
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header"><span>{{ 'amazon_pay4.admin.config.header'|trans }}</span></div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3">
+                                    <div class="d-inline-block" data-tooltip="true" data-placement="top" title="" data-original-title="{{ 'amazon_pay4.admin.config.tooltip.sale'|trans }}">
+                                        <span>{{ 'amazon_pay4.admin.config.sale'|trans }}</span> <span class="text-danger small">必須</span>
+                                        <i class="fa fa-question-circle fa-lg fa-lg ml-1"></i>
+                                    </div>
+                                </div>
+
+                                <div class="col mb-2">
+                                    {{ form_widget(form.sale) }}
+                                    {{ form_errors(form.sale) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <label class="col-3">{{ 'amazon_pay4.admin.config.use_confirm_page'|trans }} <span class="text-danger small">必須</span></label>
+
+                                <div class="col mb-2">
+                                    {{ form_widget(form.use_confirm_page) }}
+                                    {{ form_errors(form.use_confirm_page) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3">
+                                    <div class="d-inline-block" data-tooltip="true" data-placement="top" title="" data-original-title="{{ 'amazon_pay4.admin.config.tooltip.auto_login'|trans }}">
+                                        <span>{{ 'amazon_pay4.admin.config.auto_login'|trans }}</span> <span class="text-danger small">必須</span>
+                                        <i class="fa fa-question-circle fa-lg fa-lg ml-1"></i>
+                                    </div>
+                                </div>
+
+                                <div class="col mb-2">
+                                    {{ form_widget(form.auto_login) }}
+                                    {{ form_errors(form.auto_login) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3">
+                                    <div class="d-inline-block" data-tooltip="true" data-placement="top" title="" data-original-title="{{ 'amazon_pay4.admin.config.tooltip.login_required'|trans }}">
+                                        <span>{{ 'amazon_pay4.admin.config.login_required'|trans }}</span> <span class="text-danger small">必須</span>
+                                        <i class="fa fa-question-circle fa-lg fa-lg ml-1"></i>
+                                    </div>
+                                </div>
+
+                                <div class="col mb-2">
+                                    {{ form_widget(form.login_required) }}
+                                    {{ form_errors(form.login_required) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3">
+                                    <div class="d-inline-block" data-tooltip="true" data-placement="top" title="" data-original-title="{{ 'amazon_pay4.admin.config.tooltip.order_correct'|trans }}">
+                                        <span>{{ 'amazon_pay4.admin.config.order_correct'|trans }}</span> <span class="text-danger small">必須</span>
+                                        <i class="fa fa-question-circle fa-lg fa-lg ml-1"></i>
+                                    </div>
+                                </div>
+
+                                <div class="col mb-2">
+                                    {{ form_widget(form.order_correct) }}
+                                    {{ form_errors(form.order_correct) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3">
+                                    <div class="d-inline-block" data-tooltip="true" data-placement="top" title="" data-original-title="{{ 'amazon_pay4.admin.config.tooltip.mail_notices'|trans }}">
+                                        <span>{{ 'amazon_pay4.admin.config.mail_notices'|trans }}</span>
+                                        <i class="fa fa-question-circle fa-lg fa-lg ml-1"></i>
+                                    </div>
+                                </div>
+
+                                <div class="col mb-2">
+                                    {{ form_widget(form.mail_notices) }}
+                                    {{ form_errors(form.mail_notices) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="c-contentsArea__cols">
+            <div class="c-contentsArea__primaryCol">
+                <div class="c-primaryCol">
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header"><span>{{ 'amazon_pay4.admin.config.header'|trans }}</span></div>
+                        <div class="card-body">
+                            <div class="row">
+                                <label class="col-3">{{ 'amazon_pay4.admin.config.use_cart_button'|trans }}</label>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.use_cart_button) }}
+                                    {{ form_errors(form.use_cart_button) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <label class="col-3">{{ 'amazon_pay4.admin.config.cart_button_color'|trans }} <span class="text-danger small">必須</span></label>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.cart_button_color) }}
+                                    {{ form_errors(form.cart_button_color) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <label class="col-3">{{ 'amazon_pay4.admin.config.cart_button_place'|trans }} <span class="text-danger small">必須</span></label>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.cart_button_place) }}
+                                    {{ form_errors(form.cart_button_place) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="button_code_cart"{% if form.cart_button_place.vars.value == 'auto' %}style="display:none;"{% endif %}>
+                                <p>以下のコードをカート画面のテンプレートファイルに追記して下さい。</p>
+                                <p>※ コンテンツ管理 > ページ管理 > 現在のカゴの中</p>
+                                <textarea type="text" class="form-control" readonly="readonly" rows=3>{{'<div style="width: 210px;">
+    <p style="height: 70px;" id="AmazonPayButton{{ cartKey }}"></p>
+</div>'}}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="c-contentsArea__cols">
+            <div class="c-contentsArea__primaryCol">
+                <div class="c-primaryCol">
+                    <div class="card rounded border-0 mb-4">
+                        <div class="card-header"><span>{{ 'amazon_pay4.admin.config.header'|trans }}</span></div>
+                        <div class="card-body">
+                            <div class="row">
+                                <label class="col-3">{{ 'amazon_pay4.admin.config.use_mypage_login_button'|trans }}</label>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.use_mypage_login_button) }}
+                                    {{ form_errors(form.use_mypage_login_button) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <label class="col-3">{{ 'amazon_pay4.admin.config.mypage_login_button_color'|trans }} <span class="text-danger small">必須</span></label>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.mypage_login_button_color) }}
+                                    {{ form_errors(form.mypage_login_button_color) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <label class="col-3">{{ 'amazon_pay4.admin.config.mypage_login_button_place'|trans }} <span class="text-danger small">必須</span></label>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.mypage_login_button_place) }}
+                                    {{ form_errors(form.mypage_login_button_place) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="button_code_mypage_login"{% if form.mypage_login_button_place.vars.value == 'auto' %}style="display:none;"{% endif %}>
+                                <p>以下のコードをログイン画面のテンプレートファイルに追記して下さい。</p>
+                                <p>※ コンテンツ管理 > ページ管理 > MYページ/ログイン</p>
+                                <input type="text" class="lockon_card_row form-control" readonly="readonly" value='{{"<div id=\"AmazonLoginButton\"></div>"}}'/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="c-conversionArea">
+            <div class="c-conversionArea__container">
+                <div class="row justify-content-between align-items-center">
+                    <div class="col-6">
+                        <div class="c-conversionArea__leftBlockItem">
+                            <a class="c-baseLink"
+                               href="{{ url('admin_store_plugin') }}">
+                                <i class="fa fa-backward" aria-hidden="true"></i>
+                                <span>{{ 'amazon_pay4.admin.config.back'|trans }}</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row align-items-center justify-content-end">
+                            <div class="col-auto">
+                                <button class="btn btn-ec-conversion px-5"
+                                        type="submit">{{ 'amazon_pay4.admin.config.save'|trans }}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}

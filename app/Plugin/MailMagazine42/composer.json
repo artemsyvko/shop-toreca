@@ -1,0 +1,1 @@
+{"name":"ec-cube\/mailmagazine42","version":"4.2.3","description":"\u30e1\u30fc\u30eb\u30de\u30ac\u30b8\u30f3\u30d7\u30e9\u30b0\u30a4\u30f3","type":"eccube-plugin","require":{"ec-cube\/plugin-installer":"^2.0"},"extra":{"code":"MailMagazine42","id":2404}}

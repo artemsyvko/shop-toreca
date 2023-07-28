@@ -1,0 +1,33 @@
+{#
+ This file is part of the Coupon plugin
+
+ Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+ http://www.ec-cube.co.jp/
+
+ For the full copyright and license information, please view the LICENSE
+ file that was distributed with this source code.
+#}
+<script type="text/javascript">
+    $(function () {
+        $(".c-primaryCol .card").last().before($("#coupon").detach());
+    });
+</script>
+{# クーポン情報 #}
+<div id="coupon" class="card rounded border-0 mb-4">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-8">
+                <div class="d-inline-block">
+                    <span class="card-title">{{ 'plugin_coupon.admin.order_edit.header'|trans }}</span>
+                </div>
+            </div>
+            <div class="col-4 text-end"><a data-bs-toggle="collapse" href="#couponArea" aria-expanded="false" aria-controls="couponArea"><i class="fa fa-angle-up fa-lg"></i></a></div>
+        </div>
+    </div>
+    <div class="collapse show ec-cardCollapse" id="couponArea">
+        <div class="card-body">
+            <label class="control-label">{{ 'plugin_coupon.admin.order_edit.body'|trans }}</label>　
+            {{ coupon_cd }}　{{ coupon_name }} {% if coupon_change_status %}<p class="text-danger">注文がキャンセルされたため、クーポンが適用されていません。お支払い合計を変更する場合は、「{{ coupon_name}}」の明細を手動にて削除してください。</p>{% endif %}
+        </div>
+    </div>
+</div>

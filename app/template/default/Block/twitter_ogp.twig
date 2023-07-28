@@ -1,0 +1,6 @@
+<meta property="og:title" content="{{ BaseInfo.shop_name }}{% if subtitle is defined and subtitle is not empty %} / {{ subtitle }}{% elseif title is defined and title is not empty %} / {{ title }}{% endif %}">
+<meta property="og:image" content="https://{{ app.request.host }}{{ asset('twitter_card.jpg', 'save_image') }}">
+<meta name="twitter:card" content="summary_large_image" />
+<!--
+<meta name="twitter:site" content="@[Twitter ID]" />
+-->

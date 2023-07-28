@@ -1,0 +1,60 @@
+{#
+This file is part of EC-CUBE
+
+Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+http://www.ec-cube.co.jp/
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+#}
+<script type="text/javascript">
+    $(function () {
+        $(".c-primaryCol").last().append($("#tow_factor_auth_setting").detach());
+    });
+</script>
+
+<div class="card rounded border-0 mb-4" id="tow_factor_auth_setting">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-8"><span class="card-title">{{ 'admin.customer.2fa.title'|trans }}</span>
+            </div>
+            <div class="col-4 text-end">
+                <a data-bs-toggle="collapse" href="#ordererInfo"
+                   aria-expanded="false" aria-controls="ordererInfo">
+                    <i class="fa fa-angle-up fa-lg"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="collapse show ec-cardCollapse" id="ordererInfo">
+        <div class="card-body">
+            <div class="row mb-2">
+                <div class="col-3">
+                    <span>{{ 'admin.customer.2fa.device_authed'|trans }}</span>
+                </div>
+                <div class="col">
+                    {{ form_widget(form.device_authed) }}
+                    {{ form_errors(form.device_authed) }}
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-3">
+                    <span>{{ 'admin.customer.2fa.device_authed_phone_number'|trans }}</span>
+                </div>
+                <div class="col">
+                    {{ form_widget(form.device_authed_phone_number) }}
+                    {{ form_errors(form.device_authed_phone_number) }}
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-3">
+                    <span>{{ 'admin.customer.2fa.type'|trans }}</span>
+                </div>
+                <div class="col">
+                    {{ form_widget(form.two_factor_auth_type) }}
+                    {{ form_errors(form.two_factor_auth_type) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

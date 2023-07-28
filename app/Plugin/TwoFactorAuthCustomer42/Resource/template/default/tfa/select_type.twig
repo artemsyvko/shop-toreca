@@ -1,0 +1,117 @@
+{#
+This file is part of EC-CUBE
+
+Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
+
+http://www.ec-cube.co.jp/
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+#}
+{% extends 'default_frame.twig' %}
+
+{% set body_class = 'mypage' %}
+
+{% block stylesheet %}
+    <style>
+        .ec-login-header {
+            background: #FFFFFF;
+            padding: 15px 13% 20px;
+        }
+
+        .ec-login-header>p {
+            text-align: center;
+            font: var(--unnamed-font-style-normal) normal medium 16px/22px YuGothic;
+            letter-spacing: var(--unnamed-character-spacing-0);
+            text-align: center;
+            font: normal normal medium 16px/22px YuGothic;
+            letter-spacing: 0px;
+            color: #525263;
+            opacity: 1;
+        }
+
+        .ec-login-description {
+            background: #FFFFFF;
+            padding: 5px 0% 5px;
+        }
+
+        .ec-login-description>p {
+            text-align: left;
+            font: var(--unnamed-font-style-normal) normal medium 16px/22px YuGothic;
+            letter-spacing: var(--unnamed-character-spacing-0);
+            text-align: center;
+            font: normal normal medium 16px/22px YuGothic;
+            letter-spacing: 0px;
+            color: #525263;
+            opacity: 1;
+        }
+
+        .ec-login-description>.ec-grid2>.ec-grid2__cell {
+            margin: 10px 5px 10px;
+        }
+
+        .ec-login-description>.ec-grid2>.ec-grid2__cell>p {
+            margin: 10px 5px 10px;
+        }
+
+    </style>
+{% endblock %}
+
+{% block main %}
+    <div class="ec-role">
+        <div class="ec-pageHeader">
+            <h1>{{ 'front.2fa.type'|trans }}</h1>
+        </div>
+        <div class="ec-off2Grid">
+            <div class="ec-off2Grid__cell">
+                <form name="select_auth_type" id="select_auth_type" method="post"
+                      action="{{ url('plg_customer_2fa_auth_type_select') }}">
+                    {% if app.session.flashBag.has('eccube.login.target.path') %}
+                        {% for targetPath in app.session.flashBag.peek('eccube.login.target.path') %}
+                            <input type="hidden" name="_target_path" value="{{ targetPath }}"/>
+                        {% endfor %}
+                    {% endif %}
+                    <div class="ec-login ec-login-header">
+                        <p>{{ 'front.2fa.type_message'|trans }}</p>
+                    </div>
+
+                    <div class="ec-login ec-login-description">
+                        <div class="ec-grid2">
+                            <div class="ec-grid2__cell">
+                                <p><b>APP（アプリによる2段認証）</b></p>
+                                <p>モバイル端末の認証アプリ（以下のいずれかのアプリ）に認証コードが表示されます。<br>
+                                iOS / Android<br>
+                                Google Authenticator / Authy / IIJ SmartKey</p>
+                            </div>
+                            <div class="ec-grid2__cell">
+                                <p><b>SMS（SMSによる2段階認証）</b></p>
+                                <p>モバイル端末のSMSに認証コードが届きます。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ec-login">
+                        <div class="ec-login__icon">
+                            <div class="ec-icon"><img src="{{ asset('assets/icon/user.svg') }}" alt=""></div>
+                        </div>
+                        <div class="ec-login__input">
+                            <div class="ec-input">
+                                {{ form_widget(form.two_factor_auth_type, {'attr': {'style' : 'ime-mode: disabled;', 'placeholder' : '', 'autofocus': true}}) }}
+                            </div>
+                            {% if error %}
+                                <p class="ec-errorMessage">{{ error|nl2br }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="ec-login__input">
+                            <div class="ec-login__actions">
+                                <button type="submit"
+                                        class="ec-blockBtn--cancel">{{ 'front.2fa.setting'|trans }}</button>
+                            </div>
+                        </div>
+                    </div>
+                    {{ form_widget(form._token) }}
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
