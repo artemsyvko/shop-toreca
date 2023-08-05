@@ -1,17 +1,3 @@
 # King's Cave Card Shop(EC-CUBE)
 
-## Running on Prod mode
-
-- shop-toreca/.env line: 8 - 9
-
-    ```
-    APP_ENV=dev
-    APP_DEBUG=1
-    ```
-- Domain setting
-
-    Windows: `C:\Windows\System32\drivers\etc`
-
-    ```
-    127.0.0.1:5003 		ounodoukutsu.jp
-    ```
+![screencapture-ounodoukutsu-jp-shop-toreca-2023-08-05-08_31_58](https://github.com/artemsyvko/shop-toreca/assets/120577816/50ba759a-0ab1-44fc-916a-8de2511413dd)
