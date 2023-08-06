@@ -208,6 +208,16 @@ class ProductRepository extends AbstractRepository
             }
             $qb->orderBy('p.create_date', 'DESC');
             $qb->addOrderBy('p.id', 'DESC');
+        // 更新日時順
+        } elseif (!empty($searchData['orderby']) && $searchData['orderby']->getId() == $config['eccube_product_order_recent_update']) {
+            // 在庫切れ商品非表示の設定が有効時対応
+            // @see https://github.com/EC-CUBE/ec-cube/issues/1998
+            if ($this->getEntityManager()->getFilters()->isEnabled('option_nostock_hidden') == true) {
+                $qb->innerJoin('p.ProductClasses', 'pc');
+                $qb->andWhere('pc.visible = true');
+            }
+            $qb->orderBy('p.update_date', 'DESC');
+            $qb->addOrderBy('p.id', 'DESC');
         } else {
             if ($categoryJoin === false) {
                 $qb
